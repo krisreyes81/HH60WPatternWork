@@ -105,6 +105,10 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-acti
 .spdBar #spdWho{font-family:var(--display);font-weight:700;letter-spacing:.08em;min-width:66px}
 .spdBar .unit{background:rgba(12,16,22,.7);border-radius:6px;padding:3px 6px}
 #spdRow button{font-family:var(--mono);padding:6px 4px;flex:1 1 0}
+.errBar{position:absolute;left:50%;bottom:100px;transform:translateX(-50%);width:min(520px,calc(100% - 24px));background:#3a1410;border:2px solid var(--threat);border-radius:10px;padding:10px 12px;z-index:6;display:flex;gap:10px;align-items:flex-start;font-size:13.5px}
+.errBar[hidden]{display:none}
+.errBar code{font-family:var(--mono);font-size:12px;display:block;margin-top:4px;color:#ffd9d4;word-break:break-word;-webkit-user-select:text;user-select:text}
+.errBar button{flex:0 0 auto;padding:4px 9px}
 .transport{position:absolute;right:12px;bottom:12px;display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;align-items:center;max-width:calc(100% - 24px)}
 .transport select{width:auto;background:rgba(12,16,22,.85);font-family:var(--body);font-weight:600;font-size:15px;padding:7px 8px;cursor:pointer}
 .transport .clock{background:rgba(12,16,22,.85);border:1px solid rgba(255,255,255,.14);border-radius:6px;padding:7px 10px;font-family:var(--mono);font-size:14px;font-variant-numeric:tabular-nums}
@@ -440,7 +444,7 @@ input:disabled,select:disabled{opacity:.55}
       <textarea id="scnCode" rows="2" spellcheck="false" placeholder="A setup code shows here when you copy. Paste one here to load it." aria-label="Setup code"></textarea>
     </fieldset>
 
-    <p class="note">↶ Undo on the map takes back your last action and puts the sim back to the moment just before it. + Pattern in the Map tool bar lets you pick a pattern type and adds it, using the sizes set in the Gunnery pattern box. On a touch screen, pinch to zoom and drag with two fingers to move the map. Hide controls gives the map the whole screen and puts the map tools on its left edge. There, ☰ All tools opens any section of the controls right on the map. Keys: 7 8 9 0 1 2 set 70 to 120 kt, − and = change airspeed by 5, M move map, S sticks, R measure, E erase, T trail follows lead, Esc closes a section. Use ◀ 1 s and 1 s ▶ on the map to step back or forward one second at a time. The Left and Right arrow keys do the same, and Space plays or pauses. You can go back up to 15 minutes.</p>
+    <p class="note">↶ Undo on the map takes back your last action and puts the sim back to the moment just before it. + Pattern in the Map tool bar lets you pick a pattern type and adds it, using the sizes set in the Gunnery pattern box. On a touch screen, pinch to zoom and drag with two fingers to move the map. Hide controls gives the map the whole screen and puts the map tools on its left edge. There, ☰ All tools opens any section of the controls right on the map. Keys: 7 8 9 0 1 2 set 70 to 120 kt, − and = change airspeed by 5, M move map, S sticks, R measure, E erase, T trail follows lead, Esc closes a section. Use ◀ 1 s and 1 s ▶ on the map to step back or forward one second at a time. The Left and Right arrow keys do the same, and Space plays or pauses. You can go back up to 10 minutes.</p>
     <p class="note">You can drag aircraft, threats, Jacks, and patterns in every tool except Measure and Terrain.</p>
     <p class="note">Wind pushes the aircraft. On sticks or a pattern they crab into the wind to hold the line. Aircraft in formation are drawn larger than scale when zoomed out.</p>
   </aside>
@@ -492,6 +496,10 @@ input:disabled,select:disabled{opacity:.55}
       <button type="button" class="spdBtn" data-v="70" aria-pressed="false">70</button><button type="button" class="spdBtn" data-v="80" aria-pressed="false">80</button><button type="button" class="spdBtn" data-v="90" aria-pressed="false">90</button><button type="button" class="spdBtn" data-v="100" aria-pressed="false">100</button><button type="button" class="spdBtn" data-v="110" aria-pressed="false">110</button><button type="button" class="spdBtn" data-v="120" aria-pressed="false">120</button>
       <button type="button" class="spdStep" data-d="5" aria-label="Plus 5 knots">+5</button>
       <span class="unit">KIAS</span>
+    </div>
+    <div class="errBar" id="errBar" hidden role="alert">
+      <div><strong>The sim hit a problem and kept going.</strong> If something looks wrong, press Reset aircraft. Please tell Claude this message:<code id="errMsg"></code></div>
+      <button type="button" id="errClose" aria-label="Dismiss">✕</button>
     </div>
     <div class="transport">
       <select id="speedMap" aria-label="Sim speed" title="Sim speed"><option value="1" selected>1x</option><option value="2">2x</option><option value="5">5x</option><option value="10">10x</option></select>
@@ -587,6 +595,7 @@ function emCurve(){
   return {pts:pts,vh:vh,zero:zero};
 }
 function emAt(k){
+  if(!(k>=0))k=0;
   var cu=emCurve(),p=cu.pts,n=p.length,i;
   if(k<=p[0].v)return {rate:p[0].rate,bank:p[0].bank,flag:k<p[0].v-0.01?'below':'',vh:cu.vh};
   if(k>=p[n-1].v)return {rate:p[n-1].rate,bank:p[n-1].bank,flag:cu.zero?'above':(k>p[n-1].v+0.01?'held':''),vh:cu.vh};
@@ -683,7 +692,8 @@ function alongGap(){
 }
 function feedFollow(){
   var L=AC[0],T=AC[1],r=T.route,last=r.pts[r.pts.length-1];
-  if(Math.hypot(L.pos.x-last.x,L.pos.y-last.y)>12)r.pts.push({x:L.pos.x,y:L.pos.y});
+  /* stop recording if trail has been left a very long way behind, so the path cannot grow without end */
+  if(r.pts.length<3000&&Math.hypot(L.pos.x-last.x,L.pos.y-last.y)>12)r.pts.push({x:L.pos.x,y:L.pos.y});
   if(r.idx>400){r.pts.splice(0,r.idx-1);r.idx=1;}
   var gap=r.idx<r.pts.length?alongGap():Math.hypot(L.pos.x-T.pos.x,L.pos.y-T.pos.y);
   if(!r.free)T.tas=clamp(L.tas+clamp((gap-spacingMeters())*0.2,-40,30),0,180);
@@ -946,7 +956,7 @@ function applyState(st){
 }
 function snap(){
   hist.push({sec:Math.floor(simT+1e-6),t:simT,st:capture()});
-  if(hist.length>900)hist.shift();
+  if(hist.length>600)hist.shift();
 }
 function advance(dt){
   var n=Math.ceil(dt/0.05),h=dt/n;
@@ -1631,7 +1641,8 @@ function drawHelo(px,py,a,L,selected){
   ctx.bezierCurveTo(-1.4*u,-7*u,-1.1*u,-8.1*u,0,-8.2*u);
   ctx.closePath();ctx.fill();ctx.stroke();
   ctx.fillStyle='rgba(10,15,22,.65)';ctx.beginPath();ctx.moveTo(-.95*u,-6.2*u);ctx.quadraticCurveTo(0,-7.9*u,.95*u,-6.2*u);ctx.lineTo(.8*u,-5.3*u);ctx.lineTo(-.8*u,-5.3*u);ctx.closePath();ctx.fill();
-  ctx.translate(0,-2.5*u);ctx.rotate(S.rotor+(a===AC[1]?.6:0));
+  /* main rotor turns counterclockwise seen from above, so the angle runs backwards on screen */
+  ctx.translate(0,-2.5*u);ctx.rotate(-(S.rotor+(a===AC[1]?.6:0)));
   ctx.strokeStyle='rgba(15,18,24,.8)';ctx.lineWidth=Math.max(1.2,u*.36);ctx.lineCap='round';
   ctx.beginPath();for(var i=0;i<4;i++){var g=i*Math.PI/2;ctx.moveTo(0,0);ctx.lineTo(Math.cos(g)*8.2*u,Math.sin(g)*8.2*u);}ctx.stroke();
   ctx.fillStyle='#0a0f16';ctx.beginPath();ctx.arc(0,0,.6*u,0,7);ctx.fill();
@@ -2483,14 +2494,51 @@ syncControls();
 if(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches)setPlaying(false);
 
 snap();
-var lastT=0;
+/* ---------- keep running ----------
+   One bad frame must never stop the animation for good. The next frame is booked first, each part is fenced off,
+   and anything that goes wrong is shown on screen so it can be reported. */
+var lastT=0,badSteps=0,shownErr='';
+function reportErr(where,err){
+  var msg=where+': '+(err&&err.message?err.message:String(err));
+  try{
+    var st=err&&err.stack?String(err.stack).split('\n').slice(1,3).join(' ').replace(/\s+/g,' ').slice(0,180):'';
+    if(msg!==shownErr){shownErr=msg;$('errMsg').textContent=msg+(st?'  ['+st+']':'');$('errBar').hidden=false;}
+  }catch(e){}
+}
+/* put any broken number back to something safe */
+function sanitize(level){
+  AC.forEach(function(a,i){
+    if(!isFinite(a.tas)||a.tas<0)a.tas=70;
+    if(!isFinite(a.hdg))a.hdg=0;
+    if(a.tgt!=null&&!isFinite(a.tgt))a.tgt=null;
+    if(!isFinite(a.turnRem))a.turnRem=0;
+    if(!isFinite(a.pos.x)||!isFinite(a.pos.y))a.pos=a.home?{x:a.home.x,y:a.home.y}:{x:0,y:i?-spacingMeters():0};
+    if(level>1)a.route=null;
+  });
+  if(!isFinite(S.off.x)||!isFinite(S.off.y))S.off=desiredOff(AC[0].hdg);
+  if(!(S.scale>0)||!isFinite(S.scale)){S.scale=Math.pow(10,-0.35);$('zoom').value=-0.35;}
+  if(!isFinite(S.cam.x)||!isFinite(S.cam.y))S.cam={x:AC[0].pos.x,y:AC[0].pos.y};
+  if(!isFinite(simT))simT=0;
+  if(level>1){S.formOn=false;S.rejoin=false;$('formOn').checked=false;}
+}
 function frame(t){
+  requestAnimationFrame(frame);
   var real=Math.min(0.1,(t-lastT)/1000||0);lastT=t;
   var dt=S.playing?real*S.speed:0;
-  if(dt>0)advance(dt);
-  draw(dt);readouts();
-  requestAnimationFrame(frame);
+  if(dt>0){
+    try{advance(dt);badSteps=0;}
+    catch(err){
+      reportErr('flying',err);badSteps++;
+      try{sanitize(badSteps>20?2:1);}catch(e){}
+      if(badSteps>60){badSteps=0;try{setPlaying(false);}catch(e){}}
+    }
+  }
+  try{draw(dt);}catch(err){reportErr('drawing',err);try{ctx.setTransform(window.devicePixelRatio||1,0,0,window.devicePixelRatio||1,0,0);ctx.setLineDash([]);ctx.globalAlpha=1;sanitize(1);}catch(e){}}
+  try{readouts();}catch(err){reportErr('readouts',err);}
 }
+$('errClose').addEventListener('click',function(){$('errBar').hidden=true;shownErr='';});
+/* problems inside button and touch handlers show up too */
+try{window.addEventListener('error',function(e){reportErr('action',e.error||e.message);});}catch(e){}
 requestAnimationFrame(frame);
 })();
 </script>
