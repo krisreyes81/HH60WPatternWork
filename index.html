@@ -70,14 +70,16 @@ button[aria-pressed=true]{background:var(--accent);color:#1b1404;border-color:va
 #selBtns button[data-sel="1"][aria-pressed=true]{background:var(--trail);border-color:var(--trail);color:#04200d}
 .stage{position:relative;min-width:0;min-height:0;background:#000}
 canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}
-.hud{position:absolute;left:12px;top:12px;right:150px;display:flex;gap:6px;flex-wrap:wrap;pointer-events:none}
-.hud div{background:rgba(12,16,22,.82);border:1px solid rgba(255,255,255,.14);border-radius:6px;padding:4px 9px;font-family:var(--mono);font-size:13px;font-variant-numeric:tabular-nums;white-space:nowrap}
-.hud b{font-family:var(--display);font-weight:600;letter-spacing:.08em;color:var(--muted);font-size:12px;margin-right:6px}
-.hud #rName{font-family:var(--display);font-weight:700;letter-spacing:.08em}
-.pop{position:absolute;left:50%;top:56px;transform:translateX(-50%);width:min(340px,calc(100% - 24px));background:var(--panel);border:2px solid var(--trail);border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:10px;z-index:3;box-shadow:0 8px 24px rgba(0,0,0,.5)}
+.hud{position:absolute;left:10px;top:10px;right:136px;display:flex;flex-direction:column;align-items:flex-start;gap:4px;pointer-events:none}
+.hud .hudRow{display:flex;gap:4px;flex-wrap:wrap;background:none;border:0;border-radius:0;padding:0;white-space:normal}
+.hud .hudRow.sel .nm{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.hud div{background:rgba(12,16,22,.82);border:1px solid rgba(255,255,255,.14);border-radius:6px;padding:2px 6px;font-family:var(--mono);font-size:12px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.hud b{font-family:var(--display);font-weight:600;letter-spacing:.06em;color:var(--muted);font-size:11px;margin-right:4px}
+.hud .nm{font-family:var(--display);font-weight:700;letter-spacing:.08em;min-width:48px;text-align:center}
+.pop{position:absolute;left:50%;top:112px;transform:translateX(-50%);width:min(340px,calc(100% - 24px));background:var(--panel);border:2px solid var(--trail);border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:10px;z-index:3;box-shadow:0 8px 24px rgba(0,0,0,.5)}
 .pop[hidden]{display:none}
 .pop strong{font-family:var(--display);font-size:18px;letter-spacing:.06em;text-transform:uppercase}
-.commit{position:absolute;left:50%;top:52px;transform:translateX(-50%);display:flex;flex-direction:column;gap:8px;pointer-events:none;z-index:2;width:min(360px,calc(100% - 24px))}
+.commit{position:absolute;left:50%;top:112px;transform:translateX(-50%);display:flex;flex-direction:column;gap:8px;pointer-events:none;z-index:2;width:min(360px,calc(100% - 24px))}
 .commit[hidden]{display:none}
 .commit .card{background:rgba(12,16,22,.92);border:2px solid #2bff6a;border-radius:10px;padding:8px 14px 10px;display:grid;grid-template-columns:1fr auto;align-items:center;column-gap:12px}
 .commit .who2{font-family:var(--display);font-weight:700;font-size:17px;letter-spacing:.1em;text-transform:uppercase}
@@ -88,6 +90,20 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-acti
 .commit .card.last{border-color:var(--accent)}
 .commit .card.last .time{color:var(--accent)}
 .commit .card.last .bar i{background:var(--accent)}
+.emCard{position:absolute;right:12px;top:160px;width:276px;max-width:calc(100% - 24px);background:rgba(12,16,22,.9);border:1px solid rgba(255,255,255,.16);border-radius:8px;z-index:2;overflow:hidden}
+.emCard[hidden]{display:none}
+.emCard .emHead{display:flex;width:100%;gap:8px;align-items:baseline;justify-content:space-between;background:none;border:0;border-radius:0;padding:7px 10px;font-family:var(--mono);font-size:12.5px;font-weight:500;text-align:left;min-height:0}
+.emCard .emHead span{white-space:nowrap}
+.emCard .emHead b{font-family:var(--display);font-weight:700;letter-spacing:.1em;color:var(--accent);margin-right:6px}
+.emCard .emBody{padding:0 8px 8px;display:flex;flex-direction:column;gap:6px}
+.emCard .emNow{font-family:var(--mono);font-size:12px;color:var(--ink)}
+.emCard .emTable tr.on td{background:rgba(242,178,51,.22);color:#fff}
+.spdBar{position:absolute;left:12px;bottom:54px;display:flex;gap:4px;align-items:center;flex-wrap:wrap;z-index:2;max-width:calc(100% - 24px)}
+.spdBar button{background:rgba(12,16,22,.88);padding:6px 9px;font-family:var(--mono);font-size:14px}
+.spdBar button[aria-pressed=true]{background:var(--accent)}
+.spdBar #spdWho{font-family:var(--display);font-weight:700;letter-spacing:.08em;min-width:66px}
+.spdBar .unit{background:rgba(12,16,22,.7);border-radius:6px;padding:3px 6px}
+#spdRow button{font-family:var(--mono);padding:6px 4px;flex:1 1 0}
 .transport{position:absolute;right:12px;bottom:12px;display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;align-items:center;max-width:calc(100% - 24px)}
 .transport select{width:auto;background:rgba(12,16,22,.85);font-family:var(--body);font-weight:600;font-size:15px;padding:7px 8px;cursor:pointer}
 .transport .clock{background:rgba(12,16,22,.85);border:1px solid rgba(255,255,255,.14);border-radius:6px;padding:7px 10px;font-family:var(--mono);font-size:14px;font-variant-numeric:tabular-nums}
@@ -95,6 +111,11 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-acti
 .transport button.primary{background:var(--accent)}
 .subrows{display:flex;flex-direction:column;gap:10px}
 [hidden]{display:none!important}
+.emTable{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:12px;font-variant-numeric:tabular-nums}
+.emTable th,.emTable td{border:1px solid var(--line);padding:3px 5px;text-align:right}
+.emTable th{color:var(--muted);font-weight:500}
+.emTable td.na{color:var(--muted)}
+input:disabled,select:disabled{opacity:.55}
 .nud{padding:6px 7px;font-size:13px;font-family:var(--mono);flex:0 0 auto}
 .stage{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
 .floatTools{position:absolute;left:12px;top:50%;transform:translateY(-50%);display:none;flex-direction:column;gap:6px;z-index:2;width:164px}
@@ -103,7 +124,7 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-acti
 .floatTools #menuBtn{margin-top:4px;border-color:var(--accent);color:var(--accent)}
 .floatTools #menuBtn[aria-expanded=true]{background:var(--accent);color:#1b1404}
 .stage input,.stage textarea{-webkit-user-select:text;user-select:text}
-.drawer{position:absolute;left:188px;top:84px;width:min(352px,calc(100% - 204px));max-height:calc(100% - 156px);display:flex;flex-direction:column;background:var(--panel);border:1px solid var(--line);border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,.55);z-index:4}
+.drawer{position:absolute;left:188px;top:116px;width:min(352px,calc(100% - 204px));max-height:calc(100% - 188px);display:flex;flex-direction:column;background:var(--panel);border:1px solid var(--line);border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,.55);z-index:4}
 .drawerHead{display:flex;gap:8px;align-items:center;padding:8px 10px;border-bottom:1px solid var(--line)}
 .drawerHead strong{flex:1;font-family:var(--display);font-size:16px;letter-spacing:.1em;text-transform:uppercase}
 .drawerHead button{padding:5px 10px}
@@ -131,7 +152,10 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-acti
   .who{position:static}
   .app.nopanel .stage{height:100vh;height:100dvh;max-height:none}
   .drawer{left:12px;right:12px;width:auto;top:auto;bottom:60px;max-height:62%}
-  .hud{right:12px;top:auto;bottom:56px}
+  .hud{right:12px;top:auto;bottom:100px}
+  /* small screens: the bottom edge belongs to the play controls, so the airspeed buttons go to the top */
+  .spdBar{bottom:auto;top:8px;left:8px;max-width:calc(100% - 142px)}
+  .spdBar button{padding:6px 7px}
 }
 </style>
 </head>
@@ -150,48 +174,19 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-acti
         <button type="button" data-sel="1" aria-pressed="false">Trail</button>
         <button type="button" data-sel="2" aria-pressed="false">Both</button>
       </div>
-      <p class="note">Click an aircraft on the map to select it. Drag it to set where it starts.</p>
+      <p class="note">Click an aircraft on the map to select it. Drag it to set where it starts. Drag the amber handle off its nose to point it.</p>
       <span class="lab">Map tool</span>
       <div class="seg" id="toolbar">
         <button type="button" data-tool="pan" aria-pressed="true">Move map</button>
         <button type="button" data-tool="sticks" aria-pressed="false">✎ Sticks</button>
-        <button type="button" data-tool="measure" aria-pressed="false">Measure</button>
         <select class="patPick" aria-label="Add a gunnery pattern" title="Pick a pattern to add it"><option value="" selected>+ Pattern…</option><option value="racetrack">Racetrack</option><option value="bowtie">Bowtie</option><option value="dogbone">Dogbone</option><option value="circle">Circle</option></select>
         <button type="button" class="trkBtn" aria-pressed="false" title="Trail flies the same path over the ground that lead flew">Trail follows lead</button>
+        <button type="button" data-tool="measure" aria-pressed="false">Measure</button>
         <button type="button" data-tool="erase" aria-pressed="false">Erase</button>
       </div>
     </div>
 
     <h2 class="grp">Fly the aircraft</h2>
-
-    <fieldset>
-      <legend>Flight</legend>
-      <div class="row"><label for="hdg">Heading</label><input type="number" id="hdg" min="0" max="360" step="5" value="0" placeholder="route"><button type="button" class="nud" data-for="hdg" data-d="-5" aria-label="Minus 5 degrees">−5</button><button type="button" class="nud" data-for="hdg" data-d="5" aria-label="Plus 5 degrees">+5</button></div>
-      <div class="row"><label for="tas">Airspeed</label><input type="number" id="tas" min="0" max="180" step="5" value="80"><span class="unit">kt</span></div>
-      <input type="range" id="tasR" min="0" max="180" step="5" value="80" aria-label="Airspeed slider">
-    </fieldset>
-
-    <fieldset>
-      <legend>Turn</legend>
-      <div class="row"><label for="turnDeg">Degrees</label><input type="number" id="turnDeg" min="0" max="360" step="5" value="90"><span class="unit">0 to 360</span></div>
-      <div class="row"><label for="rate">Turn rate</label><div class="grow"><select id="rate">
-        <option value="1.5">Half standard, 1.5°/s</option>
-        <option value="3">Standard, 3°/s</option>
-        <option value="6">Tight, 6°/s</option>
-        <option value="9">9°/s</option>
-        <option value="12">Very tight, 12°/s</option>
-        <option value="15">15°/s</option>
-        <option value="20">20°/s</option>
-        <option value="30">Hard, 30°/s</option>
-        <option value="45" selected>Max, 45°/s</option>
-      </select></div></div>
-      <div class="seg">
-        <button type="button" id="turnL">◀ Turn left</button>
-        <button type="button" id="turnR">Turn right ▶</button>
-      </div>
-      <div class="status" id="turnStatus" aria-live="polite">Steady on 000°</div>
-      <p class="note">Before you first press Play, a heading you enter points the aircraft that way at once, as its starting position. After that it turns to the heading. Setting a heading or turn by hand cancels that aircraft's pattern or sticks.</p>
-    </fieldset>
 
     <fieldset>
       <legend>Vector sticks</legend>
@@ -205,14 +200,69 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-acti
     </fieldset>
 
     <fieldset>
+      <legend>Flight</legend>
+      <div class="row"><label for="hdg">Heading</label><input type="number" id="hdg" min="0" max="360" step="5" value="0" placeholder="route"><button type="button" class="nud" data-for="hdg" data-d="-5" aria-label="Minus 5 degrees">−5</button><button type="button" class="nud" data-for="hdg" data-d="5" aria-label="Plus 5 degrees">+5</button></div>
+      <div class="row"><label for="tas">Airspeed</label><input type="number" id="tas" min="0" max="180" step="5" value="70"><span class="unit">kt</span></div>
+      <input type="range" id="tasR" min="0" max="180" step="5" value="70" aria-label="Airspeed slider">
+      <div class="seg" id="spdRow" aria-label="Quick airspeeds in knots"><button type="button" class="spdBtn" data-v="70" aria-pressed="false">70</button><button type="button" class="spdBtn" data-v="80" aria-pressed="false">80</button><button type="button" class="spdBtn" data-v="90" aria-pressed="false">90</button><button type="button" class="spdBtn" data-v="100" aria-pressed="false">100</button><button type="button" class="spdBtn" data-v="110" aria-pressed="false">110</button><button type="button" class="spdBtn" data-v="120" aria-pressed="false">120</button></div>
+      <div class="row"><label for="accMode">Speed changes</label><div class="grow"><select id="accMode">
+        <option value="chart" selected>HH-60W chart performance</option>
+        <option value="instant">Instant</option>
+      </select></div></div>
+      <div class="row" id="decRow"><label for="decRate">Slow-down rate</label><input type="number" id="decRate" min="0.5" max="10" step="0.5" value="3"><span class="unit">kt per second</span></div>
+      <div class="status" id="spdStatus"></div>
+      <p class="note" id="accNote">Speeding up uses the excess power (Ps) on the E-M chart for the pressure altitude and OAT set in the Turn box. The charts do not cover slowing down, so that rate is yours to set.</p>
+    </fieldset>
+
+    <fieldset>
+      <legend>Turn</legend>
+      <div class="row"><label for="emLine">Turn rate from</label><div class="grow"><select id="emLine">
+        <option value="">Manual (set it below)</option>
+        <option value="obs">Chart: OBS (onset of blade stall)</option>
+        <option value="p0" selected>Chart: Ps 0</option>
+        <option value="p5">Chart: Ps 500</option>
+      </select></div></div>
+      <div class="row" id="rateRow"><label for="rate">Turn rate</label><input type="number" id="rate" min="0.5" max="90" step="0.5" value="22"><span class="unit">°/s</span><div class="grow" style="flex:1 1 90px"><select id="ratePick" aria-label="Turn rate presets"><option value="" selected>Presets…</option><option value="1.5">1.5°/s (half standard)</option><option value="3">3°/s (standard)</option><option value="6">6°/s</option><option value="9">9°/s</option><option value="12">12°/s</option><option value="15">15°/s</option><option value="18">18°/s</option><option value="20">20°/s</option><option value="22">22°/s</option><option value="25">25°/s</option><option value="30">30°/s</option><option value="35">35°/s</option><option value="40">40°/s</option><option value="45">45°/s</option><option value="60">60°/s</option><option value="90">90°/s</option></select></div></div>
+      <div class="row"><label for="emPA">Pressure alt</label><div class="grow"><select id="emPA">
+        <option value="0" selected>Sea level</option>
+        <option value="2000">2,000 ft</option>
+        <option value="4000">4,000 ft</option>
+        <option value="6000">6,000 ft</option>
+      </select></div></div>
+      <div class="row"><label for="emOAT">OAT</label><div class="grow"><select id="emOAT">
+        <option value="0">0 °C</option>
+        <option value="5">5 °C</option>
+        <option value="15">15 °C</option>
+        <option value="25" selected>25 °C</option>
+        <option value="35">35 °C</option>
+      </select></div></div>
+      <p class="note" id="emHint">Pressure altitude and OAT set how fast the aircraft speeds up. Pick a chart line above to use them for turn rate too.</p>
+      <div class="subrows" id="emOpts" hidden>
+        <div class="status" id="emStatus"></div>
+        <div id="emTableBox"></div>
+        <p class="note">From the HH-60W E-M charts: 22,000 lb, high drag, 30 minute rating. Each aircraft gets the chart's turn rate for its own airspeed.</p>
+      </div>
+      <div class="row"><label for="turnDeg">Degrees to turn</label><input type="number" id="turnDeg" min="0" max="360" step="5" value="90"><span class="unit">0 to 360, then press a turn button</span></div>
+      <div class="seg">
+        <button type="button" id="turnL">◀ Turn left</button>
+        <button type="button" id="turnR">Turn right ▶</button>
+      </div>
+      <div class="status" id="turnStatus" aria-live="polite">Steady on 000°</div>
+      <p class="note">Before you first press Play, a heading you enter points the aircraft that way at once, as its starting position. After that it turns to the heading. Setting a heading or turn by hand cancels that aircraft's pattern or sticks.</p>
+    </fieldset>
+
+    <fieldset>
       <legend>Formation</legend>
       <label class="check"><input type="checkbox" id="formOn"> Trail holds formation on lead</label>
       <div class="row"><label for="form">Trail position</label><div class="grow"><select id="form">
         <option value="sr" selected>Staggered right</option>
         <option value="sl">Staggered left</option>
         <option value="trail">Trail (in line)</option>
+        <option value="custom">Aspect I set</option>
       </select></div></div>
+      <div class="row" id="aspRow" hidden><label for="formAsp">Aspect off lead</label><input type="number" id="formAsp" min="0" max="180" step="5" value="45"><div class="grow"><select id="formSide" aria-label="Side of lead"><option value="1" selected>R (right side)</option><option value="-1">L (left side)</option></select></div></div>
       <div class="row"><label for="spacing">Spacing</label><input type="number" id="spacing" min="0.02" max="10" step="0.05" value="0.3"><div class="grow"><select id="spUnit" aria-label="Spacing unit"><option value="nm" selected>NM</option><option value="m">meters</option><option value="disc">rotor discs</option></select></div></div>
+      <button type="button" id="formPlace" title="Moves trail to the position and spacing set here">Put trail there now</button>
       <div class="status" id="sepNow" aria-label="Current spacing"></div>
       <button type="button" id="followTrk" aria-pressed="false">Trail follows lead's ground track</button>
       <p class="note">In ground track mode, trail flies the same path lead flew and holds the spacing above, measured along the track it is about to fly. Editing trail on its own takes it out of formation. Tick the box again to rejoin.</p>
@@ -373,7 +423,7 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-acti
 
     <fieldset>
       <legend>Saved setups</legend>
-      <p class="note">A setup keeps the background, map image, terrain, wind, threats, Jacks, both aircraft (position, heading, airspeed), spacing, sticks, and patterns as they are right now.</p>
+      <p class="note">A setup keeps the background, map image, terrain, wind, chart turn rate choice, threats, Jacks, both aircraft (position, heading, airspeed), spacing, sticks, and patterns as they are right now.</p>
       <div class="row"><input type="text" id="scnName" maxlength="40" placeholder="Name this setup" aria-label="Setup name" style="flex:1 1 120px"><button type="button" id="scnSave" class="primary">Save</button></div>
       <div class="row"><div class="grow"><select id="scnList" aria-label="Saved setups"></select></div></div>
       <div class="seg">
@@ -389,7 +439,7 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-acti
       <textarea id="scnCode" rows="2" spellcheck="false" placeholder="A setup code shows here when you copy. Paste one here to load it." aria-label="Setup code"></textarea>
     </fieldset>
 
-    <p class="note">↶ Undo on the map takes back your last action and puts the sim back to the moment just before it. + Pattern in the Map tool bar lets you pick a pattern type and adds it, using the sizes set in the Gunnery pattern box. On a touch screen, pinch to zoom and drag with two fingers to move the map. Hide controls gives the map the whole screen and puts the map tools on its left edge. There, ☰ All tools opens any section of the controls right on the map. Keys: M move map, S sticks, R measure, E erase, T trail follows lead, Esc closes a section. Use ◀ 1 s and 1 s ▶ on the map to step back or forward one second at a time. The Left and Right arrow keys do the same, and Space plays or pauses. You can go back up to 15 minutes.</p>
+    <p class="note">↶ Undo on the map takes back your last action and puts the sim back to the moment just before it. + Pattern in the Map tool bar lets you pick a pattern type and adds it, using the sizes set in the Gunnery pattern box. On a touch screen, pinch to zoom and drag with two fingers to move the map. Hide controls gives the map the whole screen and puts the map tools on its left edge. There, ☰ All tools opens any section of the controls right on the map. Keys: 7 8 9 0 1 2 set 70 to 120 kt, − and = change airspeed by 5, M move map, S sticks, R measure, E erase, T trail follows lead, Esc closes a section. Use ◀ 1 s and 1 s ▶ on the map to step back or forward one second at a time. The Left and Right arrow keys do the same, and Space plays or pauses. You can go back up to 15 minutes.</p>
     <p class="note">You can drag aircraft, threats, Jacks, and patterns in every tool except Measure and Terrain.</p>
     <p class="note">Wind pushes the aircraft. On sticks or a pattern they crab into the wind to hold the line. Aircraft in formation are drawn larger than scale when zoomed out.</p>
   </aside>
@@ -397,14 +447,34 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-acti
   <main class="stage" id="stage">
     <canvas id="c" aria-label="Top-down map with two HH-60 helicopters"></canvas>
     <div class="hud" id="hud">
-      <div><span id="rName">LEAD</span></div>
-      <div><b>HDG</b><span id="rHdg">000°</span></div>
-      <div><b>TRK</b><span id="rTrk">000°</span></div>
-      <div><b>IAS</b><span id="rTas">100 kt</span></div>
-      <div><b>GS</b><span id="rGs">100 kt</span></div>
-      <div><b>DRIFT</b><span id="rDrift">0°</span></div>
-      <div><b>SPACING</b><span id="rSep"></span></div>
-      <div title="Where trail sits off lead's nose"><b>ASPECT</b><span id="rAsp"></span></div>
+      <div class="hudRow" id="hudRow0">
+        <div class="nm" style="color:var(--lead)">LEAD</div>
+        <div><b>HDG</b><span id="rHdg0">000°</span></div>
+        <div><b>TRK</b><span id="rTrk0">000°</span></div>
+        <div><b>IAS</b><span id="rTas0">70 kt</span></div>
+        <div><b>GS</b><span id="rGs0">70 kt</span></div>
+        <div><b>DFT</b><span id="rDrift0">0°</span></div>
+        <div title="Where trail sits, measured from lead's tail. 000 is dead astern, 180 is on the nose."><b>ASP</b><span id="rAsp0"></span></div>
+      </div>
+      <div class="hudRow" id="hudRow1">
+        <div class="nm" style="color:var(--trail)">TRAIL</div>
+        <div><b>HDG</b><span id="rHdg1">000°</span></div>
+        <div><b>TRK</b><span id="rTrk1">000°</span></div>
+        <div><b>IAS</b><span id="rTas1">70 kt</span></div>
+        <div><b>GS</b><span id="rGs1">70 kt</span></div>
+        <div><b>DFT</b><span id="rDrift1">0°</span></div>
+        <div title="Where lead sits, measured from trail's tail. 180 means lead is straight ahead of trail."><b>ASP</b><span id="rAsp1"></span></div>
+      </div>
+      <div class="hudRow">
+        <div><b>SPACING</b><span id="rSep"></span></div>
+      </div>
+    </div>
+    <div class="emCard" id="emCard" hidden>
+      <button type="button" class="emHead" id="emHead" aria-expanded="true" title="Show or hide the chart table"><span id="emHeadTxt"></span><span id="emHeadArrow">▾</span></button>
+      <div class="emBody" id="emBody">
+        <div id="emCardTable"></div>
+        <div class="emNow" id="emNow"></div>
+      </div>
     </div>
     <div class="commit" id="commit" hidden aria-live="off"></div>
     <div class="pop" id="pop" hidden>
@@ -414,6 +484,13 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-acti
         <button type="button" id="popCommit" class="primary">Commit and approach</button>
         <button type="button" id="popPass">Fly past</button>
       </div>
+    </div>
+    <div class="spdBar" id="spdBar" aria-label="Quick airspeed">
+      <button type="button" id="spdWho" title="Which aircraft these airspeed buttons change. Tap to switch between lead, trail, and both.">LEAD</button>
+      <button type="button" class="spdStep" data-d="-5" aria-label="Minus 5 knots">−5</button>
+      <button type="button" class="spdBtn" data-v="70" aria-pressed="false">70</button><button type="button" class="spdBtn" data-v="80" aria-pressed="false">80</button><button type="button" class="spdBtn" data-v="90" aria-pressed="false">90</button><button type="button" class="spdBtn" data-v="100" aria-pressed="false">100</button><button type="button" class="spdBtn" data-v="110" aria-pressed="false">110</button><button type="button" class="spdBtn" data-v="120" aria-pressed="false">120</button>
+      <button type="button" class="spdStep" data-d="5" aria-label="Plus 5 knots">+5</button>
+      <span class="unit">KIAS</span>
     </div>
     <div class="transport">
       <select id="speedMap" aria-label="Sim speed" title="Sim speed"><option value="1" selected>1x</option><option value="2">2x</option><option value="5">5x</option><option value="10">10x</option></select>
@@ -428,9 +505,9 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-acti
     <div class="floatTools" id="floatTools" aria-label="Map tools">
       <button type="button" data-tool="pan" aria-pressed="true">Move map</button>
       <button type="button" data-tool="sticks" aria-pressed="false">✎ Sticks</button>
-      <button type="button" data-tool="measure" aria-pressed="false">Measure</button>
       <select class="patPick" aria-label="Add a gunnery pattern" title="Pick a pattern to add it"><option value="" selected>+ Pattern…</option><option value="racetrack">Racetrack</option><option value="bowtie">Bowtie</option><option value="dogbone">Dogbone</option><option value="circle">Circle</option></select>
       <button type="button" class="trkBtn" aria-pressed="false" title="Trail flies the same path over the ground that lead flew">Trail follows lead</button>
+      <button type="button" data-tool="measure" aria-pressed="false">Measure</button>
       <button type="button" data-tool="erase" aria-pressed="false">Erase</button>
       <button type="button" id="menuBtn" aria-expanded="false" title="Every section of the controls, opened on the map">☰ All tools</button>
     </div>
@@ -454,12 +531,12 @@ var $=function(id){return document.getElementById(id);};
 var cv=$('c'), ctx=cv.getContext('2d'), stage=$('stage');
 var W=800,H=600;
 
-function mk(name,color,light){return {name:name,color:color,light:light,pos:{x:0,y:0},hdg:0,tas:80,turnRem:0,turnDir:1,turnTarget:null,route:null,track:[],trackGen:0,home:null,saved:null};}
+function mk(name,color,light){return {name:name,color:color,light:light,pos:{x:0,y:0},hdg:0,tas:70,turnRem:0,turnDir:1,turnTarget:null,route:null,track:[],trackGen:0,home:null,saved:null,tgt:null};}
 var AC=[mk('LEAD','#3f8cff','rgba(130,185,255,.95)'),mk('TRAIL','#35c46a','rgba(130,235,160,.95)')];
 AC[0].home={x:0,y:0};
 var S={
-  spUnit:'nm', dragAC:false,
-  sel:0, rate:45, windFrom:315, windKt:0,
+  spUnit:'nm', dragAC:false, capMsg:'', formAsp:45, formSide:1, em:'p0', emPA:0, emOAT:25, tf:1, acc:'chart', dec:3,
+  sel:0, rate:22, windFrom:315, windKt:0,
   formOn:false, rejoin:false, off:{x:0,y:0}, form:'sr', spacing:0.3,
   markers:[], env:'ocean', scale:Math.pow(10,-0.35),
   follow:false, cam:{x:0,y:0}, playing:false, speed:1, tool:'pan',
@@ -471,10 +548,96 @@ function norm(a){a%=360;return a<0?a+360:a;}
 function adiff(to,from){return ((to-from+540)%360)-180;}
 function pad3(a){var n=Math.round(norm(a))%360;return ('00'+n).slice(-3)+'°';}
 function fwd(h){return {x:Math.sin(h*RAD),y:Math.cos(h*RAD)};}
+var EM_SPD=[70,80,110,120];
+/* [bank deg, turn rate deg/s, radius ft] at 70, 80, 110, 120 KIAS; null where the chart says N/A. vh = Vh (Phi=0) for Ps 0, Ps 500, OBS. */
+var EM={
+  '0|0':{ps:[126,114,95,80],vh:[126,114,145],p0:[[52,20,326],[52,18,417],[41,9,1161],[31,6,2017]],p5:[[49,18,364],[49,16,466],[25,5,2152],null],obs:[[60,28,237],[59,23,322],[52,13,807],[49,11,1076]]},
+  '0|5':{ps:[125,114,95,80],vh:[125,114,145],p0:[[52,20,336],[51,18,430],[40,9,1216],[30,5,2183]],p5:[[48,18,374],[48,16,480],[24,5,2327],null],obs:[[60,27,248],[58,23,339],[51,12,852],[47,10,1150]]},
+  '0|15':{ps:[124,113,94,80],vh:[124,113,145],p0:[[51,19,353],[51,17,456],[39,8,1335],[26,4,2649]],p5:[[48,17,398],[48,15,509],[21,4,2766],null],obs:[[58,25,271],[56,21,373],[48,11,964],[45,9,1296]]},
+  '0|25':{ps:[123,112,93,80],vh:[123,112,145],p0:[[50,19,375],[50,16,486],[37,7,1490],[21,3,3475]],p5:[[47,17,420],[47,15,541],[17,3,3629],null],obs:[[57,23,297],[55,19,412],[45,10,1095],[42,8,1480]]},
+  '0|35':{ps:[121,111,92,80],vh:[121,111,145],p0:[[49,18,402],[49,15,523],[34,7,1673],[14,2,5383]],p5:[[46,16,450],[46,14,581],[11,2,5930],null],obs:[[55,22,327],[53,18,454],[43,9,1220],[39,7,1703]]},
+  '2000|0':{ps:[123,112,94,80],vh:[123,112,145],p0:[[50,18,375],[50,16,485],[37,8,1439],[23,4,3129]],p5:[[47,17,419],[47,14,542],[19,3,3232],null],obs:[[57,24,285],[55,20,396],[47,10,1035],[43,9,1395]]},
+  '2000|5':{ps:[122,112,93,80],vh:[122,112,145],p0:[[50,18,387],[49,16,500],[36,7,1526],[20,3,3692]],p5:[[46,16,433],[46,14,559],[16,3,3865],null],obs:[[57,23,300],[54,19,416],[45,10,1110],[42,8,1500]]},
+  '2000|15':{ps:[121,111,92,80],vh:[121,111,145],p0:[[49,17,410],[48,15,534],[34,6,1720],[12,2,6334]],p5:[[46,16,459],[45,14,594],[9,2,7376],null],obs:[[55,21,332],[53,17,461],[43,9,1247],[38,7,1748]]},
+  '2000|25':{ps:[119,109,91,80],vh:[119,109,145],p0:[[48,16,444],[47,14,580],[31,6,1971],null],p5:[[44,15,499],[44,13,648],null,null],obs:[[53,20,367],[51,16,512],[40,8,1433],[34,6,2107]]},
+  '2000|35':{ps:[118,108,90,63],vh:[118,108,140],p0:[[46,15,495],[45,13,650],[28,5,2284],null],p5:[[42,13,568],[41,11,740],null,null],obs:[[51,18,401],[49,15,565],[37,7,1668],[30,5,2569]]},
+  '4000|0':{ps:[120,110,91,80],vh:[120,110,145],p0:[[48,16,438],[47,14,571],[32,6,1906],null],p5:[[45,15,489],[44,13,636],null,null],obs:[[54,21,350],[52,17,488],[41,8,1353],[35,6,1983]]},
+  '4000|5':{ps:[119,109,91,80],vh:[119,109,145],p0:[[47,16,453],[47,14,593],[30,6,2050],null],p5:[[44,14,508],[43,12,661],null,null],obs:[[53,20,371],[51,16,514],[39,8,1460],[34,6,2151]]},
+  '4000|15':{ps:[117,107,89,80],vh:[117,107,139],p0:[[46,15,497],[45,13,655],[27,5,2395],null],p5:[[42,13,565],[41,11,738],null,null],obs:[[51,18,409],[48,14,578],[35,7,1764],[29,5,2668]]},
+  '4000|25':{ps:[115,105,87,null],vh:[115,105,132],p0:[[44,14,553],[42,12,739],[23,4,2948],null],p5:[[39,12,641],[38,10,845],null,null],obs:[[49,17,454],[46,13,652],[32,6,2082],[23,4,3528]]},
+  '4000|35':{ps:[113,104,86,null],vh:[113,104,126],p0:[[41,12,629],[39,10,845],[19,3,3902],null],p5:[[36,10,754],[34,9,1011],null,null],obs:[[47,15,507],[44,12,721],[27,5,2586],[16,2,5394]]},
+  '6000|0':{ps:[116,106,88,77],vh:[116,106,135],p0:[[44,14,540],[43,12,717],[24,4,2822],null],p5:[[40,12,619],[39,10,817],null,null],obs:[[50,17,436],[47,14,622],[33,6,1945],[27,4,3025]]},
+  '6000|5':{ps:[115,105,87,64],vh:[115,105,131],p0:[[43,13,568],[42,11,759],[22,4,3199],null],p5:[[39,11,656],[38,10,871],null,null],obs:[[49,16,462],[45,13,665],[30,5,2197],[22,3,3780]]},
+  '6000|15':{ps:[113,103,85,null],vh:[113,103,124],p0:[[41,12,633],[39,10,855],[17,3,4446],null],p5:[[36,10,746],[35,9,1002],null,null],obs:[[46,15,521],[43,12,741],[26,4,2685],[15,2,5721]]},
+  '6000|25':{ps:[111,101,83,null],vh:[111,101,119],p0:[[38,11,720],[36,9,984],[8,1,9884],null],p5:[[33,9,878],[31,7,1205],null,null],obs:[[44,13,578],[41,10,842],[18,3,4142],null]},
+  '6000|35':{ps:[106,95,60,null],vh:[106,95,112],p0:[[35,9,841],[33,8,1165],null,null],p5:[[28,7,1106],[25,6,1563],null,null],obs:[[42,12,650],[38,9,965],[9,1,8642],null]}
+};
+/* meters per second for one knot of indicated airspeed. With a chart picked, indicated airspeed is turned into true airspeed for that altitude and temperature. */
+function TK(){return KT*S.tf;}
+function emCurve(){
+  var c=EM[S.emPA+'|'+S.emOAT],rows=c[S.em],pts=[],i;
+  /* the chart prints turn rate to the whole degree but radius to the foot, so the rate is worked back from the radius.
+     That keeps the sim's turn radius on the chart's number. */
+  for(i=0;i<4;i++)if(rows[i])pts.push({v:EM_SPD[i],rate:EM_SPD[i]*TK()/(rows[i][2]*0.3048)/RAD,bank:rows[i][0]});
+  var vh=c.vh[S.em==='p0'?0:S.em==='p5'?1:2];
+  /* a Ps line drops to no turn at Vh. The OBS line does too, unless it is cut off by the 145 kt speed limit. */
+  var zero=(S.em!=='obs'||vh<145)&&vh>pts[pts.length-1].v;
+  if(zero)pts.push({v:vh,rate:0,bank:0});
+  return {pts:pts,vh:vh,zero:zero};
+}
+function emAt(k){
+  var cu=emCurve(),p=cu.pts,n=p.length,i;
+  if(k<=p[0].v)return {rate:p[0].rate,bank:p[0].bank,flag:k<p[0].v-0.01?'below':'',vh:cu.vh};
+  if(k>=p[n-1].v)return {rate:p[n-1].rate,bank:p[n-1].bank,flag:cu.zero?'above':(k>p[n-1].v+0.01?'held':''),vh:cu.vh};
+  for(i=1;i<n;i++)if(k<=p[i].v){
+    var t=(k-p[i-1].v)/(p[i].v-p[i-1].v);
+    return {rate:p[i-1].rate+(p[i].rate-p[i-1].rate)*t,bank:p[i-1].bank+(p[i].bank-p[i-1].bank)*t,flag:(t<0.001||t>0.999)?'':'est',vh:cu.vh};
+  }
+}
+/* the turn rate an aircraft may use right now, and the rate for a given indicated airspeed */
+/* ---------- speeding up and slowing down ----------
+   Level-flight excess power from the chart's Vh column (the KIAS where Ps is 0, 500, 1000, 1500 ft/min),
+   turned into acceleration with dV/dt = g x Ps / V. */
+function envKey(){return (S.emPA||0)+'|'+(S.emOAT||0);}
+function envTf(){return 1/Math.sqrt(Math.pow(1-6.87559e-6*(S.emPA||0),5.25588)*288.15/((S.emOAT||0)+273.15));}
+function vMaxLevel(){return EM[envKey()].ps[0];}
+function psAt(k){
+  var ps=EM[envKey()].ps,pts=[],lv=[0,500,1000,1500],i;
+  for(i=3;i>=0;i--)if(ps[i]!=null)pts.push({v:ps[i],p:lv[i]});
+  if(k<=pts[0].v)return pts[0].p;
+  for(i=1;i<pts.length;i++)if(k<=pts[i].v){var t=(k-pts[i-1].v)/(pts[i].v-pts[i-1].v);return pts[i-1].p+(pts[i].p-pts[i-1].p)*t;}
+  return 0;
+}
+/* knots of indicated airspeed gained per second at this airspeed, capped at 4 so low speeds stay believable */
+function accelKt(k){
+  var v=Math.max(k,30)*envTf()*1.68781,a=32.174*(psAt(k)/60)/v;
+  return Math.min(4,a/1.68781/envTf());
+}
+/* walk an aircraft's airspeed toward the value the user asked for */
+function speedStep(a,dt){
+  if(a.tgt==null)return;
+  var r=a.route,hasC=r&&r.kind==='sticks'&&r.cruise!=null,cur=hasC?r.cruise:a.tas;
+  var nv=cur<a.tgt?cur+Math.max(0.02,accelKt(cur))*dt:cur-S.dec*dt;
+  if((a.tgt-cur)*(a.tgt-nv)<=0){nv=a.tgt;a.tgt=null;}
+  if(hasC){r.cruise=nv;if(!r.slow&&!r.hold&&!r.ramp)a.tas=nv;}else a.tas=nv;
+}
+/* trail's airspeed belongs to its spacing controller while it holds a place on lead's track or circle */
+function speedOwned(a){
+  var r=a.route;
+  return a===AC[1]&&(S.formOn||(r&&((r.kind==='follow'&&!r.free)||r.sync)));
+}
+function askSpeed(a,v){
+  var start=!S.playing&&simT<0.05;
+  if(S.acc!=='chart'||start){a.tas=v;a.tgt=null;if(a.route&&a.route.cruise!=null)a.route.cruise=v;}
+  else if(!speedOwned(a))a.tgt=v;
+}
+function rateAtKt(k){return S.em?Math.max(1,emAt(k).rate):S.rate;}
+function rateFor(a){return rateAtKt(a.tas);}
 function windVel(){var f=fwd(S.windFrom);return {x:-f.x*S.windKt*KT,y:-f.y*S.windKt*KT};}
-function gndVel(a){var f=fwd(a.hdg),w=windVel();return {x:f.x*a.tas*KT+w.x,y:f.y*a.tas*KT+w.y};}
+function gndVel(a){var f=fwd(a.hdg),w=windVel();return {x:f.x*a.tas*TK()+w.x,y:f.y*a.tas*TK()+w.y};}
 function desiredOff(h){
-  var a=(S.form==='trail'?0:35)*RAD, side=S.form==='sl'?-1:1;
+  /* a is the aspect: the angle from lead's tail round to trail */
+  var cu=S.form==='custom',a=(cu?S.formAsp:S.form==='trail'?0:35)*RAD, side=cu?S.formSide:S.form==='sl'?-1:1;
   var d=spacingMeters(), back=d*Math.cos(a), right=(S.form==='trail'?0:side)*d*Math.sin(a);
   var f=fwd(h), r={x:Math.cos(h*RAD),y:-Math.sin(h*RAD)};
   return {x:-back*f.x+right*r.x, y:-back*f.y+right*r.y};
@@ -522,7 +685,7 @@ function feedFollow(){
   if(Math.hypot(L.pos.x-last.x,L.pos.y-last.y)>12)r.pts.push({x:L.pos.x,y:L.pos.y});
   if(r.idx>400){r.pts.splice(0,r.idx-1);r.idx=1;}
   var gap=r.idx<r.pts.length?alongGap():Math.hypot(L.pos.x-T.pos.x,L.pos.y-T.pos.y);
-  T.tas=clamp(L.tas+clamp((gap-spacingMeters())*0.2,-40,30),0,180);
+  if(!r.free)T.tas=clamp(L.tas+clamp((gap-spacingMeters())*0.2,-40,30),0,180);
   /* let trail turn harder than lead so it can stay on lead's path while catching up */
   r.rate=Math.max(S.rate*2.5,9);
 }
@@ -565,7 +728,7 @@ function approachSpeed(a,r,dt){
     r.stopAt=r.segEnd[kc];
     var i=r.idx,q=r.pts[i],d=Math.hypot(q.x-a.pos.x,q.y-a.pos.y);
     for(i=i+1;i<=r.stopAt;i++)d+=Math.hypot(r.pts[i].x-r.pts[i-1].x,r.pts[i].y-r.pts[i-1].y);
-    target=Math.min(r.cruise,Math.max(Math.sqrt(2*1.5*d)/KT,Math.min(r.cruise,S.windKt+5)));
+    target=Math.min(r.cruise,Math.max(Math.sqrt(2*1.5*d)/TK(),Math.min(r.cruise,S.windKt+5)));
     r.slow=true;
   }else{
     r.stopAt=-1;
@@ -578,7 +741,7 @@ function approachSpeed(a,r,dt){
 }
 function holdStep(a,r,dt){
   var h=r.hold,nd=h.node;
-  a.pos={x:nd.x,y:nd.y};a.tas=S.windKt;
+  a.pos={x:nd.x,y:nd.y};a.tas=S.windKt/S.tf;
   if(S.windKt>0)turnToward(a,S.windFrom,dt);
   if(nd.commit>0)h.t-=dt;
   if(nd.commit==null||(nd.commit>0&&h.t<=0)){
@@ -646,12 +809,12 @@ function turnTo(a,target){
 }
 /* heading that makes the ground track point along bearing b */
 function windCorrect(a,b){
-  var v=a.tas*KT;if(v<1)return b;
+  var v=a.tas*TK();if(v<1)return b;
   var w=windVel(),wc=w.x*Math.cos(b*RAD)-w.y*Math.sin(b*RAD);
   return norm(b+Math.asin(clamp(-wc/v,-1,1))/RAD);
 }
 function turnToward(a,hdes,dt,rate){
-  var d=adiff(hdes,a.hdg),m=(rate||S.rate)*dt;
+  var d=adiff(hdes,a.hdg),m=(rate||rateFor(a))*dt;
   a.hdg=norm(a.hdg+clamp(d,-m,m));
 }
 function steer(a,r,dt){
@@ -662,7 +825,8 @@ function steer(a,r,dt){
     var nxt=(r.loop||r.idx+1<n)?r.pts[(r.idx+1)%n]:null;
     var lx=tgt.x-prev.x,ly=tgt.y-prev.y,ll=Math.hypot(lx,ly)||1;
     var dx=tgt.x-a.pos.x,dy=tgt.y-a.pos.y,dist=Math.hypot(dx,dy);
-    var rate=r.rate||S.rate,gv=gndVel(a),gs=Math.hypot(gv.x,gv.y),R=gs/(rate*RAD),lead=0;
+    /* with a chart picked the aircraft cannot out-turn it, whatever the pattern asked for. Trail on lead's ground track keeps its own allowance. */
+    var rate=(!S.em||r.kind==='follow')?(r.rate||rateFor(a)):rateFor(a),gv=gndVel(a),gs=Math.hypot(gv.x,gv.y),R=gs/(rate*RAD),lead=0;
     if(nxt){
       var nx=nxt.x-tgt.x,ny=nxt.y-tgt.y,nl=Math.hypot(nx,ny)||1;
       var th=Math.acos(clamp((lx*nx+ly*ny)/(ll*nl),-1,1));
@@ -695,6 +859,7 @@ function mark(a){
 }
 function stepAC(a,dt){
   var r=a.route;
+  speedStep(a,dt);
   if(r&&r.kind==='sticks'){
     if(r.hold){holdStep(a,r,dt);return;}
     approachSpeed(a,r,dt);
@@ -704,7 +869,7 @@ function stepAC(a,dt){
     if(r&&r.kind==='sticks'){if(r.hold)return;trimSticks(a);}
   }
   else if(a.turnRem>0){
-    var d=Math.min(S.rate*dt,a.turnRem);
+    var d=Math.min(rateFor(a)*dt,a.turnRem);
     a.hdg=norm(a.hdg+a.turnDir*d);a.turnRem-=d;
     if(a.turnRem<=1e-6){a.turnRem=0;a.hdg=a.turnTarget;if(a===primary())syncHeadingSelect();}
   }
@@ -741,6 +906,7 @@ function resetAircraft(){
     /* a reset clears everything the aircraft was flying: sticks, patterns and commits */
     a.route=null;a.saved=null;
     a.track=[];a.trackGen++;a.turnRem=0;a.hdg=0;
+    if(a.tgt!=null){a.tas=a.tgt;a.tgt=null;}
   });
   closePop();
   setSpacing('nm',0.3);
@@ -762,14 +928,14 @@ function snapRoute(r){
 }
 function capture(){
   return {formOn:S.formOn,rejoin:S.rejoin,off:{x:S.off.x,y:S.off.y},ac:AC.map(function(a){
-    return {x:a.pos.x,y:a.pos.y,hdg:a.hdg,tas:a.tas,turnRem:a.turnRem,turnDir:a.turnDir,turnTarget:a.turnTarget,gen:a.trackGen,len:a.track.length,route:snapRoute(a.route)};
+    return {x:a.pos.x,y:a.pos.y,hdg:a.hdg,tas:a.tas,tgt:a.tgt,turnRem:a.turnRem,turnDir:a.turnDir,turnTarget:a.turnTarget,gen:a.trackGen,len:a.track.length,route:snapRoute(a.route)};
   })};
 }
 function applyState(st){
   S.formOn=st.formOn;S.rejoin=st.rejoin;S.off={x:st.off.x,y:st.off.y};$('formOn').checked=st.formOn;
   st.ac.forEach(function(o,i){
     var a=AC[i];
-    a.pos={x:o.x,y:o.y};a.hdg=o.hdg;a.tas=o.tas;a.turnRem=o.turnRem;a.turnDir=o.turnDir;a.turnTarget=o.turnTarget;
+    a.pos={x:o.x,y:o.y};a.hdg=o.hdg;a.tas=o.tas;a.tgt=o.tgt==null?null:o.tgt;a.turnRem=o.turnRem;a.turnDir=o.turnDir;a.turnTarget=o.turnTarget;
     if(o.gen===a.trackGen)a.track.length=Math.min(a.track.length,o.len);else{a.track=[];a.trackGen++;}
     var r=snapRoute(o.route);
     if(r&&r.hold)r.hold={node:r.nodes[r.hold.k],t:r.hold.t};
@@ -832,7 +998,7 @@ var SCN_KEY='hh60sim.setups.v1';
 function scenarioNow(){
   var u=snapUndo();u.simT=0;
   u.st.ac.forEach(function(o){o.len=0;o.gen=-1;o.turnRem=0;});
-  return {v:1,env:S.env,windFrom:S.windFrom,windKt:S.windKt,rate:S.rate,form:S.form,scale:S.scale,follow:S.follow,cam:{x:S.cam.x,y:S.cam.y},u:u,map:mapForSave()};
+  return {v:1,env:S.env,windFrom:S.windFrom,windKt:S.windKt,rate:S.rate,form:S.form,formAsp:S.formAsp,formSide:S.formSide,scale:S.scale,follow:S.follow,cam:{x:S.cam.x,y:S.cam.y},u:u,map:mapForSave(),em:{line:S.em,pa:S.emPA,oat:S.emOAT},acc:S.acc,dec:S.dec};
 }
 function scenarioOk(sc){
   return sc&&sc.v===1&&ENV[sc.env]&&sc.u&&sc.u.st&&Array.isArray(sc.u.st.ac)&&sc.u.st.ac.length===2&&typeof sc.u.markers==='string'&&Array.isArray(sc.u.terrain);
@@ -841,8 +1007,13 @@ function applyScenario(sc){
   pushUndo();
   S.env=sc.env;$('env').value=sc.env;
   S.windFrom=norm(+sc.windFrom||0);$('wdir').value=S.windFrom;setWind(+sc.windKt||0);
-  S.rate=+sc.rate||S.rate;$('rate').value=String(S.rate);
+  setRate(+sc.rate||S.rate);
+  var em=sc.em&&EM[sc.em.pa+'|'+sc.em.oat]?sc.em:{line:'',pa:S.emPA,oat:S.emOAT};
+  $('emLine').value=em.line||'';$('emPA').value=String(em.pa);$('emOAT').value=String(em.oat);emUpdate();
   if(sc.form){S.form=sc.form;$('form').value=sc.form;}
+  if(sc.formAsp!=null){S.formAsp=clamp(+sc.formAsp||0,0,180);$('formAsp').value=S.formAsp;S.formSide=sc.formSide<0?-1:1;$('formSide').value=String(S.formSide);}
+  formUI();
+  if(sc.acc){$('accMode').value=sc.acc;$('decRate').value=sc.dec||3;accUI();}
   if(sc.scale>0){S.scale=clamp(sc.scale,Math.pow(10,-1.7),Math.pow(10,0.5));$('zoom').value=Math.log10(S.scale);}
   S.follow=!!sc.follow;$('follow').checked=S.follow;
   if(sc.cam)S.cam={x:+sc.cam.x||0,y:+sc.cam.y||0};
@@ -918,17 +1089,20 @@ function patternLocal(kind,Lg,R){
 }
 function buildPattern(spd,kind,axis,Lg,side,turnSec,origin,startHdg,circ){
   if(kind==='circle'&&!circ)circ={R:circleRadius(spd,20),off:0};
-  var R=circ?circ.R:turnSec>0?Math.max(15,spd*KT*turnSec/Math.PI):Math.max(60,1.3*((spd+S.windKt)*KT)/(S.rate*RAD));
+  var base=rateAtKt(spd);
+  var R=circ?circ.R:turnSec>0?Math.max(15,spd*TK()*turnSec/Math.PI):Math.max(60,1.3*((spd*S.tf+S.windKt)*KT)/(base*RAD));
+  /* with a chart picked, no pattern turn is tighter than the chart allows at this airspeed */
+  if(S.em)R=Math.max(R,1.15*spd*TK()/(base*RAD));
   Lg=Math.max(Lg,kind==='racetrack'?100:2*R);
   var loc=patternLocal(kind,Lg,R),u=fwd(axis),v={x:Math.cos(axis*RAD),y:-Math.sin(axis*RAD)};
   var pts=loc.map(function(q){var y=q[1]*side;return {x:origin.x+q[0]*u.x+y*v.x,y:origin.y+q[0]*u.y+y*v.y};});
   var r={kind:kind,pts:pts,loop:true,idx:1,startHdg:startHdg};
   /* a timed turn may need a faster turn rate than the one set in the Turn box */
-  if(turnSec>0&&!circ)r.rate=Math.max(S.rate,1.6*180/turnSec);
-  if(circ){r.rate=Math.max(S.rate,1.8*(spd*KT/R)/RAD);r.side=side;if(circ.off)r.trailOff=circ.off;}
+  if(turnSec>0&&!circ&&!S.em)r.rate=Math.max(S.rate,1.6*180/turnSec);
+  if(circ){if(!S.em)r.rate=Math.max(S.rate,1.8*(spd*TK()/R)/RAD);r.side=side;if(circ.off)r.trailOff=circ.off;}
   return r;
 }
-function circleRadius(kt,bank){return Math.pow(kt*KT,2)/(9.81*Math.tan(bank*RAD));}
+function circleRadius(kt,bank){return Math.pow(kt*TK(),2)/(9.81*Math.tan(bank*RAD));}
 function makePattern(a,kind,axis,Lg,side,turnSec,circ){
   a.turnRem=0;a.saved=null;
   a.route=buildPattern(a.tas,kind,axis,Lg,side,turnSec,a.pos,a.hdg,circ);
@@ -955,7 +1129,7 @@ function circSync(){
   var gap=norm((aL-aT)*(lr.side||1)),err=adiff(gap,tr.sync);
   /* match lead's speed over the ground, allowing for the wind trail feels where it is, then trim out the angle error */
   var gl=gndVel(L),gt=gndVel(T),gs=Math.hypot(gt.x,gt.y)||1,w=windVel(),wt=(w.x*gt.x+w.y*gt.y)/gs;
-  T.tas=clamp((Math.hypot(gl.x,gl.y)-wt)/KT+clamp(err*1.5,-20,20),20,180);
+  T.tas=clamp((Math.hypot(gl.x,gl.y)-wt)/TK()+clamp(err*1.5,-20,20),20,180);
 }
 function trailSyncPts(a){var T=AC[1];return a===AC[0]&&isPattern(a.route)&&!S.formOn&&T.route&&T.route.sync?T.route.pts:null;}
 
@@ -1177,7 +1351,7 @@ function arrowHead(x0,y0,x1,y1,color){
   ctx.fillStyle=color;ctx.fill();ctx.strokeStyle='rgba(8,12,18,.9)';ctx.lineWidth=1.2;ctx.stroke();
 }
 function stickLabel(a,txt,d,x,y){
-  var t=txt+' / '+fmtBoth(d)+(a.tas>0?' / '+fmtTime(d/(a.tas*KT)):'');
+  var t=txt+' / '+fmtBoth(d)+(a.tas>0?' / '+fmtTime(d/(a.tas*TK())):'');
   ctx.font='500 12px "IBM Plex Mono",monospace';ctx.textAlign='left';ctx.textBaseline='middle';
   haloText(t,x+12,y-12);
 }
@@ -1204,10 +1378,7 @@ function drawRoutes(){
       ctx.strokeStyle='#fff';ctx.lineWidth=1.6;ctx.beginPath();ctx.moveTo(cx-6,cy);ctx.lineTo(cx+6,cy);ctx.moveTo(cx,cy-6);ctx.lineTo(cx,cy+6);ctx.stroke();
       var rh=patRotPos(patOf(a)),rr=TOUCH?13:10;
       ctx.strokeStyle=a.color;ctx.lineWidth=2;ctx.setLineDash([3,3]);ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(rh.x,rh.y);ctx.stroke();ctx.setLineDash([]);
-      ctx.beginPath();ctx.arc(rh.x,rh.y,rr,0,7);ctx.fillStyle='rgba(12,16,22,.9)';ctx.fill();ctx.strokeStyle='#f2b233';ctx.lineWidth=2.5;ctx.stroke();
-      ctx.strokeStyle='#fff';ctx.lineWidth=1.8;ctx.beginPath();ctx.arc(rh.x,rh.y,rr*.5,-0.4,4.2);ctx.stroke();
-      var ax=rh.x+rr*.5*Math.cos(-0.4),ay=rh.y+rr*.5*Math.sin(-0.4);
-      ctx.fillStyle='#fff';ctx.beginPath();ctx.moveTo(ax+3.2,ay+1.5);ctx.lineTo(ax-3.2,ay+1.2);ctx.lineTo(ax+0.6,ay-4);ctx.closePath();ctx.fill();
+      drawRotHandle(rh.x,rh.y,rr);
     }
     if(sticks&&r.after){
       ctx.beginPath();r.after.pts.forEach(function(q,i){if(i)ctx.lineTo(sx(q.x),sy(q.y));else ctx.moveTo(sx(q.x),sy(q.y));});ctx.closePath();
@@ -1324,10 +1495,12 @@ function drawPatternThreat(){
   ctx.fillStyle='#fff';ctx.fillText(txt,bx,by);
 }
 /* while an aircraft is being dragged, show the spacing between the two */
-/* aspect: where trail sits off lead's nose, left or right */
-function aspectText(){
-  var L=AC[0],T=AC[1],rel=Math.round(adiff(Math.atan2(T.pos.x-L.pos.x,T.pos.y-L.pos.y)/RAD,L.hdg));
-  return ('00'+Math.abs(rel)).slice(-3)+(rel===0||Math.abs(rel)===180?'':rel>0?'R':'L');
+/* aspect angle: measured from lead's tail to trail. 000 = trail dead astern, 090 = abeam, 180 = trail on the nose.
+   R or L is the side of lead that trail is on. */
+function aspectText(i){
+  /* i = whose tail it is measured from: 0 gives where trail sits off lead, 1 gives where lead sits off trail */
+  var A=AC[i||0],B=AC[i?0:1],rel=adiff(Math.atan2(B.pos.x-A.pos.x,B.pos.y-A.pos.y)/RAD,A.hdg),a=Math.round(180-Math.abs(rel));
+  return ('00'+a).slice(-3)+(a===0||a===180?'':rel>0?'R':'L');
 }
 function drawDragSpacing(){
   if(!drag||drag.mode!=='ac'||!drag.moved)return;
@@ -1337,7 +1510,7 @@ function drawDragSpacing(){
   ctx.strokeStyle='#f2b233';ctx.lineWidth=2.5;ctx.beginPath();ctx.moveTo(p0.x,p0.y);ctx.lineTo(p1.x,p1.y);ctx.stroke();
   ctx.setLineDash([]);
   var asp=aspectText();
-  var txt='SPACING: '+fmtBoth(d)+'  (trail at '+asp+' off lead)';
+  var txt='SPACING: '+fmtBoth(d)+'  (aspect '+asp+')';
   ctx.font='600 15px "IBM Plex Mono",monospace';ctx.textAlign='center';ctx.textBaseline='middle';
   var me=drag.k===1?p1:p0,w=ctx.measureText(txt).width+20,bx=clamp(me.x,w/2+8,W-w/2-8),by=me.y-heloLen()*.7-22;if(by<22)by=me.y+heloLen()*.7+34;
   ctx.fillStyle='rgba(12,16,22,.92)';ctx.fillRect(bx-w/2,by-14,w,28);
@@ -1346,7 +1519,7 @@ function drawDragSpacing(){
 }
 function measText(){
   var m=S.meas,dx=m.b.x-m.a.x,dy=m.b.y-m.a.y,d=Math.hypot(dx,dy),a=primary();
-  return pad3(Math.atan2(dx,dy)/RAD)+' / '+fmtBoth(d)+(a.tas>0?' / '+fmtTime(d/(a.tas*KT))+' at '+Math.round(a.tas)+' kt':'');
+  return pad3(Math.atan2(dx,dy)/RAD)+' / '+fmtBoth(d)+(a.tas>0?' / '+fmtTime(d/(a.tas*TK()))+' at '+Math.round(a.tas)+' kt':'');
 }
 function drawMeasure(){
   var m=S.meas;if(!m)return;
@@ -1395,6 +1568,45 @@ function drawMarkers(){
   }
 }
 
+/* amber ring with a curved arrow, used for every rotate handle */
+function drawRotHandle(x,y,rr){
+  ctx.beginPath();ctx.arc(x,y,rr,0,7);ctx.fillStyle='rgba(12,16,22,.9)';ctx.fill();ctx.strokeStyle='#f2b233';ctx.lineWidth=2.5;ctx.stroke();
+  ctx.strokeStyle='#fff';ctx.lineWidth=1.8;ctx.beginPath();ctx.arc(x,y,rr*.5,-0.4,4.2);ctx.stroke();
+  var ax=x+rr*.5*Math.cos(-0.4),ay=y+rr*.5*Math.sin(-0.4);
+  ctx.fillStyle='#fff';ctx.beginPath();ctx.moveTo(ax+3.2,ay+1.5);ctx.lineTo(ax-3.2,ay+1.2);ctx.lineTo(ax+0.6,ay-4);ctx.closePath();ctx.fill();
+}
+/* the aircraft that shows a rotate handle: the selected one, or lead when Both is picked */
+function rotIndex(){return S.sel===1?1:0;}
+function acRotPos(i){
+  var q=screenPos(i),h=AC[i].hdg*RAD,D=heloLen()*.62+(TOUCH?30:22);
+  return {x:q.x+Math.sin(h)*D,y:q.y-Math.cos(h)*D};
+}
+function drawAcRot(){
+  var i=rotIndex(),q=screenPos(i),h=acRotPos(i);
+  ctx.strokeStyle='#f2b233';ctx.lineWidth=2;ctx.setLineDash([3,3]);ctx.beginPath();ctx.moveTo(q.x,q.y);ctx.lineTo(h.x,h.y);ctx.stroke();ctx.setLineDash([]);
+  drawRotHandle(h.x,h.y,TOUCH?13:10);
+  if(drag&&drag.mode==='acrot'&&drag.moved){
+    var txt='HDG '+pad3(AC[i].hdg);
+    ctx.font='600 15px "IBM Plex Mono",monospace';ctx.textAlign='center';ctx.textBaseline='middle';
+    var w=ctx.measureText(txt).width+18,bx=clamp(q.x,w/2+8,W-w/2-8),by=q.y+heloLen()*.7+40;if(by>H-22)by=q.y-heloLen()*.7-30;
+    ctx.fillStyle='rgba(12,16,22,.92)';ctx.fillRect(bx-w/2,by-14,w,28);ctx.strokeStyle='#f2b233';ctx.lineWidth=2;ctx.strokeRect(bx-w/2,by-14,w,28);
+    ctx.fillStyle='#fff';ctx.fillText(txt,bx,by);
+  }
+}
+function hitAcRot(p){var i=rotIndex(),h=acRotPos(i);return Math.hypot(h.x-p.x,h.y-p.y)<14*HIT?i:-1;}
+/* point an aircraft by hand. Before the sim has started this also lines trail up behind lead, the same as typing a heading. */
+function rotateAircraft(i,h){
+  var L=AC[0],T=AC[1],a=AC[i],start=!S.playing&&simT<0.05;
+  if(i===1&&S.formOn)breakForm();
+  a.hdg=h;a.turnRem=0;
+  if(i===0){
+    if(S.formOn&&!S.rejoin){S.off=desiredOff(h);T.pos={x:L.pos.x+S.off.x,y:L.pos.y+S.off.y};T.hdg=h;}
+    else if(start&&!S.formOn&&T.route&&T.route.kind==='follow'){
+      var f=fwd(h),g=spacingMeters();
+      T.pos={x:L.pos.x-f.x*g,y:L.pos.y-f.y*g};T.hdg=h;startFollow();
+    }
+  }
+}
 function drawHelo(px,py,a,L,selected){
   var u=L/20;
   if(selected){
@@ -1457,6 +1669,7 @@ function draw(dt){
   var L=heloLen(),p1=screenPos(1),p0=screenPos(0);
   drawHelo(p1.x,p1.y,AC[1],L,S.sel!==0);
   drawHelo(p0.x,p0.y,AC[0],L,S.sel!==1);
+  drawAcRot();
   drawDragSpacing();
   drawRose();
 }
@@ -1464,15 +1677,20 @@ function draw(dt){
 /* ---------- readouts ---------- */
 function setText(el,t){if(el.textContent!==t)el.textContent=t;}
 function readouts(){
-  var a=primary(),v=gndVel(a),gs=Math.hypot(v.x,v.y)/KT,trk=norm(Math.atan2(v.x,v.y)/RAD);
-  if(a.route&&a.route.hold)gs=0;
-  var nm=$('rName');setText(nm,a.name);nm.style.color=a.color;
-  setText($('rHdg'),pad3(a.hdg));
-  setText($('rTrk'),gs<0.5?'---':pad3(trk));
-  setText($('rTas'),Math.round(a.tas)+' kt');
-  setText($('rGs'),Math.round(gs)+' kt');
-  var dr=gs<0.5?0:Math.round(adiff(trk,a.hdg));
-  setText($('rDrift'),dr===0?'0°':Math.abs(dr)+'° '+(dr>0?'R':'L'));
+  AC.forEach(function(c,k){
+    var v=gndVel(c),gs=Math.hypot(v.x,v.y)/KT,trk=norm(Math.atan2(v.x,v.y)/RAD);
+    if(c.route&&c.route.hold)gs=0;
+    setText($('rHdg'+k),pad3(c.hdg));
+    setText($('rTrk'+k),gs<0.5?'---':pad3(trk));
+    setText($('rTas'+k),Math.round(c.tas)+' kt'+(c.tgt!=null&&!speedOwned(c)&&Math.abs(c.tgt-c.tas)>0.5?(c.tgt>c.tas?' ▲':' ▼')+Math.round(c.tgt):''));
+    setText($('rGs'+k),Math.round(gs)+' kt');
+    var dr=gs<0.5?0:Math.round(adiff(trk,c.hdg));
+    setText($('rDrift'+k),dr===0?'0°':Math.abs(dr)+'° '+(dr>0?'R':'L'));
+    setText($('rAsp'+k),aspectText(k));
+    var on=S.sel===2||S.sel===k,row=$('hudRow'+k);
+    if(row._on!==on){row._on=on;row.classList.toggle('sel',on);}
+  });
+  var a=primary();
   var t,r=a.route;
   if(a===AC[1]&&S.formOn)t=S.rejoin?'Trail is rejoining lead':'Trail is holding formation on lead';
   else if(r&&r.kind==='follow')t="Trail is following lead's ground track";
@@ -1499,7 +1717,7 @@ function readouts(){
   if(onTrk)sep=alongGap();
   var sepT=(sep/NM).toFixed(2)+' NM / '+Math.round(sep).toLocaleString('en-US')+' m';
   setText($('rSep'),sepT+(onTrk?' on track':''));
-  setText($('rAsp'),aspectText());
+  emReadout();spdReadout();accReadout();
   setText($('sepNow'),'Now: '+sepT+(onTrk?' along the track. Straight line: '+fmtBoth(direct)+'.':''));
   var fb=$('followTrk'),on=String(!!(AC[1].route&&AC[1].route.kind==='follow'));
   if(fb.getAttribute('aria-pressed')!==on){fb.setAttribute('aria-pressed',on);Array.prototype.forEach.call(trkBtns,function(b){b.setAttribute('aria-pressed',on);});}
@@ -1520,7 +1738,7 @@ function syncHeadingSelect(){
   el.value=hasTarget(a.route)?'':String(Math.round(norm(a.turnRem>0?a.turnTarget:a.hdg))%360);
 }
 function syncControls(){
-  var a=primary();$('tas').value=a.tas;$('tasR').value=a.tas;syncHeadingSelect();
+  var a=primary(),w=Math.round(wantSpeed(a));$('tas').value=w;$('tasR').value=w;syncHeadingSelect();
 }
 function setSel(i){
   S.sel=i;
@@ -1547,11 +1765,50 @@ $('hdg').addEventListener('change',function(){
     hist=[];snap();
   }else tg.forEach(function(a){turnTo(a,h);});
 });
+function wantSpeed(a){return a.tgt!=null?a.tgt:a.tas;}
 function setTas(v){
   pushUndo('tas');
   v=clamp(isNaN(v)?0:v,0,180);
-  editTargets().forEach(function(a){a.tas=v;if(a.route&&a.route.cruise!=null)a.route.cruise=v;});
+  /* at chart performance the aircraft cannot hold more than the chart's level-flight top speed */
+  var cap=S.acc==='chart'?vMaxLevel():180,capped=v>cap;
+  if(capped)v=cap;
+  var fr=AC[1].route;
+  /* trail on lead's ground track normally matches speed to hold its spacing. Setting trail's own airspeed lets it
+     keep that speed along the same path; setting both puts it back to holding spacing. */
+  if(fr&&fr.kind==='follow'){if(S.sel===1)fr.free=true;else if(S.sel===2)fr.free=false;}
+  editTargets().forEach(function(a){askSpeed(a,v);});
   $('tas').value=v;$('tasR').value=v;
+  S.capMsg=capped?('Top level speed here is '+cap+' KIAS (Ps 0 on the chart).'):'';
+}
+function accUI(){
+  S.acc=$('accMode').value==='instant'?'instant':'chart';
+  S.dec=clamp(parseFloat($('decRate').value)||3,0.5,10);
+  $('decRow').hidden=S.acc!=='chart';$('accNote').hidden=S.acc!=='chart';
+  if(S.acc!=='chart')AC.forEach(function(a){if(a.tgt!=null){a.tas=a.tgt;a.tgt=null;if(a.route&&a.route.cruise!=null)a.route.cruise=a.tas;}});
+}
+$('accMode').addEventListener('change',accUI);
+$('decRate').addEventListener('change',function(){accUI();this.value=S.dec;});
+accUI();
+function accReadout(){
+  var a=primary(),t;
+  if(S.acc!=='chart')t='Airspeed changes at once.';
+  else if(a.tgt!=null&&!speedOwned(a)){
+    var cur=(a.route&&a.route.kind==='sticks'&&a.route.cruise!=null)?a.route.cruise:a.tas,up=a.tgt>cur;
+    t=a.name+(up?' speeding up':' slowing')+' to '+Math.round(a.tgt)+' kt, now '+Math.round(cur)+' kt at '+(up?Math.max(0.02,accelKt(cur)):S.dec).toFixed(1)+' kt per second.';
+  }else t=a.name+' steady at '+Math.round(a.tas)+' kt. Top level speed here: '+vMaxLevel()+' KIAS.';
+  if(S.capMsg)t=S.capMsg+' '+t;
+  setText($('spdStatus'),t);
+}
+var spdBtns=document.querySelectorAll('.spdBtn'),spdShown='';
+Array.prototype.forEach.call(spdBtns,function(b){b.addEventListener('click',function(){setTas(+b.dataset.v);});});
+Array.prototype.forEach.call(document.querySelectorAll('.spdStep'),function(b){b.addEventListener('click',function(){spdStep(+b.dataset.d);});});
+function spdStep(d){var v=wantSpeed(primary());setTas(d>0?Math.floor(v/5+1e-6)*5+5:Math.ceil(v/5-1e-6)*5-5);}
+$('spdWho').addEventListener('click',function(){setSel((S.sel+1)%3);});
+function spdReadout(){
+  var a=primary(),key=S.sel+'|'+Math.round(wantSpeed(a));
+  if(key===spdShown)return;spdShown=key;
+  var w=$('spdWho');w.textContent=['LEAD','TRAIL','BOTH'][S.sel];w.style.color=['#3f8cff','#35c46a','#f2b233'][S.sel];
+  Array.prototype.forEach.call(spdBtns,function(b){b.setAttribute('aria-pressed',String(Math.abs(+b.dataset.v-wantSpeed(a))<0.5));});
 }
 $('tas').addEventListener('change',function(){setTas(parseFloat(this.value));});
 $('tasR').addEventListener('input',function(){setTas(parseFloat(this.value));});
@@ -1559,7 +1816,45 @@ function setWind(v){v=clamp(isNaN(v)?0:v,0,80);S.windKt=v;$('wspd').value=v;$('w
 $('wspd').addEventListener('change',function(){setWind(parseFloat(this.value));});
 $('wspdR').addEventListener('input',function(){setWind(parseFloat(this.value));});
 $('wdir').addEventListener('change',function(){var v=norm(parseFloat(this.value));if(isNaN(v))v=S.windFrom;this.value=v;S.windFrom=v;});
-$('rate').addEventListener('change',function(){S.rate=parseFloat(this.value);});
+function emUpdate(){
+  S.em=$('emLine').value;S.emPA=parseInt($('emPA').value,10)||0;S.emOAT=parseInt($('emOAT').value,10)||0;
+  var sig=Math.pow(1-6.87559e-6*S.emPA,5.25588)*288.15/(S.emOAT+273.15);
+  S.tf=S.em?1/Math.sqrt(sig):1;
+  $('rateRow').hidden=!!S.em;$('emOpts').hidden=!S.em;$('emHint').hidden=!!S.em;
+  var box=$('emTableBox');$('emCard').hidden=!S.em;
+  if(!S.em){$('rate').value=S.rate;circUI();return;}
+  /* show the chart numbers in use so they can be checked against the manual */
+  var c=EM[S.emPA+'|'+S.emOAT],rows=c[S.em],h='<table class="emTable"><tr><th>KIAS</th><th>Bank</th><th>Rate</th><th>180° width</th></tr>';
+  for(var i=0;i<4;i++)h+='<tr data-v="'+EM_SPD[i]+'"><td>'+EM_SPD[i]+'</td>'+(rows[i]?'<td>'+rows[i][0]+'°</td><td>'+rows[i][1]+'°/s</td><td>'+Math.round(rows[i][2]*0.3048*2).toLocaleString('en-US')+' m</td>':'<td class="na" colspan="3">N/A on the chart</td>')+'</tr>';
+  h+='</table>';
+  box.innerHTML=h+'<p class="note" style="margin-top:6px">180° width is how wide a full 180° turn is (the turn diameter). Vh for this line: '+emCurve().vh+' KIAS. Between table speeds the rate is a straight-line estimate. Check these numbers against your chart.</p>';
+  /* the same table on the map, with the pressure altitude and temperature in its title */
+  $('emCardTable').innerHTML=h;
+  $('emHeadTxt').innerHTML='<b>CHART</b>'+({obs:'OBS',p0:'Ps 0',p5:'Ps 500'})[S.em]+' · '+(S.emPA?S.emPA.toLocaleString('en-US')+' ft':'Sea level')+' · '+S.emOAT+' °C';
+  circUI();
+}
+function emReadout(){
+  if(!S.em)return;
+  var a=primary(),e=emAt(a.tas),rate=Math.max(1,e.rate),R=a.tas*TK()/(rate*RAD);
+  var t=a.name+' at '+Math.round(a.tas)+' KIAS ('+Math.round(a.tas*S.tf)+' KTAS): '+(Math.round(rate*10)/10)+'°/s'+(e.rate>=1?', about '+Math.round(e.bank)+'° bank':'')+'. A 180° turn is '+Math.round(2*R).toLocaleString('en-US')+' m wide.';
+  if(e.flag==='below')t+=' The table starts at 70 KIAS, so this uses the 70 KIAS value.';
+  else if(e.flag==='above')t+=' This is at or past Vh for this line ('+e.vh+' KIAS). The chart shows no turn available, so the sim holds 1°/s.';
+  else if(e.flag==='held')t+=' Past 120 KIAS the table has no value, so this holds the 120 KIAS value.';
+  else if(e.flag==='est')t+=' Estimated between table speeds.';
+  setText($('emStatus'),t);
+  setText($('emNow'),a.name+' '+Math.round(a.tas)+' KIAS: '+(Math.round(rate*10)/10)+'°/s, '+Math.round(2*R).toLocaleString('en-US')+' m wide'+(e.flag==='est'?' (est.)':e.flag?' (see Turn box)':''));
+  /* light up the table row for the aircraft's airspeed when it sits on a table speed */
+  var trs=$('emCardTable').querySelectorAll?$('emCardTable').querySelectorAll('tr[data-v]'):[];
+  for(var q=0;q<trs.length;q++){var on=Math.abs(+trs[q].getAttribute('data-v')-a.tas)<0.5;if(trs[q].classList.contains('on')!==on)trs[q].classList.toggle('on',on);}
+}
+['emLine','emPA','emOAT'].forEach(function(id){$(id).addEventListener('change',emUpdate);});
+function emCardOpen(open){$('emBody').hidden=!open;$('emHead').setAttribute('aria-expanded',String(open));$('emHeadArrow').textContent=open?'▾':'▸';}
+$('emHead').addEventListener('click',function(){emCardOpen($('emBody').hidden);});
+try{if(window.innerWidth<700)emCardOpen(false);}catch(e){}
+emUpdate();
+function setRate(v){v=clamp(parseFloat(v)||S.rate,0.5,90);S.rate=v;$('rate').value=v;}
+$('rate').addEventListener('change',function(){setRate(this.value);});
+$('ratePick').addEventListener('change',function(){if(this.value)setRate(this.value);this.value='';});
 function turnBtn(dir){pushUndo();var d=parseFloat($('turnDeg').value);editTargets().forEach(function(a){startTurn(a,dir,d);});syncHeadingSelect();}
 $('turnL').addEventListener('click',function(){turnBtn(-1);});
 $('turnR').addEventListener('click',function(){turnBtn(1);});
@@ -1583,7 +1878,18 @@ function toggleFollow(){pushUndo();
 $('followTrk').addEventListener('click',toggleFollow);
 var trkBtns=document.querySelectorAll('.trkBtn');
 Array.prototype.forEach.call(trkBtns,function(b){b.addEventListener('click',toggleFollow);});
-$('form').addEventListener('change',function(){S.form=this.value;});
+function formUI(){$('aspRow').hidden=S.form!=='custom';}
+$('form').addEventListener('change',function(){S.form=this.value;formUI();});
+$('formAsp').addEventListener('change',function(){var v=clamp(Math.round(parseFloat(this.value)||0),0,180);this.value=v;S.formAsp=v;});
+$('formSide').addEventListener('change',function(){S.formSide=parseFloat(this.value)||1;});
+/* move trail to the position and spacing set in this box, measured off lead as lead sits right now */
+$('formPlace').addEventListener('click',function(){
+  pushUndo();
+  var L=AC[0],T=AC[1],des=desiredOff(L.hdg),slot={x:L.pos.x+des.x,y:L.pos.y+des.y};
+  if(S.formOn){S.rejoin=false;S.off=des;T.pos=slot;T.hdg=L.hdg;}
+  else{T.pos={x:slot.x,y:slot.y};T.home={x:slot.x,y:slot.y};T.hdg=L.hdg;T.turnRem=0;T.track=[];T.trackGen++;if(T.route&&T.route.kind==='follow')startFollow();else if(isPattern(T.route))rejoinNearest(T);}
+  if(!S.playing&&simT<0.05){hist=[];snap();}
+});
 $('spacing').addEventListener('change',function(){
   var l=SPLIM[S.spUnit],v=clamp(parseFloat(this.value)||l[0],l[0],l[1]);
   if(S.spUnit!=='nm')v=Math.round(v);
@@ -1610,9 +1916,9 @@ function flyPattern(){
   if(circ&&circ.off)tg=[AC[0]];
   tg.forEach(function(a){
     var r=a.route,queue=r&&r.kind==='sticks'&&r.nodes.length>1;
-    if(circ){a.tas=circ.spd;if(queue&&r.cruise!=null)r.cruise=circ.spd;}
-    var spd=queue&&r.cruise!=null?r.cruise:a.tas;
-    var Lg=lu==='sec'?clamp(lv||30,2,600)*spd*KT:lu==='m'?clamp(lv||1500,50,20000):clamp(lv||1,0.05,10)*NM;
+    if(circ)askSpeed(a,circ.spd);
+    var spd=circ?circ.spd:queue&&r.cruise!=null?r.cruise:a.tas;
+    var Lg=lu==='sec'?clamp(lv||30,2,600)*spd*TK():lu==='m'?clamp(lv||1500,50,20000):clamp(lv||1,0.05,10)*NM;
     if(queue){
       /* add the pattern to the end of the last stick, lined up with that stick unless a heading is picked */
       var e=r.pts.length-1,pa=r.pts[e-1],pb=r.pts[e],axis=ax===''?norm(Math.atan2(pb.x-pa.x,pb.y-pa.y)/RAD):parseFloat(ax);
@@ -1628,7 +1934,7 @@ function circUI(){
   var c=$('pat').value==='circle';
   $('legOpts').hidden=c;$('circOpts').hidden=!c;$('patSideLbl').textContent=c?'Turn direction':'First turn';
   var cs=clamp(parseFloat($('circSpd').value)||80,20,180),bank=clamp(parseFloat($('circBank').value)||20,5,60),R=circleRadius(cs,bank);
-  $('circInfo').textContent='Radius '+fmtBoth(R)+'. One lap in '+fmtTime(2*Math.PI*R/(cs*KT))+' with no wind.';
+  $('circInfo').textContent='Radius '+fmtBoth(R)+'. One lap in '+fmtTime(2*Math.PI*R/(cs*TK()))+' with no wind.';
 }
 ['pat','circSpd','circBank'].forEach(function(id){$(id).addEventListener('change',circUI);$(id).addEventListener('input',circUI);});
 circUI();
@@ -1660,7 +1966,6 @@ function setTool(t){
   S.tool=t;S.hover=null;closePop();
   Array.prototype.forEach.call(document.querySelectorAll('[data-tool]'),function(c){c.setAttribute('aria-pressed',String(c.dataset.tool===t));});
   cv.style.cursor=t==='pan'?'grab':'crosshair';
-  if(t==='sticks')setPlaying(false);
 }
 Array.prototype.forEach.call(document.querySelectorAll('[data-tool]'),function(b){
   b.addEventListener('click',function(){setTool(S.tool===b.dataset.tool&&b.dataset.tool!=='pan'?'pan':b.dataset.tool);});
@@ -1866,8 +2171,12 @@ window.addEventListener('keydown',function(e){
   else if(e.key==='Escape'){closeDrawer();closePop();}
   else if(!e.ctrlKey&&!e.metaKey&&!e.altKey){
     var kk=e.key.toLowerCase(),tk={m:'pan',s:'sticks',r:'measure',e:'erase'}[kk];
+    var sk={'7':70,'8':80,'9':90,'0':100,'1':110,'2':120}[kk];
     if(tk)setTool(S.tool===tk&&tk!=='pan'?'pan':tk);
     else if(kk==='t')toggleFollow();
+    else if(sk)setTas(sk);
+    else if(kk==='-'||kk==='_')spdStep(-5);
+    else if(kk==='='||kk==='+')spdStep(5);
   }
 });
 $('mAdd').addEventListener('click',function(){pushUndo();
@@ -1981,8 +2290,10 @@ cv.addEventListener('pointerdown',function(e){
     }
   }
   if(mode==='pan'&&S.tool!=='terrain'&&S.tool!=='measure'&&S.tool!=='mapmove'&&S.tool!=='mapscale'){
-    k=hitAircraft(p);if(k>=0)mode='ac';
-    else{
+    k=hitAcRot(p);
+    if(k>=0)mode='acrot';
+    else{k=hitAircraft(p);if(k>=0)mode='ac';}
+    if(mode==='pan'){
       mk2=hitMarker(p);
       if(mk2){mode='marker';links=linkedNodes(mk2);}
       else{
@@ -2024,12 +2335,16 @@ cv.addEventListener('pointermove',function(e){
     if(drag.mode==='pan'&&S.follow){S.follow=false;$('follow').checked=false;}
     if(drag.mode==='ac'){S.dragAC=true;setSel(drag.k);cv.style.cursor='grabbing';}
     if(drag.mode==='pat'||drag.mode==='marker')cv.style.cursor='move';
-    if(drag.mode==='rot')cv.style.cursor='grabbing';
+    if(drag.mode==='rot'||drag.mode==='acrot')cv.style.cursor='grabbing';
   }
   if(drag.moved){
     var w=toWorld(p.x,p.y),r=drag.r;
     if(drag.mode==='pan'){S.cam.x-=(p.x-drag.x)/S.scale;S.cam.y+=(p.y-drag.y)/S.scale;}
     else if(drag.mode==='ac'){moveAircraft(drag.k,w);}
+    else if(drag.mode==='acrot'){
+      var cq=screenPos(drag.k);
+      rotateAircraft(drag.k,norm(Math.round(Math.atan2(p.x-cq.x,-(p.y-cq.y))/RAD)));
+    }
     else if(drag.mode==='measure'){S.meas.b=w;}
     else if(drag.mode==='mapscale'&&S.mapLine){S.mapLine.b=w;}
     else if(drag.mode==='mapmove'&&S.map){S.map.x+=(p.x-drag.x)/S.scale;S.map.y-=(p.y-drag.y)/S.scale;}
@@ -2071,7 +2386,11 @@ function finishPointer(e){
   if(d.mode==='place'){d.moved=false;S.hover=null;}
   if(d.mode==='terrain'){if(S.draft&&S.draft.pts.length>=3)S.terrain.push(S.draft);S.draft=null;return;}
   if(d.mode==='ac'){S.dragAC=false;cv.style.cursor=S.tool==='pan'?'grab':'crosshair';}
-  if(d.mode==='pat'||d.mode==='rot'||d.mode==='marker')cv.style.cursor=S.tool==='pan'?'grab':'crosshair';
+  if(d.mode==='pat'||d.mode==='rot'||d.mode==='acrot'||d.mode==='marker')cv.style.cursor=S.tool==='pan'?'grab':'crosshair';
+  if(d.mode==='acrot'){
+    if(d.moved){syncHeadingSelect();if(!S.playing&&simT<0.05){hist=[];snap();}}
+    return;
+  }
   if(d.mode==='marker'&&d.moved)d.links.forEach(function(l){saveSticks(l.a);});
   if(d.moved){
     if(d.mode==='node'||d.mode==='bend')saveSticks(primary());
@@ -2115,7 +2434,7 @@ function finishPointer(e){
 }
 cv.addEventListener('pointerup',function(e){
   var d0=drag;finishPointer(e);
-  if(d0&&editSig()!==d0.sig)pushSnap(d0.undo);
+  if(d0&&(editSig()!==d0.sig||(d0.mode==='acrot'&&d0.moved)))pushSnap(d0.undo);
 });
 cv.addEventListener('pointercancel',function(e){ptrs.delete(e.pointerId);if(ptrs.size<2)gest=null;if(drag&&drag.mode==='place')S.hover=null;drag=null;S.dragAC=false;S.draft=null;});
 cv.addEventListener('wheel',function(e){
