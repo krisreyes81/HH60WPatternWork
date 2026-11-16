@@ -44,9 +44,12 @@ legend{font-family:var(--display);font-size:15px;letter-spacing:.1em;text-transf
 .row > .grow{flex:1 1 0;min-width:0}
 select,input[type=number]{background:var(--raised);color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:6px 8px;font:inherit;font-family:var(--mono);font-size:14px;width:100%}
 input[type=number]{width:78px;flex:0 0 78px}
+input[type=text],textarea{background:var(--raised);color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:6px 8px;font:inherit;font-size:14px;width:100%;min-width:0}
+textarea{font-family:var(--mono);font-size:12px;resize:vertical;min-height:54px}
 input[type=range]{width:100%;accent-color:var(--accent)}
 button{font:inherit;font-weight:600;background:var(--raised);color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:7px 10px;cursor:pointer}
 button:hover{border-color:var(--muted)}
+button:disabled{opacity:.45;cursor:default}
 button.primary{background:var(--accent);color:#1b1404;border-color:var(--accent)}
 button[aria-pressed=true]{background:var(--accent);color:#1b1404;border-color:var(--accent)}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
@@ -59,6 +62,8 @@ button[aria-pressed=true]{background:var(--accent);color:#1b1404;border-color:va
 .swatch{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:baseline}
 .grp{font-family:var(--display);font-size:14px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:6px 0 -4px;padding-top:12px;border-top:1px solid var(--line)}
 #toolbar button{padding:6px 8px;font-size:14px}
+.patPick{width:auto;flex:1 1 auto;font-family:var(--body);font-weight:600;font-size:14px;padding:6px 8px;cursor:pointer}
+.floatTools .patPick{background:rgba(12,16,22,.88);width:100%;font-size:15px;padding:7px 10px}
 .who{position:sticky;top:-16px;z-index:2;background:var(--panel);padding:10px 0 10px;margin:-6px 0;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:6px}
 .who .lab{font-family:var(--display);font-size:15px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
 #selBtns button[data-sel="0"][aria-pressed=true]{background:var(--lead);border-color:var(--lead);color:#04122b}
@@ -84,12 +89,29 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-acti
 .commit .card.last .time{color:var(--accent)}
 .commit .card.last .bar i{background:var(--accent)}
 .transport{position:absolute;right:12px;bottom:12px;display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;align-items:center;max-width:calc(100% - 24px)}
+.transport select{width:auto;background:rgba(12,16,22,.85);font-family:var(--body);font-weight:600;font-size:15px;padding:7px 8px;cursor:pointer}
 .transport .clock{background:rgba(12,16,22,.85);border:1px solid rgba(255,255,255,.14);border-radius:6px;padding:7px 10px;font-family:var(--mono);font-size:14px;font-variant-numeric:tabular-nums}
 .transport button{background:rgba(12,16,22,.85)}
 .transport button.primary{background:var(--accent)}
+.subrows{display:flex;flex-direction:column;gap:10px}
+[hidden]{display:none!important}
 .nud{padding:6px 7px;font-size:13px;font-family:var(--mono);flex:0 0 auto}
 .stage{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
-.floatTools{position:absolute;left:12px;top:50%;transform:translateY(-50%);display:none;flex-direction:column;gap:6px;z-index:2}
+.floatTools{position:absolute;left:12px;top:50%;transform:translateY(-50%);display:none;flex-direction:column;gap:6px;z-index:2;width:164px}
+.floatTools #selBtns{flex-wrap:nowrap;gap:4px;margin-bottom:4px}
+.floatTools #selBtns button{flex:1 1 0;padding:6px 2px;text-align:center}
+.floatTools #menuBtn{margin-top:4px;border-color:var(--accent);color:var(--accent)}
+.floatTools #menuBtn[aria-expanded=true]{background:var(--accent);color:#1b1404}
+.stage input,.stage textarea{-webkit-user-select:text;user-select:text}
+.drawer{position:absolute;left:188px;top:84px;width:min(352px,calc(100% - 204px));max-height:calc(100% - 156px);display:flex;flex-direction:column;background:var(--panel);border:1px solid var(--line);border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,.55);z-index:4}
+.drawerHead{display:flex;gap:8px;align-items:center;padding:8px 10px;border-bottom:1px solid var(--line)}
+.drawerHead strong{flex:1;font-family:var(--display);font-size:16px;letter-spacing:.1em;text-transform:uppercase}
+.drawerHead button{padding:5px 10px}
+.drawerBody{padding:12px;overflow-y:auto;display:flex;flex-direction:column;gap:12px;-webkit-overflow-scrolling:touch}
+.menuList{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.menuList button{text-align:left}
+.menuGrp{grid-column:1 / -1;font-family:var(--display);font-size:13px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-top:6px}
+.menuGrp:first-child{margin-top:0}
 .floatTools button{background:rgba(12,16,22,.88);text-align:left}
 .floatTools button[aria-pressed=true]{background:var(--accent)}
 .app.nopanel{grid-template-columns:1fr}
@@ -97,7 +119,7 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-acti
 .app.nopanel .floatTools{display:flex}
 @media (pointer:coarse){
   button{min-height:40px}
-  select,input[type=number]{font-size:16px;min-height:40px}
+  select,input[type=number],input[type=text],textarea{font-size:16px;min-height:40px}
   input[type=checkbox]{width:20px;height:20px}
   input[type=range]{height:32px}
 }
@@ -108,6 +130,7 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-acti
   .panel{border-right:0;border-top:1px solid var(--line);overflow:visible}
   .who{position:static}
   .app.nopanel .stage{height:100vh;height:100dvh;max-height:none}
+  .drawer{left:12px;right:12px;width:auto;top:auto;bottom:60px;max-height:62%}
   .hud{right:12px;top:auto;bottom:56px}
 }
 </style>
@@ -133,9 +156,8 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-acti
         <button type="button" data-tool="pan" aria-pressed="true">Move map</button>
         <button type="button" data-tool="sticks" aria-pressed="false">✎ Sticks</button>
         <button type="button" data-tool="measure" aria-pressed="false">Measure</button>
-        <button type="button" data-tool="threat" aria-pressed="false">▲ Threat</button>
-        <button type="button" data-tool="survivor" aria-pressed="false">J Jack</button>
-        <button type="button" data-tool="terrain" aria-pressed="false">Terrain</button>
+        <select class="patPick" aria-label="Add a gunnery pattern" title="Pick a pattern to add it"><option value="" selected>+ Pattern…</option><option value="racetrack">Racetrack</option><option value="bowtie">Bowtie</option><option value="dogbone">Dogbone</option><option value="circle">Circle</option></select>
+        <button type="button" class="trkBtn" aria-pressed="false" title="Trail flies the same path over the ground that lead flew">Trail follows lead</button>
         <button type="button" data-tool="erase" aria-pressed="false">Erase</button>
       </div>
     </div>
@@ -168,7 +190,18 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-acti
         <button type="button" id="turnR">Turn right ▶</button>
       </div>
       <div class="status" id="turnStatus" aria-live="polite">Steady on 000°</div>
-      <p class="note">Setting a heading or turn by hand cancels that aircraft's pattern or sticks.</p>
+      <p class="note">Before you first press Play, a heading you enter points the aircraft that way at once, as its starting position. After that it turns to the heading. Setting a heading or turn by hand cancels that aircraft's pattern or sticks.</p>
+    </fieldset>
+
+    <fieldset>
+      <legend>Vector sticks</legend>
+      <p class="note">Pick an aircraft, press Draw, then click points on the map. Drag the white handle in the middle of a stick to curve it. Pull it back to the middle to make it straight. Drag an end point to move it. Click a Jack to get the option to commit: the aircraft slows, stops there for the time you set, then flies on. Click any end point to add or change a commit. Flown sticks clear off the map. Press Play to fly it. Before you click, small text by the cursor shows the distance to the nearest threat.</p>
+      <div class="seg">
+        <button type="button" data-tool="sticks" aria-pressed="false">✎ Draw sticks</button>
+        <button type="button" id="stUndo">Undo last</button>
+        <button type="button" id="stClear">Clear</button>
+      </div>
+      <div class="status" id="stStatus">No sticks drawn</div>
     </fieldset>
 
     <fieldset>
@@ -185,11 +218,47 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-acti
       <p class="note">In ground track mode, trail flies the same path lead flew and holds the spacing above, measured along the track it is about to fly. Editing trail on its own takes it out of formation. Tick the box again to rejoin.</p>
     </fieldset>
 
+    <fieldset>
+      <legend>Gunnery pattern</legend>
+      <div class="row"><label for="pat">Pattern</label><div class="grow"><select id="pat">
+        <option value="racetrack" selected>Racetrack</option>
+        <option value="bowtie">Bowtie</option>
+        <option value="dogbone">Dogbone</option>
+        <option value="circle">Circle</option>
+      </select></div></div>
+      <div class="row"><label for="patAxis">Run-in heading</label><input type="number" id="patAxis" min="0" max="360" step="5" value="" placeholder="current"><button type="button" class="nud" data-for="patAxis" data-d="-5" aria-label="Minus 5 degrees">−5</button><button type="button" class="nud" data-for="patAxis" data-d="5" aria-label="Plus 5 degrees">+5</button></div>
+      <div class="subrows" id="legOpts">
+      <div class="row"><label for="patLen">Fire leg</label><input type="number" id="patLen" min="2" max="600" step="1" value="15"><div class="grow"><select id="patLenUnit" aria-label="Fire leg unit"><option value="nm">NM</option><option value="m">meters</option><option value="sec" selected>seconds</option></select></div></div>
+      <div class="row"><label for="patTurn">Turn time</label><input type="number" id="patTurn" min="0" max="120" step="1" value="15" placeholder="auto"><span class="unit">sec per 180°</span></div>
+      </div>
+      <div class="subrows" id="circOpts" hidden>
+        <div class="row"><label for="circSpd">Airspeed</label><input type="number" id="circSpd" min="20" max="180" step="5" value="80"><span class="unit">kt</span></div>
+        <div class="row"><label for="circBank">Angle of bank</label><input type="number" id="circBank" min="5" max="60" step="1" value="20"><span class="unit">degrees</span></div>
+        <div class="row"><label for="circTrail">Trail</label><div class="grow"><select id="circTrail">
+          <option value="0" selected>Not on the circle</option>
+          <option value="90">90° behind lead</option>
+          <option value="180">180° from lead (opposite side)</option>
+        </select></div></div>
+        <div class="status" id="circInfo"></div>
+      </div>
+      <div class="row"><label for="patSide" id="patSideLbl">First turn</label><div class="grow"><select id="patSide">
+        <option value="1" selected>Right</option>
+        <option value="-1">Left</option>
+      </select></div></div>
+      <div class="seg">
+        <button type="button" id="patFly" class="primary">Fly pattern</button>
+        <button type="button" id="patStop">Stop pattern</button>
+      </div>
+      <p class="note">The pattern starts where the aircraft is now and repeats. With sticks drawn, it goes on the end of the last stick.</p>
+      <p class="note">On the map, drag the pattern's line or middle handle to move it, and the amber handle to rotate it. The aircraft joins at the nearest point.</p>
+      <p class="note">Leave turn time blank to size turns from the turn rate. Seconds use the airspeed when you press Fly, with no wind. A circle sets the aircraft to the airspeed you enter.</p>
+    </fieldset>
+
     <h2 class="grp">Plan the mission</h2>
 
     <fieldset>
       <legend>Threats and survivors</legend>
-      <p class="note">Pick a tool here or in the Map tool bar at the top, then click the map. With the Move map tool, drag a threat or Jack to move it.</p>
+      <p class="note">Pick a tool here or in the Map tool bar at the top, then click the map. Erase also removes a vector stick, a gunnery pattern, or a terrain shape when you click it. Drag a threat or Jack on the map to move it. This works in every tool except Measure and Terrain.</p>
       <div class="seg">
         <button type="button" data-tool="threat" aria-pressed="false">▲ Threat</button>
         <button type="button" data-tool="survivor" aria-pressed="false">J Survivor</button>
@@ -215,38 +284,6 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-acti
     </fieldset>
 
     <fieldset>
-      <legend>Vector sticks</legend>
-      <p class="note">Pick an aircraft, press Draw, then click points on the map. Drag the white handle in the middle of a stick to curve it. Pull it back to the middle to make it straight. Drag an end point to move it. Click a Jack to get the option to commit: the aircraft slows, stops there for the time you set, then flies on. Click any end point to add or change a commit. Flown sticks clear off the map. Press Play to fly it. Before you click, a red box by the cursor shows the distance to the nearest threat.</p>
-      <div class="seg">
-        <button type="button" data-tool="sticks" aria-pressed="false">✎ Draw sticks</button>
-        <button type="button" id="stUndo">Undo last</button>
-        <button type="button" id="stClear">Clear</button>
-      </div>
-      <div class="status" id="stStatus">No sticks drawn</div>
-    </fieldset>
-
-    <fieldset>
-      <legend>Gunnery pattern</legend>
-      <div class="row"><label for="pat">Pattern</label><div class="grow"><select id="pat">
-        <option value="racetrack" selected>Racetrack</option>
-        <option value="bowtie">Bowtie</option>
-        <option value="dogbone">Dogbone</option>
-      </select></div></div>
-      <div class="row"><label for="patAxis">Run-in heading</label><input type="number" id="patAxis" min="0" max="360" step="5" value="" placeholder="current"><button type="button" class="nud" data-for="patAxis" data-d="-5" aria-label="Minus 5 degrees">−5</button><button type="button" class="nud" data-for="patAxis" data-d="5" aria-label="Plus 5 degrees">+5</button></div>
-      <div class="row"><label for="patLen">Fire leg</label><input type="number" id="patLen" min="2" max="600" step="1" value="15"><div class="grow"><select id="patLenUnit" aria-label="Fire leg unit"><option value="nm">NM</option><option value="m">meters</option><option value="sec" selected>seconds</option></select></div></div>
-      <div class="row"><label for="patTurn">Turn time</label><input type="number" id="patTurn" min="0" max="120" step="1" value="15" placeholder="auto"><span class="unit">sec per 180°</span></div>
-      <div class="row"><label for="patSide">First turn</label><div class="grow"><select id="patSide">
-        <option value="1" selected>Right</option>
-        <option value="-1">Left</option>
-      </select></div></div>
-      <div class="seg">
-        <button type="button" id="patFly" class="primary">Fly pattern</button>
-        <button type="button" id="patStop">Stop pattern</button>
-      </div>
-      <p class="note">The pattern starts where the aircraft is now and repeats. If the aircraft has vector sticks drawn, the pattern is added at the end of the last stick and starts when the sticks are done. You can still drag it somewhere else, and the aircraft flies over to it after the last stick. With the Move map tool, drag the pattern (its line or the round handle in the middle) to where you want it. The aircraft flies over and joins at the nearest point. You can also drag the aircraft onto the pattern. Leave turn time blank to size turns from the turn rate. Seconds are worked out from the airspeed when you press Fly, with no wind.</p>
-    </fieldset>
-
-    <fieldset>
       <legend>Measuring stick</legend>
       <p class="note">Press Measure, then drag on the map from one point to another.</p>
       <div class="seg">
@@ -261,8 +298,8 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-acti
     <fieldset>
       <legend>Wind</legend>
       <div class="row"><label for="wdir">Wind from</label><input type="number" id="wdir" min="0" max="360" step="5" value="315"><button type="button" class="nud" data-for="wdir" data-d="-5" aria-label="Minus 5 degrees">−5</button><button type="button" class="nud" data-for="wdir" data-d="5" aria-label="Plus 5 degrees">+5</button></div>
-      <div class="row"><label for="wspd">Speed</label><input type="number" id="wspd" min="0" max="80" step="1" value="15"><span class="unit">kt</span></div>
-      <input type="range" id="wspdR" min="0" max="80" step="1" value="15" aria-label="Wind speed slider">
+      <div class="row"><label for="wspd">Speed</label><input type="number" id="wspd" min="0" max="80" step="1" value="0"><span class="unit">kt</span></div>
+      <input type="range" id="wspdR" min="0" max="80" step="1" value="0" aria-label="Wind speed slider">
       <div class="status" id="relWind"></div>
     </fieldset>
 
@@ -276,6 +313,28 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-acti
         <option value="urban">Urban</option>
         <option value="night">Night</option>
       </select></div></div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Map image</legend>
+      <p class="note">Load a screenshot of a map or satellite view to fly over. You can also paste a copied screenshot with Ctrl+V. Then set its scale so distances are true.</p>
+      <input type="file" id="mapFile" accept="image/*" hidden>
+      <div class="seg">
+        <button type="button" id="mapLoad" class="primary">Load image</button>
+        <button type="button" id="mapRemove">Remove</button>
+      </div>
+      <div class="status" id="mapStatus">No map image loaded</div>
+      <div class="subrows" id="mapOpts" hidden>
+        <p class="note"><b>Set the scale:</b> press Draw scale line, drag between two points on the image that you know the distance between (the map's own scale bar works well), type that distance, and press Apply.</p>
+        <div class="seg">
+          <button type="button" data-tool="mapscale" aria-pressed="false">Draw scale line</button>
+          <button type="button" data-tool="mapmove" aria-pressed="false">Move image</button>
+        </div>
+        <div class="row"><label for="mapDist">Line is really</label><input type="number" id="mapDist" min="0" step="any" value="1"><select id="mapUnit" aria-label="Distance unit" style="flex:0 0 76px;width:76px"><option value="nm" selected>NM</option><option value="m">m</option><option value="km">km</option><option value="ft">ft</option></select></div>
+        <button type="button" id="mapApply">Apply scale</button>
+        <div class="row"><label for="mapRot">Rotate</label><input type="number" id="mapRot" min="-360" max="360" step="1" value="0"><span class="unit">° to put north up</span></div>
+        <div class="row"><label for="mapAlpha">Brightness</label><div class="grow"><input type="range" id="mapAlpha" min="0.15" max="1" step="0.05" value="1"></div></div>
+      </div>
     </fieldset>
 
     <fieldset>
@@ -310,7 +369,28 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-acti
       <label class="check"><input type="checkbox" id="grid" checked> Show grid</label>
     </fieldset>
 
-    <p class="note">On a touch screen, pinch to zoom and drag with two fingers to move the map. Hide controls gives the map the whole screen and puts the map tools on its left edge. Use ◀ 1 s and 1 s ▶ on the map to step back or forward one second at a time. The Left and Right arrow keys do the same, and Space plays or pauses. You can go back up to 15 minutes.</p>
+    <h2 class="grp">Save and load</h2>
+
+    <fieldset>
+      <legend>Saved setups</legend>
+      <p class="note">A setup keeps the background, map image, terrain, wind, threats, Jacks, both aircraft (position, heading, airspeed), spacing, sticks, and patterns as they are right now.</p>
+      <div class="row"><input type="text" id="scnName" maxlength="40" placeholder="Name this setup" aria-label="Setup name" style="flex:1 1 120px"><button type="button" id="scnSave" class="primary">Save</button></div>
+      <div class="row"><div class="grow"><select id="scnList" aria-label="Saved setups"></select></div></div>
+      <div class="seg">
+        <button type="button" id="scnLoad">Load</button>
+        <button type="button" id="scnDel">Delete</button>
+      </div>
+      <div class="status" id="scnStatus" aria-live="polite">Nothing saved yet</div>
+      <p class="note">Setups are kept in this browser on this device. To move one to another device or keep a backup, copy its code and paste it there. A code does not carry the map image, so load the picture again on the other device.</p>
+      <div class="seg">
+        <button type="button" id="scnCopy">Copy code</button>
+        <button type="button" id="scnPaste">Load from code</button>
+      </div>
+      <textarea id="scnCode" rows="2" spellcheck="false" placeholder="A setup code shows here when you copy. Paste one here to load it." aria-label="Setup code"></textarea>
+    </fieldset>
+
+    <p class="note">↶ Undo on the map takes back your last action and puts the sim back to the moment just before it. + Pattern in the Map tool bar lets you pick a pattern type and adds it, using the sizes set in the Gunnery pattern box. On a touch screen, pinch to zoom and drag with two fingers to move the map. Hide controls gives the map the whole screen and puts the map tools on its left edge. There, ☰ All tools opens any section of the controls right on the map. Keys: M move map, S sticks, R measure, E erase, T trail follows lead, Esc closes a section. Use ◀ 1 s and 1 s ▶ on the map to step back or forward one second at a time. The Left and Right arrow keys do the same, and Space plays or pauses. You can go back up to 15 minutes.</p>
+    <p class="note">You can drag aircraft, threats, Jacks, and patterns in every tool except Measure and Terrain.</p>
     <p class="note">Wind pushes the aircraft. On sticks or a pattern they crab into the wind to hold the line. Aircraft in formation are drawn larger than scale when zoomed out.</p>
   </aside>
 
@@ -324,6 +404,7 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-acti
       <div><b>GS</b><span id="rGs">100 kt</span></div>
       <div><b>DRIFT</b><span id="rDrift">0°</span></div>
       <div><b>SPACING</b><span id="rSep"></span></div>
+      <div title="Where trail sits off lead's nose"><b>ASPECT</b><span id="rAsp"></span></div>
     </div>
     <div class="commit" id="commit" hidden aria-live="off"></div>
     <div class="pop" id="pop" hidden>
@@ -335,10 +416,12 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-acti
       </div>
     </div>
     <div class="transport">
+      <select id="speedMap" aria-label="Sim speed" title="Sim speed"><option value="1" selected>1x</option><option value="2">2x</option><option value="5">5x</option><option value="10">10x</option></select>
       <span class="clock" id="clock" title="Sim time">T+ 0:00</span>
       <button type="button" id="back1" title="Go back one second (Left arrow)">◀ 1 s</button>
-      <button type="button" id="play" class="primary" title="Play or pause (Space)">Pause</button>
+      <button type="button" id="play" title="Play or pause (Space)">Play</button>
       <button type="button" id="fwd1" title="Go forward one second (Right arrow)">1 s ▶</button>
+      <button type="button" id="undoBtn" title="Undo your last action (Ctrl+Z)" disabled>↶ Undo</button>
       <button type="button" id="reset">Reset aircraft</button>
       <button type="button" id="panelBtn" aria-expanded="true">Hide controls</button>
     </div>
@@ -346,10 +429,18 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-acti
       <button type="button" data-tool="pan" aria-pressed="true">Move map</button>
       <button type="button" data-tool="sticks" aria-pressed="false">✎ Sticks</button>
       <button type="button" data-tool="measure" aria-pressed="false">Measure</button>
-      <button type="button" data-tool="threat" aria-pressed="false">▲ Threat</button>
-      <button type="button" data-tool="survivor" aria-pressed="false">J Jack</button>
-      <button type="button" data-tool="terrain" aria-pressed="false">Terrain</button>
+      <select class="patPick" aria-label="Add a gunnery pattern" title="Pick a pattern to add it"><option value="" selected>+ Pattern…</option><option value="racetrack">Racetrack</option><option value="bowtie">Bowtie</option><option value="dogbone">Dogbone</option><option value="circle">Circle</option></select>
+      <button type="button" class="trkBtn" aria-pressed="false" title="Trail flies the same path over the ground that lead flew">Trail follows lead</button>
       <button type="button" data-tool="erase" aria-pressed="false">Erase</button>
+      <button type="button" id="menuBtn" aria-expanded="false" title="Every section of the controls, opened on the map">☰ All tools</button>
+    </div>
+    <div class="drawer" id="drawer" hidden>
+      <div class="drawerHead">
+        <button type="button" id="drawerBack" hidden>‹ All tools</button>
+        <strong id="drawerTitle">All tools</strong>
+        <button type="button" id="drawerClose" aria-label="Close">✕</button>
+      </div>
+      <div class="drawerBody" id="drawerBody"></div>
     </div>
   </main>
 </div>
@@ -368,11 +459,11 @@ var AC=[mk('LEAD','#3f8cff','rgba(130,185,255,.95)'),mk('TRAIL','#35c46a','rgba(
 AC[0].home={x:0,y:0};
 var S={
   spUnit:'nm', dragAC:false,
-  sel:0, rate:45, windFrom:315, windKt:15,
+  sel:0, rate:45, windFrom:315, windKt:0,
   formOn:false, rejoin:false, off:{x:0,y:0}, form:'sr', spacing:0.3,
   markers:[], env:'ocean', scale:Math.pow(10,-0.35),
-  follow:false, cam:{x:0,y:0}, playing:true, speed:1, tool:'pan',
-  showTrack:true, showLabels:true, showGrid:true, rotor:0, hover:null, meas:null, terrain:[], draft:null
+  follow:false, cam:{x:0,y:0}, playing:false, speed:1, tool:'pan',
+  showTrack:true, showLabels:true, showGrid:true, rotor:0, hover:null, meas:null, terrain:[], draft:null, map:null, mapLine:null
 };
 
 function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
@@ -503,7 +594,7 @@ function trimSticks(a){
     r.nodes.shift();r.bends.shift();r.bends[0]=null;r.pts.splice(0,n);r.idx-=n;r.segEnd.shift();
     for(var i=0;i<r.segEnd.length;i++)r.segEnd[i]-=n;
   }
-  if(r.nodes.length<2){a.route=r.after||null;if(r.after&&r.afterOff)rejoinNearest(a);if(r.cruise!=null&&(r.ramp||r.slow))a.tas=r.cruise;if(a===primary())syncHeadingSelect();}
+  if(r.nodes.length<2){a.route=r.after||null;if(a===AC[0]&&a.route&&a.route.trailOff)joinTrailCircle(false);if(r.after&&r.afterOff)rejoinNearest(a);if(r.cruise!=null&&(r.ramp||r.slow))a.tas=r.cruise;if(a===primary())syncHeadingSelect();}
 }
 function isPattern(r){return r&&r.loop;}
 /* the pattern an aircraft is flying, or the one waiting at the end of its sticks */
@@ -513,6 +604,17 @@ function rejoinNearest(a){
   var r=a.route,best=0,bd=Infinity;
   r.pts.forEach(function(q,i){var d=Math.hypot(q.x-a.pos.x,q.y-a.pos.y);if(d<bd){bd=d;best=i;}});
   r.idx=(best+1)%r.pts.length;
+}
+/* the rotate handle sits a short way out from the middle, pointing along the first leg */
+function patRotPos(r){
+  var c=patCenter(r),dx=(r.pts[1].x-r.pts[0].x),dy=-(r.pts[1].y-r.pts[0].y),l=Math.hypot(dx,dy)||1,D=TOUCH?58:44;
+  return {x:sx(c.x)+dx/l*D,y:sy(c.y)+dy/l*D};
+}
+/* a pattern still joined to the end of the sticks turns about that end so it stays joined; any other turns about its middle */
+function patPivot(a){
+  var r=patOf(a),sr=a.route;
+  if(sr.kind==='sticks'&&!sr.afterOff)return {x:r.pts[0].x,y:r.pts[0].y};
+  return patCenter(r);
 }
 function patCenter(r){
   var x=0,y=0;r.pts.forEach(function(q){x+=q.x;y+=q.y;});
@@ -611,7 +713,7 @@ function stepAC(a,dt){
 function step(dt){
   var L=AC[0],T=AC[1];
   stepAC(L,dt);
-  if(!S.formOn){if(T.route&&T.route.kind==='follow')feedFollow();stepAC(T,dt);}
+  if(!S.formOn){if(T.route&&T.route.kind==='follow')feedFollow();else if(T.route&&T.route.sync)circSync();stepAC(T,dt);}
   else{
     var des=desiredOff(L.hdg);
     if(S.rejoin){
@@ -636,9 +738,8 @@ function resetAircraft(){
   [L,T].forEach(function(a){
     var r=a.route;
     if(r&&r.cruise!=null&&(r.slow||r.hold||r.ramp))a.tas=r.cruise;
-    /* drawn sticks come back for a replay; patterns and ground track mode clear */
-    a.route=a.saved?routeFromSaved(a.saved):null;
-    if(a.route)a.route.startHdg=0;
+    /* a reset clears everything the aircraft was flying: sticks, patterns and commits */
+    a.route=null;a.saved=null;
     a.track=[];a.trackGen++;a.turnRem=0;a.hdg=0;
   });
   closePop();
@@ -650,7 +751,7 @@ function resetAircraft(){
   $('formOn').checked=S.formOn;
   if(!S.follow){S.cam={x:L.pos.x,y:L.pos.y};}
   syncControls();
-  simT=0;hist=[];snap();
+  simT=0;hist=[];histId++;snap();
 }
 
 /* ---------- time: one snapshot per sim second so the user can step back ---------- */
@@ -687,6 +788,83 @@ function advance(dt){
     if(Math.floor(simT+1e-6)>Math.floor(p+1e-6))snap();
   }
 }
+/* ---------- undo: a snapshot is saved just before each action ---------- */
+var undoStack=[],histId=0,lastKey=null,lastPush=0;
+function snapUndo(){
+  return {st:capture(),simT:simT,hid:histId,markers:JSON.stringify(S.markers),terrain:S.terrain.slice(),
+    meas:S.meas?JSON.stringify(S.meas):null,spU:S.spUnit,sp:S.spacing,
+    saved:AC.map(function(a){return a.saved?JSON.stringify(a.saved):null;}),
+    home:AC.map(function(a){return a.home?{x:a.home.x,y:a.home.y}:null;})};
+}
+/* a short fingerprint of everything the user can edit, used to tell whether a touch on the map changed anything */
+function editSig(){
+  return JSON.stringify({m:S.markers,t:S.terrain.map(function(t){return t.type+t.pts.length;}),me:S.meas,f:S.formOn,
+    a:AC.map(function(a){
+      var r=a.route,q=null;
+      if(r)q=r.kind==='follow'?'f':r.kind==='sticks'?{n:r.nodes,b:r.bends,k:r.after&&r.after.kind,o:r.after&&[r.after.pts[0],r.after.pts[1]]}:{k:r.kind,p:[r.pts[0],r.pts[1]],n:r.pts.length};
+      return {h:a.home,s:a.saved,r:q};
+    })});
+}
+function undoBtnState(){$('undoBtn').disabled=!undoStack.length;}
+function pushSnap(u){undoStack.push(u);if(undoStack.length>60)undoStack.shift();lastKey=null;undoBtnState();}
+function pushUndo(key){
+  var now=Date.now();
+  /* a slider sends many changes in a row: keep one undo step for the whole drag */
+  if(key&&key===lastKey&&now-lastPush<1500){lastPush=now;return;}
+  pushSnap(snapUndo());lastKey=key||null;lastPush=now;
+}
+function restoreSnap(u){
+  applyState(u.st);
+  S.markers=JSON.parse(u.markers);S.terrain=u.terrain.slice();S.meas=u.meas?JSON.parse(u.meas):null;
+  AC.forEach(function(a,i){a.saved=u.saved[i]?JSON.parse(u.saved[i]):null;a.home=u.home[i];});
+  setSpacing(u.spU,u.sp);S.hover=null;S.draft=null;
+}
+function undo(){
+  if(!undoStack.length)return;
+  var u=undoStack.pop();
+  restoreSnap(u);simT=u.simT;
+  if(u.hid!==histId){hist=[];snap();}else hist=hist.filter(function(h){return h.t<=simT+1e-6;});
+  lastKey=null;undoBtnState();
+}
+
+/* ---------- saved setups: the whole starting picture, kept in this browser ---------- */
+var SCN_KEY='hh60sim.setups.v1';
+function scenarioNow(){
+  var u=snapUndo();u.simT=0;
+  u.st.ac.forEach(function(o){o.len=0;o.gen=-1;o.turnRem=0;});
+  return {v:1,env:S.env,windFrom:S.windFrom,windKt:S.windKt,rate:S.rate,form:S.form,scale:S.scale,follow:S.follow,cam:{x:S.cam.x,y:S.cam.y},u:u,map:mapForSave()};
+}
+function scenarioOk(sc){
+  return sc&&sc.v===1&&ENV[sc.env]&&sc.u&&sc.u.st&&Array.isArray(sc.u.st.ac)&&sc.u.st.ac.length===2&&typeof sc.u.markers==='string'&&Array.isArray(sc.u.terrain);
+}
+function applyScenario(sc){
+  pushUndo();
+  S.env=sc.env;$('env').value=sc.env;
+  S.windFrom=norm(+sc.windFrom||0);$('wdir').value=S.windFrom;setWind(+sc.windKt||0);
+  S.rate=+sc.rate||S.rate;$('rate').value=String(S.rate);
+  if(sc.form){S.form=sc.form;$('form').value=sc.form;}
+  if(sc.scale>0){S.scale=clamp(sc.scale,Math.pow(10,-1.7),Math.pow(10,0.5));$('zoom').value=Math.log10(S.scale);}
+  S.follow=!!sc.follow;$('follow').checked=S.follow;
+  if(sc.cam)S.cam={x:+sc.cam.x||0,y:+sc.cam.y||0};
+  restoreSnap(sc.u);
+  mapFromSave(sc.map);
+  simT=0;hist=[];histId++;snap();setPlaying(false);circUI();
+}
+function scnRead(){try{var a=JSON.parse(localStorage.getItem(SCN_KEY)||'[]');return Array.isArray(a)?a:[];}catch(e){return [];}}
+function scnWrite(a){try{localStorage.setItem(SCN_KEY,JSON.stringify(a));return true;}catch(e){return false;}}
+function scnEncode(sc){var c={};for(var k in sc)if(k!=='map')c[k]=sc[k];return 'HH60:'+btoa(unescape(encodeURIComponent(JSON.stringify(c))));}
+function scnDecode(t){
+  t=String(t||'').trim();
+  try{var sc=JSON.parse(t.indexOf('HH60:')===0?decodeURIComponent(escape(atob(t.slice(5).replace(/\s+/g,'')))):t);return scenarioOk(sc)?sc:null;}catch(e){return null;}
+}
+function scnFill(pick){
+  var list=scnRead(),sel=$('scnList');
+  sel.textContent='';
+  if(!list.length){var o=document.createElement('option');o.value='';o.textContent='No saved setups';sel.appendChild(o);}
+  list.forEach(function(it){var o=document.createElement('option');o.value=it.name;o.textContent=it.name;sel.appendChild(o);});
+  if(pick)sel.value=pick;
+}
+function scnSay(t){$('scnStatus').textContent=t;}
 function stepBack(){
   setPlaying(false);
   var r=Math.round(simT),sec=Math.abs(simT-r)<0.06?r-1:Math.floor(simT);
@@ -707,7 +885,11 @@ function arc(out,cx,cy,R,a0,a1){
 }
 function patternLocal(kind,Lg,R){
   var p=[],i;
-  if(kind==='racetrack'){
+  if(kind==='circle'){
+    /* one full turn that starts and ends at the aircraft, a point every 5 degrees */
+    p.push([0,0]);
+    for(i=5;i<360;i+=5)p.push([R*Math.sin(i*RAD),R*(1-Math.cos(i*RAD))]);
+  }else if(kind==='racetrack'){
     /* run in, 180 turn, run out, 180 turn */
     p.push([0,0],[Lg,0]);
     arc(p,Lg,R,R,-80,90);
@@ -719,32 +901,63 @@ function patternLocal(kind,Lg,R){
     p.push([0,0]);
     arc(p,c,0,R,90+phi,-(90+phi));
     arc(p,-c,0,R,90-phi,270+phi);
+    /* flip it so the turn at the end of the first leg goes the way "First turn" says */
+    for(i=0;i<p.length;i++)p[i][1]=-p[i][1];
   }else{
-    /* dogbone: one line flown both ways with a teardrop turn at each end */
-    var half=[[Lg,0]];
-    arc(half,Lg+2*R,0,R,120,-120);
-    half.push([Lg,0]);
-    p.push([0,0]);
+    /* dogbone: one line flown both ways. At each end the aircraft breaks 45 degrees to the same side
+       (away from the threat), flies a short diagonal, then turns 225 degrees back the other way to roll out
+       on the line going the opposite direction. Both loops hang off the same side of the line. */
+    var c=Math.SQRT1_2,Dc=R*(1+c),cx=Lg+Dc+R*c,half=[];
+    arc(half,cx,R,R,135,-90);
+    p.push([0,0],[Lg,0]);
     for(i=0;i<half.length;i++)p.push(half[i]);
     p.push([0,0]);
-    for(i=1;i<half.length-1;i++)p.push([Lg-half[i][0],-half[i][1]]);
+    for(i=0;i<half.length;i++)p.push([Lg-half[i][0],half[i][1]]);
   }
   return p;
 }
-function buildPattern(spd,kind,axis,Lg,side,turnSec,origin,startHdg){
-  var R=turnSec>0?Math.max(15,spd*KT*turnSec/Math.PI):Math.max(60,1.3*((spd+S.windKt)*KT)/(S.rate*RAD));
+function buildPattern(spd,kind,axis,Lg,side,turnSec,origin,startHdg,circ){
+  if(kind==='circle'&&!circ)circ={R:circleRadius(spd,20),off:0};
+  var R=circ?circ.R:turnSec>0?Math.max(15,spd*KT*turnSec/Math.PI):Math.max(60,1.3*((spd+S.windKt)*KT)/(S.rate*RAD));
   Lg=Math.max(Lg,kind==='racetrack'?100:2*R);
   var loc=patternLocal(kind,Lg,R),u=fwd(axis),v={x:Math.cos(axis*RAD),y:-Math.sin(axis*RAD)};
   var pts=loc.map(function(q){var y=q[1]*side;return {x:origin.x+q[0]*u.x+y*v.x,y:origin.y+q[0]*u.y+y*v.y};});
   var r={kind:kind,pts:pts,loop:true,idx:1,startHdg:startHdg};
   /* a timed turn may need a faster turn rate than the one set in the Turn box */
-  if(turnSec>0)r.rate=Math.max(S.rate,1.6*180/turnSec);
+  if(turnSec>0&&!circ)r.rate=Math.max(S.rate,1.6*180/turnSec);
+  if(circ){r.rate=Math.max(S.rate,1.8*(spd*KT/R)/RAD);r.side=side;if(circ.off)r.trailOff=circ.off;}
   return r;
 }
-function makePattern(a,kind,axis,Lg,side,turnSec){
+function circleRadius(kt,bank){return Math.pow(kt*KT,2)/(9.81*Math.tan(bank*RAD));}
+function makePattern(a,kind,axis,Lg,side,turnSec,circ){
   a.turnRem=0;a.saved=null;
-  a.route=buildPattern(a.tas,kind,axis,Lg,side,turnSec,a.pos,a.hdg);
+  a.route=buildPattern(a.tas,kind,axis,Lg,side,turnSec,a.pos,a.hdg,circ);
 }
+/* put trail on lead's circle, a set number of degrees behind lead */
+function joinTrailCircle(place){
+  var L=AC[0],T=AC[1],lr=L.route,n=lr.pts.length;
+  breakForm();T.saved=null;T.turnRem=0;T.tas=L.tas;
+  T.route={kind:'circle',pts:lr.pts.map(function(q){return {x:q.x,y:q.y};}),loop:true,idx:1,startHdg:T.hdg,rate:lr.rate,side:lr.side,sync:lr.trailOff};
+  if(place){
+    var li=0,bd=Infinity;
+    lr.pts.forEach(function(q,k){var d=Math.hypot(q.x-L.pos.x,q.y-L.pos.y);if(d<bd){bd=d;li=k;}});
+    var i=((li-Math.round(lr.trailOff/360*n))%n+n)%n,q=T.route.pts[i],q2=T.route.pts[(i+1)%n];
+    T.pos={x:q.x,y:q.y};T.hdg=norm(Math.atan2(q2.x-q.x,q2.y-q.y)/RAD);T.route.idx=(i+1)%n;T.track=[];T.trackGen++;T.home=null;
+  }else rejoinNearest(T);
+}
+/* trail speeds up or slows down a little to hold its place on the circle */
+function circSync(){
+  var L=AC[0],T=AC[1],lr=L.route,tr=T.route;
+  if(!lr||lr.kind!=='circle')return;
+  var c=patCenter(lr),c2=patCenter(tr);
+  if(Math.hypot(c.x-c2.x,c.y-c2.y)>5)return;
+  var aL=Math.atan2(L.pos.x-c.x,L.pos.y-c.y)/RAD,aT=Math.atan2(T.pos.x-c.x,T.pos.y-c.y)/RAD;
+  var gap=norm((aL-aT)*(lr.side||1)),err=adiff(gap,tr.sync);
+  /* match lead's speed over the ground, allowing for the wind trail feels where it is, then trim out the angle error */
+  var gl=gndVel(L),gt=gndVel(T),gs=Math.hypot(gt.x,gt.y)||1,w=windVel(),wt=(w.x*gt.x+w.y*gt.y)/gs;
+  T.tas=clamp((Math.hypot(gl.x,gl.y)-wt)/KT+clamp(err*1.5,-20,20),20,180);
+}
+function trailSyncPts(a){var T=AC[1];return a===AC[0]&&isPattern(a.route)&&!S.formOn&&T.route&&T.route.sync?T.route.pts:null;}
 
 /* ---------- drawing helpers ---------- */
 function sx(x){return W/2+(x-S.cam.x)*S.scale;}
@@ -840,6 +1053,58 @@ var TER={
   urban:{fill:'#7b7d82',edge:'#3f4146'},
   sand:{fill:'#d8c27e',edge:'#b39a58'}
 };
+/* a loaded map picture: cv is the bitmap, x and y its middle on the ground, mpp how many meters one image pixel covers */
+function drawMapImage(){
+  var m=S.map;if(!m)return;
+  var k=m.mpp*S.scale;
+  ctx.save();ctx.translate(sx(m.x),sy(m.y));ctx.rotate(m.rot*RAD);ctx.globalAlpha=m.alpha;
+  ctx.imageSmoothingQuality='high';
+  ctx.drawImage(m.cv,-m.w*k/2,-m.h*k/2,m.w*k,m.h*k);
+  ctx.restore();
+  if(S.tool==='mapmove'||S.tool==='mapscale'){
+    ctx.save();ctx.translate(sx(m.x),sy(m.y));ctx.rotate(m.rot*RAD);ctx.setLineDash([8,6]);ctx.strokeStyle='rgba(255,255,255,.8)';ctx.lineWidth=1.5;
+    ctx.strokeRect(-m.w*k/2,-m.h*k/2,m.w*k,m.h*k);ctx.restore();
+  }
+}
+function drawMapLine(){
+  var l=S.mapLine;if(!l)return;
+  var x0=sx(l.a.x),y0=sy(l.a.y),x1=sx(l.b.x),y1=sy(l.b.y);
+  ctx.lineCap='round';
+  ctx.strokeStyle='rgba(8,12,18,.85)';ctx.lineWidth=6;ctx.beginPath();ctx.moveTo(x0,y0);ctx.lineTo(x1,y1);ctx.stroke();
+  ctx.strokeStyle='#fff';ctx.lineWidth=2.5;ctx.beginPath();ctx.moveTo(x0,y0);ctx.lineTo(x1,y1);ctx.stroke();
+  [[x0,y0],[x1,y1]].forEach(function(q){ctx.beginPath();ctx.arc(q[0],q[1],5,0,7);ctx.fillStyle='#fff';ctx.fill();ctx.strokeStyle='#11151b';ctx.lineWidth=1.5;ctx.stroke();});
+  ctx.font='500 12px "IBM Plex Mono",monospace';ctx.textAlign='left';ctx.textBaseline='middle';
+  haloText('SCALE LINE: now '+fmtBoth(Math.hypot(l.b.x-l.a.x,l.b.y-l.a.y)),(x0+x1)/2+12,(y0+y1)/2-14);
+}
+function mapStatus(){
+  var m=S.map,el=$('mapStatus');
+  $('mapOpts').hidden=!m;
+  el.textContent=m?('Image is '+fmtBoth(m.w*m.mpp)+' wide'+(m.cal?'. Scale set.':'. Scale not set yet, so distances on it are a guess.')):'No map image loaded';
+}
+/* shrink big screenshots so they draw fast and fit in a saved setup */
+function setMapFromImage(img,keep){
+  var mx=2400,f=Math.min(1,mx/Math.max(img.naturalWidth||img.width,img.naturalHeight||img.height));
+  var cv2=document.createElement('canvas');cv2.width=Math.max(1,Math.round((img.naturalWidth||img.width)*f));cv2.height=Math.max(1,Math.round((img.naturalHeight||img.height)*f));
+  cv2.getContext('2d').drawImage(img,0,0,cv2.width,cv2.height);
+  if(keep)S.map={cv:cv2,w:cv2.width,h:cv2.height,x:keep.x,y:keep.y,mpp:keep.mpp*(keep.w/cv2.width),rot:keep.rot||0,alpha:keep.alpha||1,cal:!!keep.cal};
+  else S.map={cv:cv2,w:cv2.width,h:cv2.height,x:S.cam.x,y:S.cam.y,mpp:(0.8*W/S.scale)/cv2.width,rot:0,alpha:1,cal:false};
+  $('mapRot').value=S.map.rot;$('mapAlpha').value=S.map.alpha;S.mapLine=null;mapStatus();
+}
+function loadMapBlob(blob){
+  if(!blob||!/^image\//.test(blob.type)){$('mapStatus').textContent='That file is not a picture. Pick a PNG or JPG screenshot.';return;}
+  var url=URL.createObjectURL(blob),img=new Image();
+  img.onload=function(){setMapFromImage(img,null);URL.revokeObjectURL(url);};
+  img.onerror=function(){URL.revokeObjectURL(url);$('mapStatus').textContent='That picture could not be opened. Try a PNG or JPG.';};
+  img.src=url;
+}
+function mapForSave(){
+  var m=S.map;if(!m)return null;
+  try{return {src:m.cv.toDataURL('image/jpeg',0.82),w:m.w,x:m.x,y:m.y,mpp:m.mpp,rot:m.rot,alpha:m.alpha,cal:m.cal};}catch(e){return null;}
+}
+function mapFromSave(o){
+  if(!o||!o.src){S.map=null;S.mapLine=null;mapStatus();return;}
+  var img=new Image();img.onload=function(){setMapFromImage(img,o);};img.src=o.src;
+}
 function terPath(t,close){
   ctx.beginPath();
   t.pts.forEach(function(q,i){if(i)ctx.lineTo(sx(q.x),sy(q.y));else ctx.moveTo(sx(q.x),sy(q.y));});
@@ -937,6 +1202,12 @@ function drawRoutes(){
       var pc=patCenter(patOf(a)),cx=sx(pc.x),cy=sy(pc.y);
       ctx.beginPath();ctx.arc(cx,cy,TOUCH?15:11,0,7);ctx.fillStyle='rgba(12,16,22,.85)';ctx.fill();ctx.strokeStyle=a.color;ctx.lineWidth=2.5;ctx.stroke();
       ctx.strokeStyle='#fff';ctx.lineWidth=1.6;ctx.beginPath();ctx.moveTo(cx-6,cy);ctx.lineTo(cx+6,cy);ctx.moveTo(cx,cy-6);ctx.lineTo(cx,cy+6);ctx.stroke();
+      var rh=patRotPos(patOf(a)),rr=TOUCH?13:10;
+      ctx.strokeStyle=a.color;ctx.lineWidth=2;ctx.setLineDash([3,3]);ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(rh.x,rh.y);ctx.stroke();ctx.setLineDash([]);
+      ctx.beginPath();ctx.arc(rh.x,rh.y,rr,0,7);ctx.fillStyle='rgba(12,16,22,.9)';ctx.fill();ctx.strokeStyle='#f2b233';ctx.lineWidth=2.5;ctx.stroke();
+      ctx.strokeStyle='#fff';ctx.lineWidth=1.8;ctx.beginPath();ctx.arc(rh.x,rh.y,rr*.5,-0.4,4.2);ctx.stroke();
+      var ax=rh.x+rr*.5*Math.cos(-0.4),ay=rh.y+rr*.5*Math.sin(-0.4);
+      ctx.fillStyle='#fff';ctx.beginPath();ctx.moveTo(ax+3.2,ay+1.5);ctx.lineTo(ax-3.2,ay+1.2);ctx.lineTo(ax+0.6,ay-4);ctx.closePath();ctx.fill();
     }
     if(sticks&&r.after){
       ctx.beginPath();r.after.pts.forEach(function(q,i){if(i)ctx.lineTo(sx(q.x),sy(q.y));else ctx.moveTo(sx(q.x),sy(q.y));});ctx.closePath();
@@ -1012,25 +1283,20 @@ function drawStickThreat(){
     var d=Math.hypot(m.x-h.x,m.y-h.y);if(d<bd){bd=d;best=m;bn=n;}
     var q=segDist(m.x,m.y,from.x,from.y,h.x,h.y);if(q<pd){pd=q;pn=n;}
   });
-  var x0=sx(h.x),y0=sy(h.y),lines;
-  if(best){
-    var x1=sx(best.x),y1=sy(best.y);
-    ctx.lineCap='round';ctx.setLineDash([7,6]);
-    ctx.strokeStyle='rgba(8,12,18,.8)';ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(x0,y0);ctx.lineTo(x1,y1);ctx.stroke();
-    ctx.strokeStyle='#ff5a4d';ctx.lineWidth=2.5;ctx.beginPath();ctx.moveTo(x0,y0);ctx.lineTo(x1,y1);ctx.stroke();
-    ctx.setLineDash([]);
-    lines=['END POINT TO NEAREST THREAT T'+bn+': '+fmtBoth(bd),'STICK PASSES CLOSEST TO T'+pn+' AT: '+fmtBoth(pd)];
-  }else lines=['NO THREATS ON THE MAP'];
-  ctx.font='600 14px "IBM Plex Mono",monospace';ctx.textAlign='center';ctx.textBaseline='middle';
-  var w=0;lines.forEach(function(t){w=Math.max(w,ctx.measureText(t).width);});w+=20;
-  var hh=lines.length*20+10,bx=clamp(x0,w/2+8,W-w/2-8),by=y0-(HIT>1?72:28)-hh;if(by<8)by=y0+(HIT>1?72:28);
-  ctx.fillStyle='rgba(12,16,22,.92)';ctx.fillRect(bx-w/2,by,w,hh);
-  ctx.strokeStyle=best?'#ff5a4d':'rgba(255,255,255,.4)';ctx.lineWidth=2;ctx.strokeRect(bx-w/2,by,w,hh);
-  ctx.fillStyle='#fff';lines.forEach(function(t,i){ctx.fillText(t,bx,by+15+i*20);});
+  if(!best)return;
+  /* kept quiet on purpose: a thin faint line to the threat and one small line of text by the cursor */
+  var x0=sx(h.x),y0=sy(h.y),x1=sx(best.x),y1=sy(best.y);
+  ctx.lineCap='round';ctx.setLineDash([3,6]);ctx.strokeStyle='rgba(255,120,110,.6)';ctx.lineWidth=1.2;
+  ctx.beginPath();ctx.moveTo(x0,y0);ctx.lineTo(x1,y1);ctx.stroke();ctx.setLineDash([]);
+  var txt='T'+bn+' '+fmtBoth(bd)+(pd<bd-1?'   closest pass '+(pn!==bn?'T'+pn+' ':'')+fmtBoth(pd):'');
+  ctx.font='500 11px "IBM Plex Mono",monospace';ctx.textBaseline='middle';
+  var w=ctx.measureText(txt).width,tx=x0+14,ty=y0+(HIT>1?-64:20);
+  if(tx+w>W-8){tx=x0-14-w;}
+  ctx.textAlign='left';ctx.lineJoin='round';ctx.lineWidth=3;ctx.strokeStyle='rgba(8,12,18,.75)';ctx.strokeText(txt,tx,ty);
+  ctx.fillStyle='rgba(255,196,190,.95)';ctx.fillText(txt,tx,ty);
 }
-/* while a pattern is being dragged, show its closest point to any threat */
 function drawPatternThreat(){
-  if(!drag||drag.mode!=='pat'||!drag.pa||!patOf(drag.pa))return;
+  if(!drag||(drag.mode!=='pat'&&drag.mode!=='rot')||!drag.pa||!patOf(drag.pa))return;
   var P=patOf(drag.pa).pts,best=null,bd=Infinity,bn=0,cp=null,n=0;
   S.markers.forEach(function(m){
     if(m.type!=='threat')return;n++;
@@ -1050,13 +1316,19 @@ function drawPatternThreat(){
     ctx.beginPath();ctx.arc(px,py,6,0,7);ctx.fillStyle='#ff5a4d';ctx.fill();ctx.strokeStyle='#fff';ctx.lineWidth=1.5;ctx.stroke();
     txt='PATTERN CLOSEST TO THREAT T'+bn+': '+fmtBoth(bd);
   }else txt='NO THREATS ON THE MAP';
+  if(drag.mode==='rot')txt='FIRST LEG '+pad3(Math.atan2(P[1].x-P[0].x,P[1].y-P[0].y)/RAD)+'   '+txt;
   ctx.font='600 15px "IBM Plex Mono",monospace';ctx.textAlign='center';ctx.textBaseline='middle';
-  var w=ctx.measureText(txt).width+20,bx=clamp(x0,w/2+8,W-w/2-8),by=clamp(y0-34,22,H-22);
+  var w=ctx.measureText(txt).width+20,bx=clamp(x0,w/2+8,W-w/2-8),by=clamp(y0-(TOUCH?96:78),22,H-22);
   ctx.fillStyle='rgba(12,16,22,.92)';ctx.fillRect(bx-w/2,by-14,w,28);
   ctx.strokeStyle=best?'#ff5a4d':'rgba(255,255,255,.4)';ctx.lineWidth=2;ctx.strokeRect(bx-w/2,by-14,w,28);
   ctx.fillStyle='#fff';ctx.fillText(txt,bx,by);
 }
 /* while an aircraft is being dragged, show the spacing between the two */
+/* aspect: where trail sits off lead's nose, left or right */
+function aspectText(){
+  var L=AC[0],T=AC[1],rel=Math.round(adiff(Math.atan2(T.pos.x-L.pos.x,T.pos.y-L.pos.y)/RAD,L.hdg));
+  return ('00'+Math.abs(rel)).slice(-3)+(rel===0||Math.abs(rel)===180?'':rel>0?'R':'L');
+}
 function drawDragSpacing(){
   if(!drag||drag.mode!=='ac'||!drag.moved)return;
   var L=AC[0],T=AC[1],p0=screenPos(0),p1=screenPos(1),d=Math.hypot(T.pos.x-L.pos.x,T.pos.y-L.pos.y);
@@ -1064,7 +1336,8 @@ function drawDragSpacing(){
   ctx.strokeStyle='rgba(8,12,18,.8)';ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(p0.x,p0.y);ctx.lineTo(p1.x,p1.y);ctx.stroke();
   ctx.strokeStyle='#f2b233';ctx.lineWidth=2.5;ctx.beginPath();ctx.moveTo(p0.x,p0.y);ctx.lineTo(p1.x,p1.y);ctx.stroke();
   ctx.setLineDash([]);
-  var txt='SPACING: '+fmtBoth(d)+'  (trail '+pad3(Math.atan2(T.pos.x-L.pos.x,T.pos.y-L.pos.y)/RAD)+' from lead)';
+  var asp=aspectText();
+  var txt='SPACING: '+fmtBoth(d)+'  (trail at '+asp+' off lead)';
   ctx.font='600 15px "IBM Plex Mono",monospace';ctx.textAlign='center';ctx.textBaseline='middle';
   var me=drag.k===1?p1:p0,w=ctx.measureText(txt).width+20,bx=clamp(me.x,w/2+8,W-w/2-8),by=me.y-heloLen()*.7-22;if(by<22)by=me.y+heloLen()*.7+34;
   ctx.fillStyle='rgba(12,16,22,.92)';ctx.fillRect(bx-w/2,by-14,w,28);
@@ -1180,7 +1453,7 @@ function drawRose(){
 
 function draw(dt){
   if(S.follow&&!S.dragAC){S.cam.x=AC[0].pos.x;S.cam.y=AC[0].pos.y;}
-  drawEnv();drawTerrain();drawGrid();drawTracks();drawWind(dt);drawRoutes();drawMarkers();drawJackThreat();drawStickThreat();drawPatternThreat();drawMeasure();
+  drawEnv();drawMapImage();drawTerrain();drawGrid();drawTracks();drawWind(dt);drawRoutes();drawMarkers();drawJackThreat();drawStickThreat();drawPatternThreat();drawMeasure();drawMapLine();
   var L=heloLen(),p1=screenPos(1),p0=screenPos(0);
   drawHelo(p1.x,p1.y,AC[1],L,S.sel!==0);
   drawHelo(p0.x,p0.y,AC[0],L,S.sel!==1);
@@ -1226,9 +1499,10 @@ function readouts(){
   if(onTrk)sep=alongGap();
   var sepT=(sep/NM).toFixed(2)+' NM / '+Math.round(sep).toLocaleString('en-US')+' m';
   setText($('rSep'),sepT+(onTrk?' on track':''));
+  setText($('rAsp'),aspectText());
   setText($('sepNow'),'Now: '+sepT+(onTrk?' along the track. Straight line: '+fmtBoth(direct)+'.':''));
   var fb=$('followTrk'),on=String(!!(AC[1].route&&AC[1].route.kind==='follow'));
-  if(fb.getAttribute('aria-pressed')!==on)fb.setAttribute('aria-pressed',on);
+  if(fb.getAttribute('aria-pressed')!==on){fb.setAttribute('aria-pressed',on);Array.prototype.forEach.call(trkBtns,function(b){b.setAttribute('aria-pressed',on);});}
   var txt;
   if(S.windKt<=0){txt='Calm. No drift.';}
   else{
@@ -1256,10 +1530,25 @@ function setSel(i){
 $('selBtns').addEventListener('click',function(e){var b=e.target.closest('button');if(b)setSel(+b.dataset.sel);});
 
 $('hdg').addEventListener('change',function(){
-  var h=norm(parseFloat(this.value));if(isNaN(h))return;this.value=h;
-  editTargets().forEach(function(a){turnTo(a,h);});
+  var h=norm(parseFloat(this.value));if(isNaN(h))return;this.value=h;pushUndo();
+  var tg=editTargets();
+  if(!S.playing&&simT<0.05){
+    /* before the sim has started, a heading is a starting position: point the aircraft that way right now */
+    var L=AC[0],T=AC[1];
+    tg.forEach(function(a){a.route=null;a.saved=null;a.turnRem=0;a.hdg=h;});
+    if(tg.indexOf(L)>=0){
+      if(S.formOn){S.rejoin=false;S.off=desiredOff(h);T.pos={x:L.pos.x+S.off.x,y:L.pos.y+S.off.y};T.hdg=h;}
+      else if(T.route&&T.route.kind==='follow'){
+        /* trail lines up behind lead on the new heading */
+        var f=fwd(h),g=spacingMeters();
+        T.pos={x:L.pos.x-f.x*g,y:L.pos.y-f.y*g};T.hdg=h;startFollow();
+      }
+    }
+    hist=[];snap();
+  }else tg.forEach(function(a){turnTo(a,h);});
 });
 function setTas(v){
+  pushUndo('tas');
   v=clamp(isNaN(v)?0:v,0,180);
   editTargets().forEach(function(a){a.tas=v;if(a.route&&a.route.cruise!=null)a.route.cruise=v;});
   $('tas').value=v;$('tasR').value=v;
@@ -1271,11 +1560,11 @@ $('wspd').addEventListener('change',function(){setWind(parseFloat(this.value));}
 $('wspdR').addEventListener('input',function(){setWind(parseFloat(this.value));});
 $('wdir').addEventListener('change',function(){var v=norm(parseFloat(this.value));if(isNaN(v))v=S.windFrom;this.value=v;S.windFrom=v;});
 $('rate').addEventListener('change',function(){S.rate=parseFloat(this.value);});
-function turnBtn(dir){var d=parseFloat($('turnDeg').value);editTargets().forEach(function(a){startTurn(a,dir,d);});syncHeadingSelect();}
+function turnBtn(dir){pushUndo();var d=parseFloat($('turnDeg').value);editTargets().forEach(function(a){startTurn(a,dir,d);});syncHeadingSelect();}
 $('turnL').addEventListener('click',function(){turnBtn(-1);});
 $('turnR').addEventListener('click',function(){turnBtn(1);});
 
-$('formOn').addEventListener('change',function(){
+$('formOn').addEventListener('change',function(){pushUndo();
   var L=AC[0],T=AC[1];
   if(this.checked){
     S.formOn=true;T.route=null;T.saved=null;T.turnRem=0;
@@ -1285,12 +1574,15 @@ $('formOn').addEventListener('change',function(){
   }else breakForm();
   syncControls();
 });
-$('followTrk').addEventListener('click',function(){
+function toggleFollow(){pushUndo();
   var T=AC[1];
   if(T.route&&T.route.kind==='follow'){T.route=null;}
   else{breakForm();startFollow();}
   syncControls();
-});
+}
+$('followTrk').addEventListener('click',toggleFollow);
+var trkBtns=document.querySelectorAll('.trkBtn');
+Array.prototype.forEach.call(trkBtns,function(b){b.addEventListener('click',toggleFollow);});
 $('form').addEventListener('change',function(){S.form=this.value;});
 $('spacing').addEventListener('change',function(){
   var l=SPLIM[S.spUnit],v=clamp(parseFloat(this.value)||l[0],l[0],l[1]);
@@ -1302,29 +1594,60 @@ $('spUnit').addEventListener('change',function(){
   var m=spacingMeters(),u=this.value;
   setSpacing(u,u==='nm'?Math.max(0.02,Math.round(m/NM*100)/100):u==='m'?Math.max(20,Math.round(m)):clamp(Math.round(m/DISC-1),1,20));
 });
-$('patFly').addEventListener('click',function(){
+function flyPattern(){
+  pushUndo();
   var kind=$('pat').value,ax=$('patAxis').value.trim(),side=parseFloat($('patSide').value);
   if(ax!==''&&isNaN(parseFloat(ax)))ax='';
   if(ax!=='')ax=String(norm(parseFloat(ax)));
   var lu=$('patLenUnit').value,lv=parseFloat($('patLen').value),ts=parseFloat($('patTurn').value)||0;
-  editTargets().forEach(function(a){
-    var r=a.route,queue=r&&r.kind==='sticks'&&r.nodes.length>1,spd=queue&&r.cruise!=null?r.cruise:a.tas;
+  var circ=null;
+  if(kind==='circle'){
+    var cs=clamp(parseFloat($('circSpd').value)||80,20,180),bank=clamp(parseFloat($('circBank').value)||20,5,60);
+    circ={spd:cs,R:circleRadius(cs,bank),off:S.sel===1?0:(parseInt($('circTrail').value,10)||0)};
+  }
+  var tg=editTargets();
+  /* when trail is given a place on the circle, only lead gets the pattern here and trail is added below */
+  if(circ&&circ.off)tg=[AC[0]];
+  tg.forEach(function(a){
+    var r=a.route,queue=r&&r.kind==='sticks'&&r.nodes.length>1;
+    if(circ){a.tas=circ.spd;if(queue&&r.cruise!=null)r.cruise=circ.spd;}
+    var spd=queue&&r.cruise!=null?r.cruise:a.tas;
     var Lg=lu==='sec'?clamp(lv||30,2,600)*spd*KT:lu==='m'?clamp(lv||1500,50,20000):clamp(lv||1,0.05,10)*NM;
     if(queue){
       /* add the pattern to the end of the last stick, lined up with that stick unless a heading is picked */
       var e=r.pts.length-1,pa=r.pts[e-1],pb=r.pts[e],axis=ax===''?norm(Math.atan2(pb.x-pa.x,pb.y-pa.y)/RAD):parseFloat(ax);
-      r.afterOff=null;r.after=buildPattern(spd,kind,axis,Lg,side,ts,pb,axis);saveSticks(a);
-    }else makePattern(a,kind,ax===''?a.hdg:parseFloat(ax),Lg,side,ts);
+      r.afterOff=null;r.after=buildPattern(spd,kind,axis,Lg,side,ts,pb,axis,circ);saveSticks(a);
+    }else makePattern(a,kind,ax===''?a.hdg:parseFloat(ax),Lg,side,ts,circ);
   });
+  if(circ&&circ.off&&AC[0].route&&AC[0].route.kind==='circle')joinTrailCircle(!S.playing&&simT<0.05);
+  syncControls();
   syncHeadingSelect();
+}
+$('patFly').addEventListener('click',flyPattern);
+function circUI(){
+  var c=$('pat').value==='circle';
+  $('legOpts').hidden=c;$('circOpts').hidden=!c;$('patSideLbl').textContent=c?'Turn direction':'First turn';
+  var cs=clamp(parseFloat($('circSpd').value)||80,20,180),bank=clamp(parseFloat($('circBank').value)||20,5,60),R=circleRadius(cs,bank);
+  $('circInfo').textContent='Radius '+fmtBoth(R)+'. One lap in '+fmtTime(2*Math.PI*R/(cs*KT))+' with no wind.';
+}
+['pat','circSpd','circBank'].forEach(function(id){$(id).addEventListener('change',circUI);$(id).addEventListener('input',circUI);});
+circUI();
+/* shortcut: picking a type adds that pattern right away, using the sizes set in the Gunnery pattern box */
+Array.prototype.forEach.call(document.querySelectorAll('.patPick'),function(sel){
+  sel.addEventListener('change',function(){
+    if(!sel.value)return;
+    $('pat').value=sel.value;sel.value='';
+    circUI();flyPattern();
+  });
 });
+
 $('patLenUnit').addEventListener('change',function(){
   var el=$('patLen');
   if(this.value==='sec'){el.min=2;el.max=600;el.step=1;el.value=20;}
   else if(this.value==='m'){el.min=50;el.max=20000;el.step=50;el.value=1500;}
   else{el.min=0.05;el.max=10;el.step=0.1;el.value=1;}
 });
-$('patStop').addEventListener('click',function(){
+$('patStop').addEventListener('click',function(){pushUndo();
   (S.sel===2?AC:[primary()]).forEach(function(a){
     if(a.route&&a.route.kind!=='sticks')a.route=null;
     else if(a.route&&a.route.after){a.route.after=null;saveSticks(a);}
@@ -1360,12 +1683,12 @@ function openPop(a,node,name){
   $('pop').hidden=false;
 }
 $('popCommit').addEventListener('click',function(){
-  if(!pop)return;
+  if(!pop)return;pushUndo();
   var v=clamp(parseFloat($('popSec').value)||0,0,3600);
   pop.node.commit=v;lastSec=v;delete pop.node.done;saveSticks(pop.a);closePop();
 });
 $('popPass').addEventListener('click',function(){
-  if(!pop)return;
+  if(!pop)return;pushUndo();
   delete pop.node.commit;saveSticks(pop.a);closePop();
 });
 function hitSurvivor(p){
@@ -1376,28 +1699,90 @@ function hitSurvivor(p){
   });
   return best;
 }
-$('terUndo').addEventListener('click',function(){S.terrain.pop();});
-$('terClear').addEventListener('click',function(){S.terrain=[];});
-$('measClear').addEventListener('click',function(){S.meas=null;});
-$('stUndo').addEventListener('click',function(){
+$('mapLoad').addEventListener('click',function(){$('mapFile').click();});
+$('mapFile').addEventListener('change',function(){if(this.files&&this.files[0])loadMapBlob(this.files[0]);this.value='';});
+window.addEventListener('paste',function(e){
+  var tg=e.target&&e.target.tagName;if(tg==='INPUT'||tg==='TEXTAREA')return;
+  var it=e.clipboardData&&e.clipboardData.items;if(!it)return;
+  for(var i=0;i<it.length;i++){if(it[i].kind==='file'&&/^image\//.test(it[i].type)){loadMapBlob(it[i].getAsFile());e.preventDefault();return;}}
+});
+$('mapRemove').addEventListener('click',function(){S.map=null;S.mapLine=null;if(S.tool==='mapmove'||S.tool==='mapscale')setTool('pan');mapStatus();});
+$('mapRot').addEventListener('input',function(){if(S.map)S.map.rot=clamp(parseFloat(this.value)||0,-360,360);});
+$('mapAlpha').addEventListener('input',function(){if(S.map)S.map.alpha=clamp(parseFloat(this.value)||1,0.15,1);});
+$('mapApply').addEventListener('click',function(){
+  var m=S.map,l=S.mapLine,el=$('mapStatus');
+  if(!m)return;
+  if(!l||Math.hypot(l.b.x-l.a.x,l.b.y-l.a.y)*S.scale<8){el.textContent='Draw the scale line first: press Draw scale line and drag between two points on the image.';return;}
+  var v=parseFloat($('mapDist').value),u=$('mapUnit').value,real=v*(u==='nm'?NM:u==='km'?1000:u==='ft'?0.3048:1);
+  if(!(real>0)){el.textContent='Type the real distance for the line, then press Apply.';return;}
+  /* grow or shrink the image about the start of the line, so that point stays where it is */
+  var f=real/Math.hypot(l.b.x-l.a.x,l.b.y-l.a.y);
+  m.x=l.a.x+(m.x-l.a.x)*f;m.y=l.a.y+(m.y-l.a.y)*f;m.mpp*=f;m.cal=true;
+  S.mapLine=null;setTool('pan');mapStatus();
+});
+$('terUndo').addEventListener('click',function(){pushUndo();S.terrain.pop();});
+$('terClear').addEventListener('click',function(){pushUndo();S.terrain=[];});
+$('measClear').addEventListener('click',function(){pushUndo();S.meas=null;});
+$('stUndo').addEventListener('click',function(){pushUndo();
   var r=primary().route;if(!r||r.kind!=='sticks')return;
   r.nodes.pop();r.bends.pop();if(r.nodes.length<2)primary().route=null;else rebuild(r);
   saveSticks(primary());closePop();
 });
-$('stClear').addEventListener('click',function(){
+$('stClear').addEventListener('click',function(){pushUndo();
   (S.sel===2?AC:[primary()]).forEach(function(a){a.saved=null;if(a.route&&a.route.kind==='sticks')a.route=null;});
   closePop();syncHeadingSelect();
 });
 
 $('env').addEventListener('change',function(){S.env=this.value;});
-$('speed').addEventListener('change',function(){S.speed=parseFloat(this.value);});
+function setSpeed(v){S.speed=parseFloat(v)||1;$('speed').value=String(S.speed);$('speedMap').value=String(S.speed);}
+$('speed').addEventListener('change',function(){setSpeed(this.value);});
+$('speedMap').addEventListener('change',function(){setSpeed(this.value);});
 $('follow').addEventListener('change',function(){S.follow=this.checked;});
 $('track').addEventListener('change',function(){S.showTrack=this.checked;});
 $('grid').addEventListener('change',function(){S.showGrid=this.checked;});
 $('labels').addEventListener('change',function(){S.showLabels=this.checked;});
 $('zoom').addEventListener('input',function(){S.scale=Math.pow(10,parseFloat(this.value));});
 $('play').addEventListener('click',function(){setPlaying(!S.playing);});
-$('reset').addEventListener('click',resetAircraft);
+$('reset').addEventListener('click',function(){pushUndo();resetAircraft();});
+$('scnSave').addEventListener('click',function(){
+  var name=$('scnName').value.trim()||('Setup '+new Date().toLocaleString());
+  var list=scnRead().filter(function(it){return it.name!==name;});
+  list.push({name:name,data:scenarioNow()});
+  list.sort(function(a,b){return a.name.localeCompare(b.name);});
+  var ok=scnWrite(list),noMap=false;
+  if(!ok&&list[list.length-1]){
+    /* a big map picture can be too much for the browser's storage: keep the setup without it */
+    list.forEach(function(it){if(it.name===name&&it.data.map){it.data.map=null;noMap=true;}});
+    ok=noMap&&scnWrite(list);
+  }
+  if(ok){scnFill(name);$('scnName').value='';scnSay('Saved "'+name+'"'+(noMap?', but without the map image. It was too big for this browser to keep.':''));}
+  else scnSay('This browser would not keep the setup. Use Copy code to keep it yourself.');
+});
+$('scnLoad').addEventListener('click',function(){
+  var name=$('scnList').value,it=scnRead().filter(function(x){return x.name===name;})[0];
+  if(!it||!scenarioOk(it.data)){scnSay('Pick a saved setup first.');return;}
+  applyScenario(it.data);scnSay('Loaded "'+name+'". Press Play to start.');
+});
+$('scnDel').addEventListener('click',function(){
+  var name=$('scnList').value;if(!name){scnSay('Pick a saved setup first.');return;}
+  scnWrite(scnRead().filter(function(x){return x.name!==name;}));scnFill();scnSay('Deleted "'+name+'"');
+});
+$('scnCopy').addEventListener('click',function(){
+  /* the picked setup if there is one, otherwise what is on the map now */
+  var name=$('scnList').value,it=scnRead().filter(function(x){return x.name===name;})[0];
+  var code=scnEncode(it?it.data:scenarioNow()),box=$('scnCode');
+  box.value=code;
+  var done=function(ok){scnSay((ok?'Copied the code for ':'Code is in the box below for ')+(it?'"'+name+'"':'the setup on the map')+(ok?'.':'. Select it and copy it.'));};
+  try{navigator.clipboard.writeText(code).then(function(){done(true);},function(){box.focus();box.select();done(false);});}
+  catch(e){box.focus();box.select();done(false);}
+});
+$('scnPaste').addEventListener('click',function(){
+  var sc=scnDecode($('scnCode').value);
+  if(!sc){scnSay('That is not a setup code. Paste the whole code, starting with HH60:');return;}
+  applyScenario(sc);scnSay('Loaded the setup from the code. Save it to keep it on this device.');
+});
+scnFill();if(scnRead().length)scnSay(scnRead().length+' saved on this device');
+$('undoBtn').addEventListener('click',undo);
 Array.prototype.forEach.call(document.querySelectorAll('.nud'),function(b){
   b.addEventListener('click',function(){
     var el=$(b.dataset.for),d=parseFloat(b.dataset.d),v=parseFloat(el.value);
@@ -1406,9 +1791,57 @@ Array.prototype.forEach.call(document.querySelectorAll('.nud'),function(b){
     el.value=norm(v);el.dispatchEvent(new Event('change'));
   });
 });
+/* ---------- full map mode: every section of the panel can open on the map ----------
+   The real section is moved into the drawer and put back afterwards, so there is only ever one copy of each control. */
+var dOpen=null,dPh=null,menuEl=null,selPh=null;
+function buildMenu(){
+  menuEl=document.createElement('div');menuEl.className='menuList';
+  Array.prototype.forEach.call(document.querySelector('.panel').children,function(ch){
+    if(ch.tagName==='H2'){var h=document.createElement('div');h.className='menuGrp';h.textContent=ch.textContent;menuEl.appendChild(h);}
+    else if(ch.tagName==='FIELDSET'){
+      var b=document.createElement('button');b.type='button';b.textContent=ch.querySelector('legend').textContent;
+      b.addEventListener('click',function(){openSection(ch);});menuEl.appendChild(b);
+    }
+  });
+}
+function returnSection(){
+  if(!dOpen)return;
+  dPh.parentNode.insertBefore(dOpen,dPh);dPh.parentNode.removeChild(dPh);dOpen=null;dPh=null;
+}
+function showMenu(){
+  returnSection();
+  var body=$('drawerBody');body.textContent='';body.appendChild(menuEl);
+  $('drawerBack').hidden=true;$('drawerTitle').textContent='All tools';
+  $('drawer').hidden=false;$('menuBtn').setAttribute('aria-expanded','true');
+}
+function openSection(fs){
+  returnSection();
+  var body=$('drawerBody');body.textContent='';
+  dPh=document.createComment('section');fs.parentNode.insertBefore(dPh,fs);body.appendChild(fs);dOpen=fs;
+  $('drawerBack').hidden=false;$('drawerTitle').textContent='';body.scrollTop=0;
+  $('drawer').hidden=false;$('menuBtn').setAttribute('aria-expanded','true');
+}
+function closeDrawer(){returnSection();$('drawer').hidden=true;$('menuBtn').setAttribute('aria-expanded','false');}
+/* the Lead / Trail / Both buttons ride along to the map's tool column */
+function dockSel(on){
+  var el=$('selBtns'),ft=$('floatTools');
+  if(on&&!selPh){selPh=document.createComment('sel');el.parentNode.insertBefore(selPh,el);ft.insertBefore(el,ft.firstChild);}
+  else if(!on&&selPh){selPh.parentNode.insertBefore(el,selPh);selPh.parentNode.removeChild(selPh);selPh=null;}
+}
+try{buildMenu();}catch(e){}
+$('menuBtn').addEventListener('click',function(){if($('drawer').hidden)showMenu();else closeDrawer();});
+$('drawerBack').addEventListener('click',showMenu);
+$('drawerClose').addEventListener('click',closeDrawer);
+$('drawerBody').addEventListener('click',function(e){
+  /* on a small screen, get out of the way once a map tool is picked */
+  var t=e.target&&e.target.closest?e.target.closest('[data-tool]'):null;
+  if(t&&window.innerWidth<900)closeDrawer();
+});
 $('panelBtn').addEventListener('click',function(){
   var hid=$('app').classList.toggle('nopanel');
   this.textContent=hid?'Show controls':'Hide controls';this.setAttribute('aria-expanded',String(!hid));
+  if(!hid)closeDrawer();
+  dockSel(!!hid);
 });
 /* when the page is hosted on its own site, hook up the home screen icon and offline copy */
 try{
@@ -1423,18 +1856,27 @@ $('back1').addEventListener('click',stepBack);
 $('fwd1').addEventListener('click',stepFwd);
 window.addEventListener('keydown',function(e){
   var tg=e.target&&e.target.tagName;
-  if(tg==='INPUT'||tg==='SELECT'||tg==='TEXTAREA'||tg==='BUTTON')return;
-  if(e.key==='ArrowLeft'){e.preventDefault();stepBack();}
+  if(tg==='INPUT'||tg==='SELECT'||tg==='TEXTAREA')return;
+  /* Space on a focused button should press that button, so only that key is left alone there */
+  if(tg==='BUTTON'&&(e.key===' '||e.key==='Enter'))return;
+  if((e.ctrlKey||e.metaKey)&&(e.key==='z'||e.key==='Z')){e.preventDefault();undo();}
+  else if(e.key==='ArrowLeft'){e.preventDefault();stepBack();}
   else if(e.key==='ArrowRight'){e.preventDefault();stepFwd();}
   else if(e.key===' '){e.preventDefault();setPlaying(!S.playing);}
+  else if(e.key==='Escape'){closeDrawer();closePop();}
+  else if(!e.ctrlKey&&!e.metaKey&&!e.altKey){
+    var kk=e.key.toLowerCase(),tk={m:'pan',s:'sticks',r:'measure',e:'erase'}[kk];
+    if(tk)setTool(S.tool===tk&&tk!=='pan'?'pan':tk);
+    else if(kk==='t')toggleFollow();
+  }
 });
-$('mAdd').addEventListener('click',function(){
+$('mAdd').addEventListener('click',function(){pushUndo();
   var b=norm(parseFloat($('mBrg').value)||0),rv=parseFloat($('mRng').value),r=$('mRngUnit').value==='m'?Math.max(10,rv||1000):Math.max(0.01,rv||1)*NM,f=fwd(b);
   S.markers.push({type:$('mType').value,x:AC[0].pos.x+f.x*r,y:AC[0].pos.y+f.y*r});
 });
 $('mRngUnit').addEventListener('change',function(){var el=$('mRng');if(this.value==='m'){el.min=10;el.max=90000;el.step=50;el.value=1500;}else{el.min=0.1;el.max=50;el.step=0.1;el.value=1;}});
-$('clrT').addEventListener('click',function(){S.markers=S.markers.filter(function(m){return m.type!=='threat';});});
-$('clrS').addEventListener('click',function(){S.markers=S.markers.filter(function(m){return m.type!=='survivor';});});
+$('clrT').addEventListener('click',function(){pushUndo();S.markers=S.markers.filter(function(m){return m.type!=='threat';});});
+$('clrS').addEventListener('click',function(){pushUndo();S.markers=S.markers.filter(function(m){return m.type!=='survivor';});});
 
 /* map pointer input */
 cv.style.cursor='grab';
@@ -1442,6 +1884,39 @@ function local(e){var r=cv.getBoundingClientRect();return {x:e.clientX-r.left,y:
 function segDist(px,py,x0,y0,x1,y1){
   var dx=x1-x0,dy=y1-y0,l=dx*dx+dy*dy,t=l?clamp(((px-x0)*dx+(py-y0)*dy)/l,0,1):0;
   return Math.hypot(px-(x0+t*dx),py-(y0+t*dy));
+}
+/* which stick is under the pointer: its end point or anywhere along its line */
+function hitStick(p){
+  var order=S.sel===1?[AC[1],AC[0]]:[AC[0],AC[1]];
+  for(var j=0;j<order.length;j++){
+    var a=order[j],r=a.route;if(!r||r.kind!=='sticks')continue;
+    for(var k=1;k<r.nodes.length;k++){
+      if(Math.hypot(sx(r.nodes[k].x)-p.x,sy(r.nodes[k].y)-p.y)<14*HIT)return {a:a,k:k};
+      for(var i=Math.max(1,r.segEnd[k-1]+1);i<=r.segEnd[k];i++){
+        var q0=r.pts[i-1],q1=r.pts[i];
+        if(segDist(p.x,p.y,sx(q0.x),sy(q0.y),sx(q1.x),sy(q1.y))<9*HIT)return {a:a,k:k};
+      }
+    }
+  }
+  return null;
+}
+/* remove one stick; the next stick then starts from the point before it */
+function eraseStick(a,k){
+  var r=a.route,nd=r.nodes[k];
+  if(r.hold&&r.hold.node===nd){r.hold=null;r.slow=false;if(r.cruise!=null)a.tas=r.cruise;}
+  r.nodes.splice(k,1);r.bends.splice(k,1);
+  if(k<r.bends.length)r.bends[k]=null;
+  if(r.nodes.length<2){a.route=null;a.saved=null;}
+  else{rebuild(r);saveSticks(a);}
+  closePop();syncHeadingSelect();
+}
+function hitRot(p){
+  var order=S.sel===1?[AC[1],AC[0]]:[AC[0],AC[1]];
+  for(var j=0;j<order.length;j++){
+    var r=patOf(order[j]);if(!r)continue;
+    var h=patRotPos(r);if(Math.hypot(h.x-p.x,h.y-p.y)<14*HIT)return order[j];
+  }
+  return null;
 }
 function hitPattern(p){
   var order=S.sel===1?[AC[1],AC[0]]:[AC[0],AC[1]];
@@ -1486,35 +1961,48 @@ function abortDrag(){
   if(drag.mode==='ac')S.dragAC=false;
   if(drag.mode==='place')S.hover=null;
   if(drag.moved&&(drag.mode==='node'||drag.mode==='bend'))saveSticks(primary());
-  drag=null;cv.style.cursor=S.tool==='pan'?'grab':'crosshair';
+  var d0=drag;drag=null;cv.style.cursor=S.tool==='pan'?'grab':'crosshair';
+  if(editSig()!==d0.sig)pushSnap(d0.undo);
 }
 cv.addEventListener('pointerdown',function(e){
   var p=local(e),mode='pan',k=-1,r=null,pa=null,mk2=null,links=null,i;
   HIT=e.pointerType==='touch'?1.9:e.pointerType==='pen'?1.3:1;
+  if(e.isPrimary)ptrs.clear();
+  if(ptrs.size<2)gest=null;
   ptrs.set(e.pointerId,p);
   try{cv.setPointerCapture(e.pointerId);}catch(err){}
   if(ptrs.size>=2){abortDrag();if(ptrs.size===2)gest=gestState();return;}
+  var u0=snapUndo(),sig0=editSig();
   if(S.tool==='sticks'){
     r=primary().route;
     if(r&&r.kind==='sticks'){
       for(i=1;i<r.nodes.length&&mode==='pan';i++){if(Math.hypot(sx(r.nodes[i].x)-p.x,sy(r.nodes[i].y)-p.y)<12*HIT){mode='node';k=i;}}
       for(i=1;i<r.nodes.length&&mode==='pan';i++){var h=handlePos(r,i);if(Math.hypot(sx(h.x)-p.x,sy(h.y)-p.y)<13*HIT){mode='bend';k=i;}}
     }
-  }else if(S.tool==='pan'){
+  }
+  if(mode==='pan'&&S.tool!=='terrain'&&S.tool!=='measure'&&S.tool!=='mapmove'&&S.tool!=='mapscale'){
     k=hitAircraft(p);if(k>=0)mode='ac';
     else{
       mk2=hitMarker(p);
       if(mk2){mode='marker';links=linkedNodes(mk2);}
-      else{pa=hitPattern(p);if(pa)mode='pat';}
+      else{
+        pa=hitRot(p);
+        if(pa)mode='rot';else{pa=hitPattern(p);if(pa)mode='pat';}
+      }
     }
   }else if(S.tool==='terrain'){
     mode='terrain';S.draft={type:$('terType').value,pts:[toWorld(p.x,p.y)]};
   }else if(S.tool==='measure'){
     mode='measure';var w0=toWorld(p.x,p.y);S.meas={a:w0,b:{x:w0.x,y:w0.y}};
+  }else if(S.tool==='mapmove'&&S.map){
+    mode='mapmove';
+  }else if(S.tool==='mapscale'&&S.map){
+    mode='mapscale';var w2=toWorld(p.x,p.y);S.mapLine={a:w2,b:{x:w2.x,y:w2.y}};
   }
   /* with a finger, hold to preview the stick and lift to place it */
   if(S.tool==='sticks'&&mode==='pan'&&e.pointerType==='touch'){mode='place';S.hover=toWorld(p.x,p.y);}
-  drag={x:p.x,y:p.y,sx:p.x,sy:p.y,moved:false,mode:mode,k:k,r:r,pa:pa,m:mk2,links:links};
+  drag={x:p.x,y:p.y,sx:p.x,sy:p.y,moved:false,mode:mode,k:k,r:r,pa:pa,m:mk2,links:links,undo:u0,sig:sig0};
+  if(mode==='rot'){var w1=toWorld(p.x,p.y);drag.pv=patPivot(pa);drag.ang=Math.atan2(w1.y-drag.pv.y,w1.x-drag.pv.x);}
 });
 cv.addEventListener('pointermove',function(e){
   var p=local(e);
@@ -1536,12 +2024,15 @@ cv.addEventListener('pointermove',function(e){
     if(drag.mode==='pan'&&S.follow){S.follow=false;$('follow').checked=false;}
     if(drag.mode==='ac'){S.dragAC=true;setSel(drag.k);cv.style.cursor='grabbing';}
     if(drag.mode==='pat'||drag.mode==='marker')cv.style.cursor='move';
+    if(drag.mode==='rot')cv.style.cursor='grabbing';
   }
   if(drag.moved){
     var w=toWorld(p.x,p.y),r=drag.r;
     if(drag.mode==='pan'){S.cam.x-=(p.x-drag.x)/S.scale;S.cam.y+=(p.y-drag.y)/S.scale;}
     else if(drag.mode==='ac'){moveAircraft(drag.k,w);}
     else if(drag.mode==='measure'){S.meas.b=w;}
+    else if(drag.mode==='mapscale'&&S.mapLine){S.mapLine.b=w;}
+    else if(drag.mode==='mapmove'&&S.map){S.map.x+=(p.x-drag.x)/S.scale;S.map.y-=(p.y-drag.y)/S.scale;}
     else if(drag.mode==='terrain'&&S.draft){
       var lp=S.draft.pts[S.draft.pts.length-1];
       if(Math.hypot(sx(lp.x)-p.x,sy(lp.y)-p.y)>4)S.draft.pts.push(w);
@@ -1553,6 +2044,14 @@ cv.addEventListener('pointermove',function(e){
     else if(drag.mode==='pat'&&patOf(drag.pa)){
       var mx=(p.x-drag.x)/S.scale,my=-(p.y-drag.y)/S.scale;
       patOf(drag.pa).pts.forEach(function(q){q.x+=mx;q.y+=my;});
+      var tp=trailSyncPts(drag.pa);if(tp)tp.forEach(function(q){q.x+=mx;q.y+=my;});
+    }
+    else if(drag.mode==='rot'&&patOf(drag.pa)){
+      var pv=drag.pv,ang=Math.atan2(w.y-pv.y,w.x-pv.x),cs=Math.cos(ang-drag.ang),sn=Math.sin(ang-drag.ang);
+      var spin=function(q){var x=q.x-pv.x,y=q.y-pv.y;q.x=pv.x+x*cs-y*sn;q.y=pv.y+x*sn+y*cs;};
+      patOf(drag.pa).pts.forEach(spin);
+      var tp2=trailSyncPts(drag.pa);if(tp2)tp2.forEach(spin);
+      drag.ang=ang;
     }
     else if(drag.mode==='node'){r.nodes[drag.k].x=w.x;r.nodes[drag.k].y=w.y;rebuild(r);}
     else if(drag.mode==='bend'){
@@ -1564,30 +2063,34 @@ cv.addEventListener('pointermove',function(e){
   drag.x=p.x;drag.y=p.y;
 });
 cv.addEventListener('pointerleave',function(){S.hover=null;});
-cv.addEventListener('pointerup',function(e){
+cv.addEventListener('lostpointercapture',function(e){if(!drag){ptrs.delete(e.pointerId);if(ptrs.size<2)gest=null;}});
+function finishPointer(e){
   ptrs.delete(e.pointerId);
   if(gest){if(ptrs.size<2)gest=null;return;}
   if(!drag)return;var p=local(e),d=drag;drag=null;
   if(d.mode==='place'){d.moved=false;S.hover=null;}
   if(d.mode==='terrain'){if(S.draft&&S.draft.pts.length>=3)S.terrain.push(S.draft);S.draft=null;return;}
   if(d.mode==='ac'){S.dragAC=false;cv.style.cursor=S.tool==='pan'?'grab':'crosshair';}
-  if(d.mode==='pat'||d.mode==='marker')cv.style.cursor=S.tool==='pan'?'grab':'crosshair';
+  if(d.mode==='pat'||d.mode==='rot'||d.mode==='marker')cv.style.cursor=S.tool==='pan'?'grab':'crosshair';
   if(d.mode==='marker'&&d.moved)d.links.forEach(function(l){saveSticks(l.a);});
   if(d.moved){
     if(d.mode==='node'||d.mode==='bend')saveSticks(primary());
-    if(d.mode==='pat'&&isPattern(d.pa.route))rejoinNearest(d.pa);
-    else if(d.mode==='pat'&&patOf(d.pa)){
+    var pm=d.mode==='pat'||d.mode==='rot';
+    if(pm&&isPattern(d.pa.route)){rejoinNearest(d.pa);if(trailSyncPts(d.pa))rejoinNearest(AC[1]);}
+    else if(pm&&patOf(d.pa)){
       /* a waiting pattern keeps the spot it was dropped at, measured from the end of the last stick */
-      var sr=d.pa.route,ln=sr.nodes[sr.nodes.length-1],q0=sr.after.pts[0];
-      sr.afterOff={x:q0.x-ln.x,y:q0.y-ln.y};saveSticks(d.pa);
+      var sr=d.pa.route,ln=sr.nodes[sr.nodes.length-1],q0=sr.after.pts[0],off={x:q0.x-ln.x,y:q0.y-ln.y};
+      sr.afterOff=Math.hypot(off.x,off.y)<0.5?null:off;saveSticks(d.pa);
     }
     return;
   }
   var w=toWorld(p.x,p.y);
+  if(d.mode==='ac'){setSel(d.k);return;}
   if(d.mode==='measure'){S.meas=null;}
+  else if(d.mode==='mapscale'){S.mapLine=null;}
   else if(S.tool==='sticks'){
     if(d.mode==='node'){openPop(primary(),d.r.nodes[d.k],null);}
-    else if(d.mode==='pan'||d.mode==='place'){
+    else if(d.mode!=='bend'){
       var sv=hitSurvivor(p);
       if(sv)w={x:sv.m.x,y:sv.m.y};
       var nd=addStick(w);
@@ -1599,8 +2102,20 @@ cv.addEventListener('pointerup',function(e){
     var best=-1,bd=24*HIT;
     S.markers.forEach(function(m,i){var q=Math.hypot(sx(m.x)-p.x,sy(m.y)-p.y);if(q<bd){bd=q;best=i;}});
     if(best>=0)S.markers.splice(best,1);
-    else{for(var ti=S.terrain.length-1;ti>=0;ti--){if(inPoly(S.terrain[ti].pts,w.x,w.y)){S.terrain.splice(ti,1);break;}}}
-  }else if(d.mode==='ac'){setSel(d.k);}
+    else{
+      var hs=hitStick(p),hp=hs?null:hitPattern(p);
+      if(hs)eraseStick(hs.a,hs.k);
+      else if(hp){
+        if(isPattern(hp.route))hp.route=null;else{hp.route.after=null;hp.route.afterOff=null;saveSticks(hp);}
+        syncHeadingSelect();
+      }
+      else{for(var ti=S.terrain.length-1;ti>=0;ti--){if(inPoly(S.terrain[ti].pts,w.x,w.y)){S.terrain.splice(ti,1);break;}}}
+    }
+  }
+}
+cv.addEventListener('pointerup',function(e){
+  var d0=drag;finishPointer(e);
+  if(d0&&editSig()!==d0.sig)pushSnap(d0.undo);
 });
 cv.addEventListener('pointercancel',function(e){ptrs.delete(e.pointerId);if(ptrs.size<2)gest=null;if(drag&&drag.mode==='place')S.hover=null;drag=null;S.dragAC=false;S.draft=null;});
 cv.addEventListener('wheel',function(e){
