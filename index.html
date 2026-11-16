@@ -914,6 +914,7 @@ function stepAC(a,dt){
   move(a,dt);mark(a);
 }
 function step(dt){
+  fixHolds();
   var L=AC[0],T=AC[1];
   stepAC(L,dt);
   if(!S.formOn){if(T.route&&T.route.kind==='follow')feedFollow();else if(T.route&&T.route.sync)circSync();stepAC(T,dt);}
@@ -962,7 +963,22 @@ function resetAircraft(){
 var simT=0,hist=[];
 function snapRoute(r){
   if(!r)return null;
-  return JSON.parse(JSON.stringify(r,function(k,v){return k==='hold'&&v?{k:r.nodes.indexOf(v.node),t:v.t}:v;}));
+  return JSON.parse(JSON.stringify(r,function(k,v){
+    if(k!=='hold'||!v)return v;
+    /* a hold whose point has since been removed is not kept */
+    /* a route that was already saved carries the point's number instead of the point itself */
+    if(v.node===undefined&&typeof v.k==='number')return v.k>=0?{k:v.k,t:v.t}:null;
+    var i=r.nodes?r.nodes.indexOf(v.node):-1;return i<0?null:{k:i,t:v.t};
+  }));
+}
+/* a commit hold must always point at a stick point that still exists. If the point was removed
+   (Undo last, Erase, a rebuilt route), the hold is dropped and the aircraft flies on at its cruise speed. */
+function fixHolds(){
+  AC.forEach(function(a){
+    var r=a.route;if(!r||!r.hold)return;
+    if(r.hold.node&&r.nodes&&r.nodes.indexOf(r.hold.node)>=0&&isFinite(r.hold.t))return;
+    r.hold=null;r.slow=false;if(r.cruise!=null&&isFinite(r.cruise))a.tas=r.cruise;
+  });
 }
 function capture(){
   return {formOn:S.formOn,rejoin:S.rejoin,off:{x:S.off.x,y:S.off.y},ac:AC.map(function(a){
@@ -976,9 +992,10 @@ function applyState(st){
     a.pos={x:o.x,y:o.y};a.hdg=o.hdg;a.tas=o.tas;a.tgt=o.tgt==null?null:o.tgt;a.turnRem=o.turnRem;a.turnDir=o.turnDir;a.turnTarget=o.turnTarget;
     if(o.gen===a.trackGen)a.track.length=Math.min(a.track.length,o.len);else{a.track=[];a.trackGen++;}
     var r=snapRoute(o.route);
-    if(r&&r.hold)r.hold={node:r.nodes[r.hold.k],t:r.hold.t};
+    if(r&&r.hold)r.hold=r.nodes&&r.nodes[r.hold.k]?{node:r.nodes[r.hold.k],t:r.hold.t}:null;
     a.route=r;
   });
+  fixHolds();
   closePop();syncControls();
 }
 function snap(){
@@ -1872,6 +1889,7 @@ function draw(dt){
 /* ---------- readouts ---------- */
 function setText(el,t){if(el.textContent!==t)el.textContent=t;}
 function readouts(){
+  fixHolds();
   AC.forEach(function(c,k){
     var v=gndVel(c),gs=Math.hypot(v.x,v.y)/KT,trk=norm(Math.atan2(v.x,v.y)/RAD);
     if(c.route&&c.route.hold)gs=0;
@@ -2231,7 +2249,7 @@ $('terClear').addEventListener('click',function(){pushUndo();S.terrain=[];});
 $('measClear').addEventListener('click',function(){pushUndo();S.meas=null;});
 $('stUndo').addEventListener('click',function(){pushUndo();
   var r=primary().route;if(!r||r.kind!=='sticks')return;
-  r.nodes.pop();r.bends.pop();if(r.nodes.length<2)primary().route=null;else rebuild(r);
+  r.nodes.pop();r.bends.pop();fixHolds();if(r.nodes.length<2)primary().route=null;else rebuild(r);
   saveSticks(primary());closePop();
 });
 $('stClear').addEventListener('click',function(){pushUndo();
