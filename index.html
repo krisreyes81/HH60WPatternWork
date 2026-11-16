@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <title>HH-60 Formation Sim</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -2052,6 +2052,25 @@ $('play').addEventListener('click',function(){setPlaying(!S.playing);});
 $('reset').addEventListener('click',function(){pushUndo();resetAircraft();});
 /* backup for older iPads: swallow the double tap itself so the page does not zoom */
 try{document.addEventListener('dblclick',function(e){e.preventDefault();},{passive:false});}catch(e){}
+/* iPad Safari zooms on the second of two quick taps unless that tap's default action is cancelled.
+   Cancelling it also cancels the click, so the click is sent by hand to keep fast double presses working. */
+(function(){
+  var lastEnd=0,lastX=0,lastY=0;
+  try{
+    document.addEventListener('touchend',function(e){
+      var t=e.changedTouches&&e.changedTouches[0];if(!t||e.touches.length)return;
+      var now=Date.now(),quick=now-lastEnd<400&&Math.abs(t.clientX-lastX)<40&&Math.abs(t.clientY-lastY)<40;
+      lastEnd=now;lastX=t.clientX;lastY=t.clientY;
+      if(!quick)return;
+      var el=e.target&&e.target.closest?e.target:null;if(!el)return;
+      /* typing boxes and pick lists keep their normal behaviour */
+      if(el.closest('input,select,textarea,label'))return;
+      if(e.cancelable)e.preventDefault();
+      var btn=el.closest('button');
+      if(btn&&!btn.disabled)btn.click();
+    },{passive:false});
+  }catch(err){}
+})();
 $('scnSave').addEventListener('click',function(){
   var name=$('scnName').value.trim()||('Setup '+new Date().toLocaleString());
   var list=scnRead().filter(function(it){return it.name!==name;});
