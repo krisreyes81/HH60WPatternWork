@@ -30,7 +30,8 @@
   --body:"Barlow","Segoe UI",system-ui,sans-serif;
   --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
 }
-*{box-sizing:border-box}
+/* touch-action:manipulation tells iPad Safari not to zoom the page on a double tap; taps, scrolling and pinch still work */
+*{box-sizing:border-box;touch-action:manipulation}
 html,body{height:100%;margin:0}
 body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.35}
 .app{display:grid;grid-template-columns:340px 1fr;height:100%}
@@ -2049,6 +2050,8 @@ $('labels').addEventListener('change',function(){S.showLabels=this.checked;});
 $('zoom').addEventListener('input',function(){S.scale=Math.pow(10,parseFloat(this.value));});
 $('play').addEventListener('click',function(){setPlaying(!S.playing);});
 $('reset').addEventListener('click',function(){pushUndo();resetAircraft();});
+/* backup for older iPads: swallow the double tap itself so the page does not zoom */
+try{document.addEventListener('dblclick',function(e){e.preventDefault();},{passive:false});}catch(e){}
 $('scnSave').addEventListener('click',function(){
   var name=$('scnName').value.trim()||('Setup '+new Date().toLocaleString());
   var list=scnRead().filter(function(it){return it.name!==name;});
