@@ -64,7 +64,7 @@ button[aria-pressed=true]{background:var(--accent);color:#1b1404;border-color:va
 .grp{font-family:var(--display);font-size:14px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:6px 0 -4px;padding-top:12px;border-top:1px solid var(--line)}
 #toolbar button{padding:6px 8px;font-size:14px}
 .patPick{width:auto;flex:1 1 auto;font-family:var(--body);font-weight:600;font-size:14px;padding:6px 8px;cursor:pointer}
-.floatTools .patPick{background:rgba(12,16,22,.88);width:100%;font-size:15px;padding:7px 10px}
+.floatTools .patPick{background:rgba(12,16,22,.88);width:auto;font-size:14px;padding:7px 4px 7px 8px}
 .who{position:sticky;top:-16px;z-index:2;background:var(--panel);padding:10px 0 10px;margin:-6px 0;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:6px}
 .who .lab{font-family:var(--display);font-size:15px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
 #selBtns button[data-sel="0"][aria-pressed=true]{background:var(--lead);border-color:var(--lead);color:#04122b}
@@ -83,7 +83,7 @@ canvas.spr{inset:auto;left:0;top:0;width:auto;height:auto;pointer-events:none;wi
 .pop[hidden]{display:none}
 .pop strong{font-family:var(--display);font-size:18px;letter-spacing:.06em;text-transform:uppercase}
 .sideNotes{position:absolute;left:12px;top:98px;display:flex;flex-direction:column;gap:8px;align-items:flex-start;pointer-events:none;z-index:5;width:min(270px,calc(100% - 24px))}
-.app.nopanel .sideNotes{left:188px}
+.app.nopanel .sideNotes{left:12px;top:144px}
 .commit{display:flex;flex-direction:column;gap:6px;pointer-events:none;width:100%}
 .commit[hidden]{display:none}
 .commit .card{background:rgba(12,16,22,.92);border:2px solid #2bff6a;border-radius:10px;padding:6px 10px 7px;display:grid;grid-template-columns:1fr auto;align-items:center;column-gap:10px}
@@ -98,6 +98,8 @@ canvas.spr{inset:auto;left:0;top:0;width:auto;height:auto;pointer-events:none;wi
 .commit .card.last .time{color:var(--accent)}
 .commit .card.last .bar i{background:var(--accent)}
 .rightCol{position:absolute;right:12px;top:160px;width:276px;max-width:calc(100% - 24px);max-height:calc(100% - 222px);overflow-y:auto;overflow-x:hidden;display:flex;flex-direction:column;gap:8px;z-index:2;pointer-events:none;scrollbar-width:thin}
+/* on a wide map the chart and gun holds sit at the very top, left of the compass */
+.rightCol.up{top:8px;right:136px;max-height:calc(100% - 70px)}
 .rightCol>*{flex:0 0 auto}
 .rightCol>*{pointer-events:auto}
 .emCard,.gunCard{width:100%;background:rgba(12,16,22,.9);border:1px solid rgba(255,255,255,.16);border-radius:8px;z-index:2;overflow:hidden}
@@ -143,13 +145,20 @@ canvas.spr{inset:auto;left:0;top:0;width:auto;height:auto;pointer-events:none;wi
 .dock.narrow{max-width:calc(100% - 312px)}
 .dock.narrow .hdgBar{flex-wrap:wrap}
 .dock.narrow .hdgBar .gap{flex-basis:100%;width:0;height:0}
-.app.nopanel .floatTools{top:98px;transform:none}
-.app.nopanel .dock.side{left:188px;max-width:calc(100% - 200px)}
+.app.nopanel .floatTools{top:92px;left:10px;transform:none}
+.app.nopanel .dock.side{left:12px;max-width:calc(100% - 24px)}
 .dock.min .dockBody{display:none}
 .dock #dockMin{font-family:var(--display);font-weight:700;letter-spacing:.1em;font-size:12px;padding:4px 10px;background:rgba(12,16,22,.88);color:var(--muted,#9aa5b5)}
 .dockBody{display:flex;flex-direction:column;align-items:flex-start;gap:5px}
 .dockEdit{display:flex;gap:5px;align-items:stretch}
 .dockRows{display:flex;flex-direction:column;gap:5px;align-items:flex-start}
+.stkCol{display:flex;flex-direction:column;gap:5px;justify-content:flex-end;margin-left:4px}
+.stkCol .stkBtn{white-space:nowrap;padding:5px 9px;font-size:13px;font-weight:600;color:#fff;border-color:rgba(255,255,255,.35)}
+.stkCol #stkL{background:rgba(24,70,170,.92)}
+.stkCol #stkT{background:rgba(16,104,54,.92)}
+.stkCol .stkBtn[aria-pressed=true]{background:var(--accent);color:#1b1404;border-color:var(--accent)}
+.dock.narrow .dockEdit{flex-wrap:wrap}
+.dock.narrow .stkCol{flex-direction:row;flex-basis:100%;justify-content:flex-end;margin-left:0}
 .dock .gunBar,.dock .hdgBar,.dock .spdBar,.dock .recBar{position:static;max-width:none}
 .dock .recBar button{padding:4px 10px;font-size:13px}
 .dock .gunBar{flex-wrap:wrap}
@@ -157,8 +166,10 @@ canvas.spr{inset:auto;left:0;top:0;width:auto;height:auto;pointer-events:none;wi
 .dock #spdWho{font-family:var(--display);font-weight:700;letter-spacing:.08em;min-width:64px;background:rgba(12,16,22,.88)}
 .dockHead{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .dock .ctrGrp{display:flex;gap:4px;align-items:center;background:rgba(12,16,22,.5);border:1px solid rgba(255,255,255,.22);border-radius:10px;padding:3px}
-.dock .dockHead .trkGrp{display:flex;gap:4px;align-items:center;margin-left:12px}
-.dock .dockHead #spQuick{width:auto;min-width:0;padding:4px 4px;font-size:13px;font-family:var(--mono);background:rgba(12,16,22,.88)}
+/* Trail follows lead and its spacing read as one control: same height, same type, one frame that stands out a little */
+.dock .dockHead .trkGrp{display:flex;gap:4px;align-items:stretch;margin-left:12px;background:rgba(12,16,22,.62);border:1px solid rgba(242,178,51,.6);border-radius:10px;padding:3px;box-shadow:0 2px 8px rgba(0,0,0,.4)}
+.dock .dockHead #spQuick{width:auto;min-width:0;padding:4px 4px 4px 8px;font-size:13px;font-family:inherit;font-weight:600;background:rgba(12,16,22,.88);border-radius:7px}
+.dock .dockHead .trkGrp .trkBtn{font-weight:600;border-radius:7px}
 .dock .dockHead .recBar{margin-left:12px}
 .dock.narrow .dockHead .trkGrp,.dock.narrow .dockHead .recBar,.dock.side .dockHead .trkGrp,.dock.side .dockHead .recBar{margin-left:0}
 .dock .ctrGrp .unit{background:rgba(12,16,22,.7);border-radius:6px;padding:3px 6px;min-width:0}
@@ -216,13 +227,14 @@ canvas.spr{inset:auto;left:0;top:0;width:auto;height:auto;pointer-events:none;wi
 input:disabled,select:disabled{opacity:.55}
 .nud{padding:6px 7px;font-size:13px;font-family:var(--mono);flex:0 0 auto}
 .stage{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
-.floatTools{position:absolute;left:12px;top:50%;transform:translateY(-50%);display:none;flex-direction:column;gap:6px;z-index:2;width:164px}
-.floatTools #selBtns{flex-wrap:nowrap;gap:4px;margin-bottom:4px}
-.floatTools #selBtns button{flex:1 1 0;padding:6px 2px;text-align:center}
-.floatTools #menuBtn{margin-top:4px;border-color:var(--accent);color:var(--accent)}
+/* with the controls hidden, the map tools run in one row across the top, under the readouts */
+.floatTools{position:absolute;left:12px;top:50%;transform:translateY(-50%);display:none;flex-direction:row;flex-wrap:wrap;align-items:center;gap:5px;z-index:2;max-width:calc(100% - 150px)}
+.floatTools #selBtns{flex-wrap:nowrap;gap:4px;margin:0 5px 0 0;width:auto}
+.floatTools #selBtns button{flex:0 0 auto;padding:6px 9px;text-align:center}
+.floatTools #menuBtn{margin-left:2px;border-color:var(--accent);color:var(--accent)}
 .floatTools #menuBtn[aria-expanded=true]{background:var(--accent);color:#1b1404}
 .stage input,.stage textarea{-webkit-user-select:text;user-select:text}
-.drawer{position:absolute;left:188px;top:116px;width:min(352px,calc(100% - 204px));max-height:calc(100% - 188px);display:flex;flex-direction:column;background:var(--panel);border:1px solid var(--line);border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,.55);z-index:4}
+.drawer{position:absolute;left:12px;top:144px;width:min(352px,calc(100% - 24px));max-height:calc(100% - 216px);display:flex;flex-direction:column;background:var(--panel);border:1px solid var(--line);border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,.55);z-index:4}
 .drawerHead{display:flex;gap:8px;align-items:center;padding:8px 10px;border-bottom:1px solid var(--line)}
 .drawerHead strong{flex:1;font-family:var(--display);font-size:16px;letter-spacing:.1em;text-transform:uppercase}
 .drawerHead button{padding:5px 10px}
@@ -231,7 +243,7 @@ input:disabled,select:disabled{opacity:.55}
 .menuList button{text-align:left}
 .menuGrp{grid-column:1 / -1;font-family:var(--display);font-size:13px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-top:6px}
 .menuGrp:first-child{margin-top:0}
-.floatTools button{background:rgba(12,16,22,.88);text-align:left}
+.floatTools button{background:rgba(12,16,22,.88);text-align:left;padding:6px 9px;font-size:14px}
 .floatTools button[aria-pressed=true]{background:var(--accent)}
 .app.nopanel{grid-template-columns:1fr}
 .app.nopanel .panel{display:none}
@@ -255,7 +267,10 @@ input:disabled,select:disabled{opacity:.55}
   .drawer{left:12px;right:12px;width:auto;top:auto;bottom:60px;max-height:62%}
   .hud{right:12px;top:auto;bottom:100px}
   /* small screens: the bottom edge belongs to the play controls, so the airspeed buttons go to the top */
-  .dock{bottom:auto;top:54px;left:8px;max-width:calc(100% - 16px)}
+  .dock{bottom:auto !important;top:54px;left:8px;max-width:calc(100% - 16px)}
+  .app.nopanel .floatTools{top:8px;left:8px}
+  .app.nopanel .dock{top:104px}
+  .app.nopanel .sideNotes{top:auto;bottom:190px}
   .dock .gunBar,.dock .hdgBar,.dock .spdBar{flex-wrap:wrap}
   .dockEdit{flex-wrap:wrap}
   .spdBar button{padding:6px 7px}
@@ -305,6 +320,10 @@ details.cat>fieldset{margin-bottom:12px}
 .evList .evT{font-family:var(--mono);color:var(--accent);flex:0 0 auto}
 .evList .evWhat{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .evList .evDel{flex:0 0 auto;padding:2px 9px;min-height:30px}
+.gunCtl.folded #thBar,.gunCtl.folded #gunCtlSize,.gunCtl.folded #gReload{display:none}
+.gunCtl #gunCtlArrow{font-size:15px;color:var(--accent);flex:0 0 auto}
+.gunCtl .gunCtlTop .emHead>span:first-child{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis}
+.thBar{border-top:1px solid rgba(255,255,255,.12)}
 .gunCtl #gunCtlSize{flex:0 0 auto;padding:3px 7px;font-size:12px;min-width:0;min-height:28px}
 .gunCtl.compact .gload,.gunCtl.compact .thRow.tgtRow{display:none}
 .gunCtl.compact .gunBar .gset.gTop{border-radius:9px}
@@ -315,7 +334,7 @@ details.cat>fieldset{margin-bottom:12px}
   <aside class="panel">
     <div>
       <h1>HH-60 Formation Sim</h1>
-      <p class="sub"><span class="swatch" style="background:var(--lead)"></span>Lead <span class="swatch" style="background:var(--trail);margin-left:10px"></span>Trail. North is up. <span id="build" style="opacity:.6;white-space:nowrap">Build 19 Nov H</span></p>
+      <p class="sub"><span class="swatch" style="background:var(--lead)"></span>Lead <span class="swatch" style="background:var(--trail);margin-left:10px"></span>Trail. North is up. <span id="build" style="opacity:.6;white-space:nowrap">Build 19 Nov K</span></p>
     </div>
 
     <div class="who">
@@ -744,12 +763,12 @@ details.cat>fieldset{margin-bottom:12px}
       </div>
     </div>
     <div class="gunCard gunCtl" id="gunCtl">
+      <div class="gunCtlTop"><button type="button" class="emHead" id="gunCtlHead" aria-expanded="true" title="Show or hide the threat and gun buttons"><span><b>WEAPONS</b><span id="gunCtlNote"></span></span><span id="gunCtlArrow">▾</span></button><button type="button" id="gunCtlSize" title="Show less or more of this window">Less</button><button type="button" id="gReload" title="Fill every gun back to a full load">Reload</button></div>
       <div class="thBar" id="thBar" aria-label="Threat status">
         <div class="thRow"><b>THREAT</b><select id="thSel" aria-label="Threat to mark" title="Which threat the buttons below act on"></select><button type="button" id="thPop" data-tool="popup" aria-pressed="false" title="Press, then click the map. Click a threat that is down to bring it back up. Click anywhere else to pop up a new threat there.">Pop-up threat</button></div>
         <div class="thRow"><button type="button" id="thNeut" aria-pressed="false" title="Mark this threat neutralized. Guns keep shooting. Press again to make it active.">Threat neutralized</button><button type="button" id="thDest" aria-pressed="false" title="Mark this threat destroyed. Guns shooting at it cease fire. Press again to make it active.">Threat destroyed</button></div>
         <div class="thRow tgtRow"><button type="button" id="thAll" title="Sets all four guns to the threat picked above. Guns that are on shift fire to it.">All guns target T1</button><button type="button" id="thLead" title="Sets both of lead's guns to the threat picked above.">Lead target T1</button><button type="button" id="thTrail" title="Sets both of trail's guns to the threat picked above.">Trail target T1</button></div>
       </div>
-      <div class="gunCtlTop"><button type="button" class="emHead" id="gunCtlHead" aria-expanded="true" title="Show or hide the gun buttons"><span><b>GUNS</b><span id="gunCtlNote">tap FIRE to turn a gun on</span></span><span id="gunCtlArrow">▾</span></button><button type="button" id="gunCtlSize" title="Show less or more of this window">Less</button><button type="button" id="gReload" title="Fill every gun back to a full load">Reload</button></div>
       <div class="gunCtlBody" id="gunCtlBody">
         <div class="gunBar" id="gunBar" aria-label="Flex fire guns">
           <span class="gset gL gTop"><select id="gt00" aria-label="Lead left gun target" title="Lead left gun target"></select><button type="button" id="g00" aria-pressed="false" title="Lead left gun">FIRE L</button><b style="color:#6fa8ff">LEAD</b><button type="button" id="g01" aria-pressed="false" title="Lead right gun">FIRE R</button><select id="gt01" aria-label="Lead right gun target" title="Lead right gun target"></select></span>
@@ -768,8 +787,8 @@ details.cat>fieldset{margin-bottom:12px}
         </div>
       </div>
       <div class="gunCard" id="gunCard" hidden>
-        <button type="button" class="emHead" id="gunHead" aria-expanded="true" title="Show or hide why guns are holding fire"><span><b>GUN HOLDS</b><span id="gunCount"></span></span><span id="gunArrow">▾</span></button>
-        <div class="gunBody" id="gunBody"><div id="gunMsg" aria-live="polite"></div></div>
+        <button type="button" class="emHead" id="gunHead" aria-expanded="false" title="Show or hide why guns are holding fire"><span><b>GUN HOLDS</b><span id="gunCount"></span></span><span id="gunArrow">▸</span></button>
+        <div class="gunBody" id="gunBody" hidden><div id="gunMsg" aria-live="polite"></div></div>
       </div>
     </div>
     <div class="sideNotes" id="sideNotes"><div class="commit" id="commit" hidden aria-live="off"></div><div class="toasts" id="toasts" aria-live="assertive"></div></div>
@@ -805,6 +824,10 @@ details.cat>fieldset{margin-bottom:12px}
               <button type="button" class="spdBtn" data-v="70" aria-pressed="false">70</button><button type="button" class="spdBtn" data-v="80" aria-pressed="false">80</button><button type="button" class="spdBtn" data-v="90" aria-pressed="false">90</button><button type="button" class="spdBtn" data-v="100" aria-pressed="false">100</button><button type="button" class="spdBtn" data-v="110" aria-pressed="false">110</button><button type="button" class="spdBtn" data-v="120" aria-pressed="false">120</button>
               <button type="button" class="spdStep" data-d="5" aria-label="Plus 5 knots">+5</button>
             </div>
+          </div>
+          <div class="stkCol" aria-label="Draw vector sticks">
+            <button type="button" class="stkBtn" id="stkL" data-ac="0" aria-pressed="false" title="Draw vector sticks for lead. Tap again to stop.">✎ Lead sticks</button>
+            <button type="button" class="stkBtn" id="stkT" data-ac="1" aria-pressed="false" title="Draw vector sticks for trail. Tap again to stop.">✎ Trail sticks</button>
           </div>
         </div>
       </div>
@@ -1532,7 +1555,7 @@ var GTYPE={
 };
 var GS=[[null,null],[null,null]];
 function gunLoad(i,sd,type){var t=GTYPE[type]?type:'GAU-21';GS[i][sd]={type:t,ammo:GTYPE[t].ammo,ph:'ready',t:0,rpm:0};}
-function gunReload(){for(var i=0;i<2;i++)for(var sd=0;sd<2;sd++)gunLoad(i,sd,GS[i][sd]?GS[i][sd].type:'GAU-21');}
+function gunReload(){for(var i=0;i<2;i++)for(var sd=0;sd<2;sd++)gunLoad(i,sd,GS[i][sd]?GS[i][sd].type:(sd===0?'GAU-2':'GAU-21'));}
 gunReload();
 function rndBetween(a,b){return a+Math.random()*(b-a);}
 /* gunners fire bursts of 3 to 5 seconds with a short pause between them. Rounds come off the load while a burst runs. */
@@ -1749,7 +1772,7 @@ function gunUI(){
     if(g&&g.fire)nFire++;
   }
   /* the reasons sit in their own window on the right of the map. It shows while any gun is on. */
-  setText($('gunCtlNote'),st.length?st.length+' on, '+nFire+' firing':'tap FIRE to turn a gun on');
+  setText($('gunCtlNote'),st.length?st.length+' on, '+nFire+' firing':'');
   var anyOn=st.length>0,gc=$('gunCard');
   if(gc.hidden===anyOn)gc.hidden=!anyOn;
   setText($('gunCount'),msg.length?' '+msg.length:' 0');
@@ -2790,9 +2813,14 @@ function dockMeasure(){
     setText($('gunCtlSize'),cmp?'More':'Less');
     var tb=document.querySelector('.transport').getBoundingClientRect(),base=tb.height?Math.max(54,Math.round(sr.bottom-tb.top)+6):54;
     gc.style.bottom=(base+6)+'px';if(base>54)d.style.bottom=base+'px';
+    /* room at the top for the windows on the right? They go up there when they clear the readouts and the tool row. */
+    var edge=sr.left+10;
+    Array.prototype.forEach.call(document.querySelectorAll('.hud > *'),function(e){var r=e.getBoundingClientRect();if(r.width&&r.right>edge)edge=r.right;});
+    if(full&&ft&&ft.offsetWidth){var fr=ft.getBoundingClientRect();if(fr.right>edge)edge=fr.right;}
+    rc.classList.toggle('up',sr.right-136-276-10>edge);
     var gr=gc.getBoundingClientRect(),lift=0;
     function under(){return !d.classList.contains('min')&&d.getBoundingClientRect().right>gr.left-10;}
-    function tall(){return !!(full&&ft&&ft.offsetHeight&&98+ft.offsetHeight+8+d.offsetHeight+54+lift>H);}
+    function tall(){return !!(full&&ft&&ft.offsetHeight&&92+ft.offsetHeight+8+d.offsetHeight+54+lift>H);}
     function clearGuns(){
       /* the guns window sits at the bottom right, just above the bottom bar. If the quick bar would run under it,
          the TURN buttons drop to their own line. If that is still not enough, the quick bar moves up above the guns window. */
@@ -2810,7 +2838,7 @@ function dockMeasure(){
     var dr=d.getBoundingClientRect(),rr=rc.getBoundingClientRect(),top=gr.top;
     if(dr.height>0&&dr.right>rr.left-8&&dr.top<top)top=dr.top;
     /* with no room left above the guns window, the windows on the right step aside instead of sitting on top of it */
-    var room=top-sr.top-160-8;rc.style.maxHeight=Math.max(0,room)+'px';rc.style.visibility=room<40?'hidden':'';
+    var room=top-rc.getBoundingClientRect().top-8;rc.style.maxHeight=Math.max(0,room)+'px';rc.style.visibility=room<40?'hidden':'';
   }catch(e){dockH=0;}
 }
 function bgKey(){
@@ -3092,6 +3120,7 @@ Array.prototype.forEach.call(document.querySelectorAll('.spdStep'),function(b){b
 function spdStep(d){var v=wantSpeed(primary());setTas(d>0?Math.floor(v/5+1e-6)*5+5:Math.ceil(v/5-1e-6)*5-5);}
 $('spdWho').addEventListener('click',function(){setSel((S.sel+1)%3);});
 function spdReadout(){
+  [0,1].forEach(function(i){var sb=$(i?'stkT':'stkL'),on=String(S.tool==='sticks'&&S.sel===i);if(sb.getAttribute('aria-pressed')!==on)sb.setAttribute('aria-pressed',on);sb.disabled=!!PB;});
   var a=primary(),key=S.sel+'|'+Math.round(wantSpeed(a));
   if(key===spdShown)return;spdShown=key;
   var w=$('spdWho');$('dockEdit').setAttribute('data-sel',String(S.sel));w.textContent=['LEAD','TRAIL','BOTH'][S.sel];w.style.color=['#3f8cff','#35c46a','#f2b233'][S.sel];
@@ -3589,8 +3618,15 @@ $('commit').addEventListener('pointerdown',function(e){
   var c=AC[parseInt(b.getAttribute('data-ac'),10)],h=c&&c.route&&c.route.hold;if(!h||!h.node)return;
   pushUndo();h.node.pop=!h.node.pop;
 });
-$('gunCtlHead').addEventListener('click',function(){var b=$('gunCtlBody'),open=b.hidden;b.hidden=!open;this.setAttribute('aria-expanded',String(open));$('gunCtlArrow').textContent=open?'▾':'▸';dockMeasure();});
+$('gunCtlHead').addEventListener('click',function(){var b=$('gunCtlBody'),open=b.hidden;b.hidden=!open;$('gunCtl').classList.toggle('folded',!open);this.setAttribute('aria-expanded',String(open));$('gunCtlArrow').textContent=open?'▾':'▸';dockMeasure();});
 $('gunCtlSize').addEventListener('click',function(){GCM.user=!$('gunCtl').classList.contains('compact');dockMeasure();});
+Array.prototype.forEach.call(document.querySelectorAll('.stkBtn'),function(b){
+  b.addEventListener('click',function(){
+    if(PB)return;var i=+b.dataset.ac;
+    if(S.tool==='sticks'&&S.sel===i){setTool('pan');return;}
+    setSel(i);setTool('sticks');
+  });
+});
 $('gunHead').addEventListener('click',function(){var b=$('gunBody'),open=b.hidden;b.hidden=!open;this.setAttribute('aria-expanded',String(open));$('gunArrow').textContent=open?'▾':'▸';});
 $('dockMin').addEventListener('click',function(){var d=$('dock'),m=d.classList.toggle('min');this.setAttribute('aria-expanded',String(!m));this.textContent=m?'QUICK BAR ▴':'QUICK BAR ▾';dockMeasure();});
 [0,1].forEach(function(i){
@@ -3696,10 +3732,10 @@ function openSection(fs){
   $('drawer').hidden=false;$('menuBtn').setAttribute('aria-expanded','true');
 }
 function closeDrawer(){returnSection();$('drawer').hidden=true;$('menuBtn').setAttribute('aria-expanded','false');}
-/* the Lead / Trail / Both buttons ride along to the map's tool column */
+/* the Lead / Trail / Both buttons stay in the controls. With the controls hidden, the quick bar picks the aircraft. */
 function dockSel(on){
   var el=$('selBtns'),ft=$('floatTools');
-  if(on&&!selPh){selPh=document.createComment('sel');el.parentNode.insertBefore(selPh,el);ft.insertBefore(el,ft.firstChild);}
+  if(false&&on&&!selPh){selPh=document.createComment('sel');el.parentNode.insertBefore(selPh,el);ft.insertBefore(el,ft.firstChild);}
   else if(!on&&selPh){selPh.parentNode.insertBefore(el,selPh);selPh.parentNode.removeChild(selPh);selPh=null;}
 }
 try{buildMenu();}catch(e){}
