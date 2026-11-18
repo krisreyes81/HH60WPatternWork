@@ -90,6 +90,8 @@ canvas.spr{inset:auto;left:0;top:0;width:auto;height:auto;pointer-events:none;wi
 .commit .time{font-family:var(--mono);font-size:40px;line-height:1;font-variant-numeric:tabular-nums;color:#2bff6a;grid-row:1 / span 2;grid-column:2}
 .commit .bar{grid-column:1 / span 2;height:6px;border-radius:3px;background:rgba(255,255,255,.14);margin-top:8px;overflow:hidden}
 .commit .bar i{display:block;height:100%;background:#2bff6a}
+.commit .popB{grid-column:1 / span 2;margin-top:8px;pointer-events:auto;font-family:var(--display);font-weight:700;letter-spacing:.08em;font-size:14px;padding:7px 10px;background:rgba(12,16,22,.9)}
+.commit .popB[aria-pressed=true]{background:var(--accent);color:#1b1404;border-color:var(--accent)}
 .commit .card.last{border-color:var(--accent)}
 .commit .card.last .time{color:var(--accent)}
 .commit .card.last .bar i{background:var(--accent)}
@@ -108,6 +110,17 @@ canvas.spr{inset:auto;left:0;top:0;width:auto;height:auto;pointer-events:none;wi
 .gunCtl .gunBar .gset{justify-content:space-between;background:none;padding:0;gap:4px}
 .gunCtl .gunBar .gset b{flex:1 1 auto;text-align:center;padding:0}
 .gunCtl .gunBar select{min-width:54px}
+.gunCtl .gunBar .gload{margin-top:-2px}
+.gunCtl .glo{display:flex;align-items:center;gap:4px}
+.gunCtl .glo select{min-width:0;width:78px;padding:3px 2px;font-size:12px}
+.gunCtl .gam{font-family:var(--mono);font-size:13px;font-weight:600;min-width:44px;text-align:center;color:var(--ink);font-variant-numeric:tabular-nums;border-radius:6px;padding:3px 4px;border:1px solid transparent}
+.gunCtl .gam.grn{background:#1f9d4d;color:#fff}
+.gunCtl .gam.yel{background:#f2c230;color:#1b1404}
+.gunCtl .gam.red{background:#d23a2f;color:#fff}
+.gunCtl .gam.blk{background:#000;color:#fff;border-color:rgba(255,255,255,.55)}
+.toasts{position:absolute;left:50%;top:34%;transform:translateX(-50%);display:flex;flex-direction:column;gap:6px;align-items:center;z-index:5;pointer-events:none;max-width:calc(100% - 24px)}
+.toasts .toast{background:#000;border:2px solid #ff5a4d;color:#fff;border-radius:10px;padding:8px 16px;font-family:var(--display);font-weight:700;font-size:20px;letter-spacing:.12em;text-transform:uppercase;white-space:nowrap}
+.gunCtl #gReload{width:100%;padding:4px 6px;font-size:12px;min-width:0}
 .gunCtl .gunBar button{min-width:46px;padding:6px 6px}
 .gunCard #gunCount{color:var(--ink);font-family:var(--mono)}
 .gunCard .gunBody{padding:0 9px 8px}
@@ -242,7 +255,7 @@ input:disabled,select:disabled{opacity:.55}
   <aside class="panel">
     <div>
       <h1>HH-60 Formation Sim</h1>
-      <p class="sub"><span class="swatch" style="background:var(--lead)"></span>Lead <span class="swatch" style="background:var(--trail);margin-left:10px"></span>Trail. North is up. <span id="build" style="opacity:.6;white-space:nowrap">Build 18 Nov N</span></p>
+      <p class="sub"><span class="swatch" style="background:var(--lead)"></span>Lead <span class="swatch" style="background:var(--trail);margin-left:10px"></span>Trail. North is up. <span id="build" style="opacity:.6;white-space:nowrap">Build 18 Nov Q</span></p>
     </div>
 
     <div class="who">
@@ -389,11 +402,13 @@ input:disabled,select:disabled{opacity:.55}
       <p class="note">Guns also have up and down stops. The sim uses your height above the target and the bank angle to work out how far up or down the gun must point, and holds fire when that is past a stop. Banking toward the target lifts it against the upper stop. Each gun is checked by itself against its own gun target line. A gun is clear when its target is inside its arc and range, no Jack is within 30° of its line, and the other aircraft is far enough off its line. The other aircraft and a Jack only count when they are inside that gun's own arc, since the gun cannot swing past its stops. The spacing needed is 2 clock positions (60°) when the other aircraft is hot, which means closing on the line with each aircraft forward of the other's wing line, and 1 clock position (30°) when it is cold. When either aircraft is behind the other, it is always 1 clock position (30°).</p>
       <div class="row"><label for="gFwd">Forward limit</label><input type="number" id="gFwd" min="0" max="90" step="1" value="1"><span class="unit">° off nose</span></div>
       <div class="row"><label for="gAft">Aft limit</label><input type="number" id="gAft" min="90" max="180" step="1" value="171"><span class="unit">° off nose</span></div>
-      <div class="row"><label for="gRange">Max range</label><input type="number" id="gRange" min="100" max="5000" step="100" value="1500"><span class="unit">m</span></div>
+      <div class="row"><label for="gR21">GAU-21 range</label><input type="number" id="gR21" min="100" max="5000" step="50" value="1500"><span class="unit">m, 600 rounds, about 1,025 a minute</span></div>
+      <div class="row"><label for="gR2">GAU-2 range</label><input type="number" id="gR2" min="100" max="5000" step="50" value="750"><span class="unit">m, 2,700 rounds, 3,000 a minute</span></div>
+      <div class="row"><label for="gPause">Pause between bursts</label><input type="number" id="gPause" min="0" max="20" step="0.1" value="0.5"><span class="unit">s (bursts run 3 to 5 s)</span></div>
       <div class="row"><label for="gAgl">Height above target</label><input type="number" id="gAgl" min="0" max="5000" step="50" value="300"><span class="unit">ft</span></div>
       <div class="seg"><button type="button" id="gCease">Cease fire, all guns off</button></div>
       <div class="status" id="gunStatus" aria-live="polite">All guns off</div>
-      <p class="note">The arc is 90° forward and 81° aft of straight out the side, which is the nose back to 171°. The forward limit starts at 1° off the nose, so neither gun shoots straight ahead. Set it to 0 to let both guns shoot on the nose. Max range is a placeholder. Set it to what you want to train to.</p>
+      <p class="note">Each gunner position carries a GAU-21 or a GAU-2. Pick it in the GUNS window, where the rounds left show next to it. Gunners fire 3 to 5 second bursts with a short pause between. Reset or Reload all fills the guns. The arc is 90° forward and 81° aft of straight out the side, which is the nose back to 171°. The forward limit starts at 1° off the nose, so neither gun shoots straight ahead. Set it to 0 to let both guns shoot on the nose.</p>
     </fieldset>
 
     <h2 class="grp">Plan the mission</h2>
@@ -406,7 +421,7 @@ input:disabled,select:disabled{opacity:.55}
         <button type="button" data-tool="survivor" aria-pressed="false">J Survivor</button>
         <button type="button" data-tool="erase" aria-pressed="false">Erase</button>
       </div>
-      <label class="check"><input type="checkbox" id="popOn"> Popcorn: take a Jack off the map when an aircraft finishes its commit there</label>
+      <label class="check"><input type="checkbox" id="popOn"> Start every commit with Popcorn on (the Jack leaves when the commit ends)</label>
       <p class="note">Or place one by bearing (degrees) and range from lead:</p>
       <div class="row">
         <select id="mType" aria-label="Marker type" style="flex:1 1 90px;width:auto">
@@ -597,7 +612,10 @@ input:disabled,select:disabled{opacity:.55}
       <div class="gunCtlBody" id="gunCtlBody">
         <div class="gunBar" id="gunBar" aria-label="Flex fire guns">
           <span class="gset"><select id="gt00" aria-label="Lead left gun target" title="Lead left gun target"></select><button type="button" id="g00" aria-pressed="false" title="Lead left gun">◀ L</button><b style="color:#6fa8ff">LEAD</b><button type="button" id="g01" aria-pressed="false" title="Lead right gun">R ▶</button><select id="gt01" aria-label="Lead right gun target" title="Lead right gun target"></select></span>
+          <span class="gset gload"><span class="glo"><select id="gy00" aria-label="Lead left gun type" title="Lead left gun"><option value="GAU-21">GAU-21</option><option value="GAU-2">GAU-2</option></select><span class="gam" id="ga00" title="Rounds left">600</span></span><span class="glo"><select id="gy01" aria-label="Lead right gun type" title="Lead right gun"><option value="GAU-21">GAU-21</option><option value="GAU-2">GAU-2</option></select><span class="gam" id="ga01" title="Rounds left">600</span></span></span>
           <span class="gset"><select id="gt10" aria-label="Trail left gun target" title="Trail left gun target"></select><button type="button" id="g10" aria-pressed="false" title="Trail left gun">◀ L</button><b style="color:#5fdc8c">TRAIL</b><button type="button" id="g11" aria-pressed="false" title="Trail right gun">R ▶</button><select id="gt11" aria-label="Trail right gun target" title="Trail right gun target"></select></span>
+          <span class="gset gload"><span class="glo"><select id="gy10" aria-label="Trail left gun type" title="Trail left gun"><option value="GAU-21">GAU-21</option><option value="GAU-2">GAU-2</option></select><span class="gam" id="ga10" title="Rounds left">600</span></span><span class="glo"><select id="gy11" aria-label="Trail right gun type" title="Trail right gun"><option value="GAU-21">GAU-21</option><option value="GAU-2">GAU-2</option></select><span class="gam" id="ga11" title="Rounds left">600</span></span></span>
+          <span class="gset gload"><button type="button" id="gReload" title="Fill every gun back to a full load">Reload all</button></span>
         </div>
       </div>
     </div>
@@ -624,7 +642,7 @@ input:disabled,select:disabled{opacity:.55}
       </div>
     </div>
     <div class="dock" id="dock" aria-label="Quick bar">
-      <div class="dockHead"><button type="button" id="dockMin" aria-expanded="true" title="Hide or show the quick bar">QUICK BAR ▾</button><span class="ctrGrp" aria-label="Keep the view centered"><span class="unit">CENTER</span><button type="button" id="ctrL" aria-pressed="false" title="Keep lead centered">Lead</button><button type="button" id="ctrT" aria-pressed="false" title="Keep trail centered">Trail</button><button type="button" id="ctrB" aria-pressed="false" title="Keep both aircraft centered. Zooms out when needed.">Both</button></span><button type="button" class="trkBtn" aria-pressed="false" title="Trail flies the same path over the ground that lead flew">Trail follows lead</button><button type="button" id="popBtn" class="popBtn" aria-pressed="false" title="Popcorn: when an aircraft finishes a timed commit at a Jack, that Jack comes off the map">Popcorn</button><div class="recBar" id="recBar" aria-label="Record and play back"><button type="button" id="recBtn" aria-pressed="false" title="Record what the aircraft do, then play it back">● Record</button><button type="button" id="pbBtn" hidden>▶ Play recording</button><button type="button" id="recSaveBtn" hidden title="Name and save this recording">Save…</button><input type="range" id="pbScrub" min="0" max="1000" step="1" value="0" hidden aria-label="Playback position"></div></div>
+      <div class="dockHead"><button type="button" id="dockMin" aria-expanded="true" title="Hide or show the quick bar">QUICK BAR ▾</button><span class="ctrGrp" aria-label="Keep the view centered"><span class="unit">CENTER</span><button type="button" id="ctrL" aria-pressed="false" title="Keep lead centered">Lead</button><button type="button" id="ctrT" aria-pressed="false" title="Keep trail centered">Trail</button><button type="button" id="ctrB" aria-pressed="false" title="Keep both aircraft centered. Zooms out when needed.">Both</button></span><button type="button" class="trkBtn" aria-pressed="false" title="Trail flies the same path over the ground that lead flew">Trail follows lead</button><div class="recBar" id="recBar" aria-label="Record and play back"><button type="button" id="recBtn" aria-pressed="false" title="Record what the aircraft do, then play it back">● Record</button><button type="button" id="pbBtn" hidden>▶ Play recording</button><button type="button" id="recSaveBtn" hidden title="Name and save this recording">Save…</button><input type="range" id="pbScrub" min="0" max="1000" step="1" value="0" hidden aria-label="Playback position"></div></div>
       <div class="dockBody" id="dockBody">
         <div class="dockEdit" id="dockEdit">
           <button type="button" id="spdWho" title="Which aircraft the heading and airspeed rows change. Tap to switch between lead, trail, and both.">LEAD</button>
@@ -651,6 +669,7 @@ input:disabled,select:disabled{opacity:.55}
         </div>
       </div>
     </div>
+    <div class="toasts" id="toasts" aria-live="assertive"></div>
     <div class="perfBox" id="perfBox" hidden></div>
     <div class="errBar" id="errBar" hidden role="alert">
       <div><strong>The sim hit a problem and kept going.</strong> If something looks wrong, press Reset aircraft. Please tell Claude this message:<code id="errMsg"></code></div>
@@ -914,18 +933,18 @@ function holdStep(a,r,dt){
   if(S.windKt>0)turnToward(a,S.windFrom,dt);
   if(nd.commit>0)h.t-=dt;
   if(nd.commit==null||(nd.commit>0&&h.t<=0)){
-    /* popcorn: the commit ran its full time, so the Jack at this point has been picked up */
-    if(nd.commit>0)popJack(nd);
+    /* popcorn was picked for this commit, so the Jack at this point leaves with the aircraft */
+    popJack(nd);
     nd.done=true;r.hold=null;r.slow=false;r.ramp=true;
     r.idx=r.segEnd[r.nodes.indexOf(nd)]+1;trimSticks(a);
   }
 }
 /* ---------- popcorn ----------
-   With Popcorn on, a Jack comes off the map when an aircraft finishes a timed commit on it.
+   Popcorn is picked on the commit countdown. When that commit ends, the Jack at that point comes off the map.
    Each pickup is logged with its time, so stepping back, Reset and recordings can put the Jack back where it was. */
 var POP={on:false,log:[]};
 function popJack(nd){
-  if(!POP.on)return;
+  if(!nd.pop)return;
   for(var i=0;i<S.markers.length;i++){
     var m=S.markers[i];
     if(m.type==='survivor'&&Math.hypot(m.x-nd.x,m.y-nd.y)<8){S.markers.splice(i,1);POP.log.push({t:simT,idx:i,m:m});return;}
@@ -935,7 +954,7 @@ function popJack(nd){
 function popRestore(t){
   while(POP.log.length&&POP.log[POP.log.length-1].t>t+1e-6){var e=POP.log.pop();S.markers.splice(Math.min(e.idx,S.markers.length),0,e.m);}
 }
-function popSet(on){POP.on=!!on;try{$('popBtn').setAttribute('aria-pressed',String(POP.on));$('popOn').checked=POP.on;}catch(e){}}
+function popSet(on){POP.on=!!on;try{$('popOn').checked=POP.on;}catch(e){}}
 /* drop sticks that have been flown */
 function trimSticks(a){
   var r=a.route;
@@ -1023,7 +1042,7 @@ function steer(a,r,dt){
     if(stop)lead=0;
     if(dist<Math.max(lead,stop?Math.max(6,gs*dt*1.5):10)||passed){
       if(stop){
-        for(var c=1;c<r.nodes.length;c++){if(r.segEnd[c]===r.idx){r.hold={node:r.nodes[c],t:r.nodes[c].commit};break;}}
+        for(var c=1;c<r.nodes.length;c++){if(r.segEnd[c]===r.idx){r.hold={node:r.nodes[c],t:r.nodes[c].commit};if(r.nodes[c].pop==null)r.nodes[c].pop=POP.on;break;}}
         if(r.hold)return;
       }
       r.idx++;if(r.loop)r.idx%=n;continue;
@@ -1064,6 +1083,7 @@ function stepAC(a,dt){
 }
 function step(dt){
   fixHolds();
+  gunStep(dt);
   var L=AC[0],T=AC[1];
   stepAC(L,dt);
   if(!S.formOn){if(T.route&&T.route.kind==='follow')feedFollow();else if(T.route&&T.route.sync)circSync();stepAC(T,dt);}
@@ -1091,7 +1111,7 @@ function resetAircraft(){
   [L,T].forEach(function(a){
     var r=a.route;
     if(r&&r.cruise!=null&&(r.slow||r.hold||r.ramp))a.tas=r.cruise;
-    gunsOff();popRestore(-1);
+    gunsOff();gunReload();popRestore(-1);
     /* a reset clears everything the aircraft was flying: sticks, patterns and commits */
     a.route=null;a.saved=null;
     a.track=[];a.trackGen++;a.turnRem=0;a.hdg=0;
@@ -1131,11 +1151,13 @@ function fixHolds(){
   });
 }
 function capture(){
-  return {formOn:S.formOn,rejoin:S.rejoin,off:{x:S.off.x,y:S.off.y},ac:AC.map(function(a){
+  return {guns:JSON.stringify(GS),formOn:S.formOn,rejoin:S.rejoin,off:{x:S.off.x,y:S.off.y},ac:AC.map(function(a){
     return {x:a.pos.x,y:a.pos.y,hdg:a.hdg,tas:a.tas,tgt:a.tgt,turnRem:a.turnRem,turnDir:a.turnDir,turnTarget:a.turnTarget,gen:a.trackGen,len:a.track.length,bank:a.bank||0,route:snapRoute(a.route)};
   })};
 }
 function applyState(st){
+  /* rounds left and burst state go back with the clock */
+  if(st.guns){try{var gq=JSON.parse(st.guns);if(gq&&gq.length===2)GS=gq;}catch(e){}}
   S.formOn=st.formOn;S.rejoin=st.rejoin;S.off={x:st.off.x,y:st.off.y};$('formOn').checked=st.formOn;
   st.ac.forEach(function(o,i){
     var a=AC[i];
@@ -1223,7 +1245,32 @@ function redo(){
 /* ---------- flex fire guns ----------
    Each aircraft has a left and a right gun. A gun that is turned on fires only while it is clear:
    the target is inside the gun's arc and range, and the other aircraft is clear of the gun target line. */
-var GUN={on:[[false,false],[false,false]],tgt:[[1,1],[1,1]],fwd:1,aft:171,range:1500,hot:60,cold:30,jack:30,agl:300,elFwd:[-3,-54],elAft:[3,-48]};
+var GUN={on:[[false,false],[false,false]],tgt:[[1,1],[1,1]],fwd:1,aft:171,range:1500,hot:60,cold:30,jack:30,agl:300,burst:[3,5],pause:0.5,elFwd:[-3,-54],elAft:[3,-48]};
+/* ---------- gun load-outs ----------
+   Each of the four gunner positions carries a GAU-21 or a GAU-2. rpm is rounds per minute (the GAU-21 varies burst to burst),
+   ammo is the full load, range is the effective range in meters. GS holds each gun's type, rounds left and burst state. */
+var GTYPE={
+  'GAU-21':{ammo:600,rpm:[950,1100],range:1500},
+  'GAU-2':{ammo:2700,rpm:[3000,3000],range:750}
+};
+var GS=[[null,null],[null,null]];
+function gunLoad(i,sd,type){var t=GTYPE[type]?type:'GAU-21';GS[i][sd]={type:t,ammo:GTYPE[t].ammo,ph:'ready',t:0,rpm:0};}
+function gunReload(){for(var i=0;i<2;i++)for(var sd=0;sd<2;sd++)gunLoad(i,sd,GS[i][sd]?GS[i][sd].type:'GAU-21');}
+gunReload();
+function rndBetween(a,b){return a+Math.random()*(b-a);}
+/* gunners fire bursts of 3 to 5 seconds with a short pause between them. Rounds come off the load while a burst runs. */
+function gunStep(dt){
+  for(var i=0;i<2;i++)for(var sd=0;sd<2;sd++){
+    var g=GS[i][sd],ty=GTYPE[g.type];
+    if(!GUN.on[i][sd]||g.ammo<=0||!gunCheck(i,sd).ok){g.ph='ready';g.t=0;continue;}
+    if(g.ph==='pause'){g.t-=dt;if(g.t>1e-9)continue;g.ph='ready';}
+    if(g.ph==='ready'){g.ph='fire';g.t=rndBetween(GUN.burst[0],GUN.burst[1]);g.rpm=rndBetween(ty.rpm[0],ty.rpm[1]);}
+    g.t-=dt;
+    g.ammo=Math.max(0,g.ammo-g.rpm/60*dt);
+    if(g.t<=0){g.ph='pause';g.t=GUN.pause;}
+  }
+}
+function gunFiring(i,sd){var g=GS[i][sd];return GUN.on[i][sd]&&g.ph==='fire'&&g.ammo>0;}
 function threats(){return S.markers.filter(function(m){return m.type==='threat';});}
 function sepDeg(sp,tp,op){
   return Math.abs(adiff(Math.atan2(op.x-sp.x,op.y-sp.y)/RAD,Math.atan2(tp.x-sp.x,tp.y-sp.y)/RAD));
@@ -1237,7 +1284,9 @@ function gunCheck(i,sd,nOver){
      while the aircraft flies at a point, so a small margin keeps a nose shot from dropping in and out. */
   var fwdLim=GUN.fwd<=0?-3:GUN.fwd;
   /* range comes first: a target that is too far reads as out of range, even when it is also outside the arc */
-  if(d>GUN.range){res.why='T'+n+' is out of range ('+Math.round(d)+' m, max '+GUN.range+' m)';res.tag='RANGE';return res;}
+  var gs=GS[i][sd],gr=GTYPE[gs.type].range;res.type=gs.type;
+  if(!PB&&gs.ammo<=0){res.why='Winchester, out of ammo ('+gs.type+')';res.tag='WINCHESTER';return res;}
+  if(d>gr){res.why='T'+n+' is out of range ('+Math.round(d)+' m, '+gs.type+' reaches '+gr+' m)';res.tag='RANGE';return res;}
   if(off<fwdLim||off>GUN.aft){
     var ar=Math.abs(rel);
     res.why='no gun target line. T'+n+' is '+pad3(ar)+(rel<0?'L':'R')+', outside the '+sn+' gun arc ('+GUN.fwd+'° to '+GUN.aft+'°)';res.tag='NO GTL';return res;
@@ -1287,19 +1336,27 @@ function gunCheck(i,sd,nOver){
 }
 function gunMask(){
   var m=0;
-  for(var i=0;i<2;i++)for(var sd=0;sd<2;sd++){if(GUN.on[i][sd]&&gunCheck(i,sd).ok)m|=1<<(i*2+sd);}
+  for(var i=0;i<2;i++)for(var sd=0;sd<2;sd++){if(gunFiring(i,sd))m|=1<<(i*2+sd);}
   return m;
 }
 function onMask(){var m=0;for(var i=0;i<2;i++)for(var sd=0;sd<2;sd++)if(GUN.on[i][sd])m|=1<<(i*2+sd);return m;}
 /* one gun's state right now. In playback it comes from the recording: on, firing and target are as recorded, and the reason for a hold is worked out again from where the aircraft are. */
 function gunNow(i,sd){
-  if(!PB)return GUN.on[i][sd]?gunCheck(i,sd):null;
+  var g;
+  if(!PB){
+    if(!GUN.on[i][sd])return null;
+    g=gunCheck(i,sd);g.fire=g.ok&&gunFiring(i,sd);g.ammo=GS[i][sd].ammo;return g;
+  }
   var f=PB.tape.frames[PB.i];if(!f||f.length<12)return null;
   var bit=1<<(i*2+sd),fire=!!(f[9]&bit),on=f.length>=19?!!(f[18]&bit):fire;
   if(!on)return null;
-  var n=frTgt(f,i,sd),g=gunCheck(i,sd,n);
+  var n=frTgt(f,i,sd);g=gunCheck(i,sd,n);
+  g.ammo=f.length>=23?f[19+i*2+sd]:null;
   if(fire){g.ok=true;g.why='';g.tag='';}
-  else if(g.ok){g.ok=false;g.why='holding fire';g.tag='HOLD';}
+  else if(g.ammo===0){g.ok=false;g.why='Winchester, out of ammo ('+GS[i][sd].type+')';g.tag='WINCHESTER';}
+  /* recordings with ammo in them also carry the pauses between bursts, so a clear gun that is not firing is just between bursts */
+  else if(g.ok&&f.length<23){g.ok=false;g.why='holding fire';g.tag='HOLD';}
+  g.fire=fire;
   return g;
 }
 function gunsOff(){GUN.on=[[false,false],[false,false]];}
@@ -1341,6 +1398,16 @@ function gunArc(a,sd,x,y,L){
   ctx.save();ctx.beginPath();ctx.moveTo(x,y);ctx.arc(x,y,L*1.5,a0,a1);ctx.closePath();
   ctx.globalAlpha=.1;ctx.fillStyle=a.light;ctx.fill();ctx.globalAlpha=.4;ctx.strokeStyle=a.light;ctx.lineWidth=1;ctx.stroke();ctx.restore();
 }
+/* why a gun is holding, written right beside that gunner's side of the aircraft */
+function gunTag(tag,a,sd,x,y,L){
+  if(!tag)return;
+  var h=a.hdg*RAD,side=sd?1:-1,D=L*.5+30,tx=x+Math.cos(h)*side*D,ty=y+Math.sin(h)*side*D;
+  ctx.save();ctx.font='700 11px "IBM Plex Mono",monospace';ctx.textAlign='center';ctx.textBaseline='middle';
+  var w=ctx.measureText(tag).width+10;
+  ctx.fillStyle='rgba(8,12,18,.88)';ctx.strokeStyle='#ff8d82';ctx.lineWidth=1;
+  ctx.beginPath();ctx.rect(Math.round(tx-w/2)+.5,Math.round(ty-8)+.5,Math.round(w),16);ctx.fill();ctx.stroke();
+  ctx.fillStyle='#ffd0ca';ctx.fillText(tag,tx,ty+.5);ctx.restore();
+}
 function drawGuns(){
   var i,sd,L=heloLen(),th=threats();
   for(i=0;i<2;i++){
@@ -1349,21 +1416,30 @@ function drawGuns(){
       var g=gunNow(i,sd);
       if(!g)continue;
       if(!SPR)gunArc(a,sd,p.x,p.y,L);
-      if(g.ok&&g.tg)drawFire(i,sd,g.tg);
-      else if(g.tg){
+      if(g.fire&&g.tg)drawFire(i,sd,g.tg);
+      else if(!g.ok&&g.tg){
         var m=muzzle(i,sd),tx=sx(g.tg.x),ty=sy(g.tg.y);
         ctx.save();ctx.setLineDash([3,7]);ctx.strokeStyle='rgba(255,140,128,.6)';ctx.lineWidth=1.3;ctx.beginPath();ctx.moveTo(m.x,m.y);ctx.lineTo(tx,ty);ctx.stroke();ctx.setLineDash([]);
-        ctx.font='600 11px "IBM Plex Mono",monospace';ctx.textAlign='center';ctx.textBaseline='middle';
-        haloText(g.tag,m.x+(tx-m.x)*(.3+.08*sd),m.y+(ty-m.y)*(.3+.08*sd));ctx.restore();
+        ctx.restore();
+        if(!SPR)gunTag(g.tag,AC[i],sd,p.x,p.y,L);
       }
       /* a ring in the aircraft's color marks the threat this gun is set to shoot */
       if(g.tg){ctx.save();ctx.strokeStyle=a.light;ctx.lineWidth=2;ctx.setLineDash([5,4]);ctx.beginPath();ctx.arc(sx(g.tg.x),sy(g.tg.y),19+i*5,0,7);ctx.stroke();ctx.restore();}
     }
   }
 }
-var gunNT=-1,gunPB=false;
+var gunNT=-1,gunPB=false,WIN=[[1,1],[1,1]];
+/* a short call-out in the middle of the map. It clears itself after a few seconds. */
+function winToast(text){
+  try{
+    var box=$('toasts'),d=document.createElement('div');d.className='toast';d.textContent=text;box.appendChild(d);
+    while(box.children.length>4)box.removeChild(box.firstChild);
+    setTimeout(function(){try{box.removeChild(d);}catch(e){}},4500);
+  }catch(e){}
+}
+
 function gunUI(){
-  var th=threats(),i,sd,msg=[],st=[],pf=PB?PB.tape.frames[PB.i]:null;
+  var th=threats(),i,sd,msg=[],st=[],nFire=0,pf=PB?PB.tape.frames[PB.i]:null;
   if(th.length!==gunNT||gunPB!==!!PB){
     gunNT=th.length;gunPB=!!PB;
     for(i=0;i<2;i++)for(sd=0;sd<2;sd++){
@@ -1379,13 +1455,22 @@ function gunUI(){
   for(i=0;i<2;i++)for(sd=0;sd<2;sd++){
     var b=$('g'+i+sd),g=gunNow(i,sd),on=!!g,nm=AC[i].name+' '+(sd?'right':'left');
     if(b.getAttribute('aria-pressed')!==String(on))b.setAttribute('aria-pressed',String(on));
-    b.classList.toggle('firing',!!(g&&g.ok));b.classList.toggle('blocked',!!(g&&!g.ok));
+    b.classList.toggle('firing',!!(g&&g.fire));b.classList.toggle('blocked',!!(g&&!g.ok));
+    /* rounds left: from the recording in playback, live otherwise */
+    var am=PB?(pf&&pf.length>=23?pf[19+i*2+sd]:null):GS[i][sd].ammo,ae=$('ga'+i+sd),full=GTYPE[GS[i][sd].type].ammo;
+    setText(ae,am==null?'':String(Math.ceil(am)));
+    /* green above 75 percent, yellow 50 to 75, red 25 to 49, black below 25 */
+    var pc=am==null?null:am/full,acl=pc==null?'':pc>0.75?'grn':pc>=0.5?'yel':pc>=0.25?'red':'blk';if(ae.className!=='gam '+acl)ae.className='gam '+acl;
+    /* Winchester: a gun that just ran dry gets called out once */
+    if(am!=null){if(am<=0&&WIN[i][sd]>0)winToast(nm.toUpperCase()+' GUN WINCHESTER');WIN[i][sd]=am;}
+    var ty=$('gy'+i+sd);if(ty.value!==GS[i][sd].type)ty.value=GS[i][sd].type;if(ty.disabled!==!!PB)ty.disabled=!!PB;
     if(PB&&pf&&pf.length>=12){var tv=String(frTgt(pf,i,sd)),se=$('gt'+i+sd);if(th.length&&se.value!==tv)se.value=tv;}
     if(g&&!g.ok)msg.push(nm.toUpperCase()+' GUN: '+g.why);
-    if(g)st.push(nm+(g.ok?': firing at T'+g.n:': holding'));
+    if(g)st.push(nm+(g.fire?': firing at T'+g.n:g.ok?': clear, between bursts':': holding'));
+    if(g&&g.fire)nFire++;
   }
   /* the reasons sit in their own window on the right of the map. It shows while any gun is on. */
-  setText($('gunCtlNote'),st.length?st.length+' on, '+(st.length-msg.length)+' firing':'tap L or R to turn a gun on');
+  setText($('gunCtlNote'),st.length?st.length+' on, '+nFire+' firing':'tap L or R to turn a gun on');
   var anyOn=st.length>0,gc=$('gunCard');
   if(gc.hidden===anyOn)gc.hidden=!anyOn;
   setText($('gunCount'),msg.length?' '+msg.length:' 0');
@@ -1401,7 +1486,7 @@ var REC=null,TAPE=null,PB=null;
 /* commit state for a recording frame: seconds left (-1 when not committed) and the commit's full length (0 means stay) */
 function holdLeft(a){var h=a.route&&a.route.hold;return h&&h.node?Math.max(0,Math.round(h.t*10)/10):-1;}
 function holdTot(a){var h=a.route&&a.route.hold;return h&&h.node?(h.node.commit>0?h.node.commit:0):0;}
-/* frames have grown over time: 9 values (flight only), 12 (one target per aircraft), 16 (plus commits), 18 (one target per gun), 19 (plus which guns are on) */
+/* frames have grown over time: 9 values (flight only), 12 (one target per aircraft), 16 (plus commits), 18 (one target per gun), 19 (plus which guns are on), 23 (plus rounds left on each gun) */
 function frTgt(f,i,sd){return f.length>=18?f[10+i*2+sd]:f.length>=12?f[10+i]:0;}
 function frHold(f,i){var o=f.length>=18?14:f.length>=16?12:-1;return o<0?[-1,0]:[f[o+i*2],f[o+1+i*2]];}
 function recFrame(){
@@ -1409,7 +1494,7 @@ function recFrame(){
   var t=simT-REC.t0,f=REC.frames,L=AC[0],T=AC[1];
   if(f.length&&t-f[f.length-1][0]<0.0999)return;
   if(f.length>=72000){stopRec();return;}
-  f.push([t,L.pos.x,L.pos.y,L.hdg,L.tas,T.pos.x,T.pos.y,T.hdg,T.tas,gunMask(),GUN.tgt[0][0],GUN.tgt[0][1],GUN.tgt[1][0],GUN.tgt[1][1],holdLeft(L),holdTot(L),holdLeft(T),holdTot(T),onMask()]);
+  f.push([t,L.pos.x,L.pos.y,L.hdg,L.tas,T.pos.x,T.pos.y,T.hdg,T.tas,gunMask(),GUN.tgt[0][0],GUN.tgt[0][1],GUN.tgt[1][0],GUN.tgt[1][1],holdLeft(L),holdTot(L),holdLeft(T),holdTot(T),onMask(),Math.ceil(GS[0][0].ammo),Math.ceil(GS[0][1].ammo),Math.ceil(GS[1][0].ammo),Math.ceil(GS[1][1].ammo)]);
 }
 /* stepping back or undoing moves the clock back, so the recording drops whatever came after that moment */
 function recTrim(){
@@ -1424,7 +1509,7 @@ function stopRec(){
   /* Jacks picked up during the recording go back into its scene, each marked with the time it left */
   var mk=JSON.parse(JSON.stringify(S.markers));
   for(var pi=POP.log.length-1;pi>=0;pi--){var pe=POP.log[pi];if(pe.t<REC.t0-1e-6)break;mk.splice(Math.min(pe.idx,mk.length),0,{type:pe.m.type,x:pe.m.x,y:pe.m.y,gone:Math.round((pe.t-REC.t0)*100)/100});}
-  if(REC.frames.length>1)TAPE={frames:REC.frames,dur:REC.frames[REC.frames.length-1][0],name:'',scene:{markers:JSON.stringify(mk),terrain:JSON.parse(JSON.stringify(S.terrain)),env:S.env}};
+  if(REC.frames.length>1)TAPE={frames:REC.frames,dur:REC.frames[REC.frames.length-1][0],name:'',scene:{markers:JSON.stringify(mk),terrain:JSON.parse(JSON.stringify(S.terrain)),env:S.env,guns:[[GS[0][0].type,GS[0][1].type],[GS[1][0].type,GS[1][1].type]]}};
   REC=null;recUI();
 }
 function pbApply(){
@@ -1452,6 +1537,8 @@ function enterPB(tape){
   S.formOn=false;S.rejoin=false;
   var sc=tape.scene;
   if(sc){
+    /* the recording's own load-out, so ranges and labels match what was flown. Leaving playback puts yours back. */
+    if(sc.guns){try{for(var gi=0;gi<2;gi++)for(var gj=0;gj<2;gj++)if(GTYPE[sc.guns[gi][gj]])GS[gi][gj].type=sc.guns[gi][gj];}catch(e){}}
     try{S.markers=JSON.parse(sc.markers);PB.mk=S.markers;S.terrain=JSON.parse(JSON.stringify(sc.terrain||[]));if(ENV[sc.env])S.env=sc.env;}catch(e){}
   }
   pbApply();
@@ -1477,7 +1564,7 @@ function recPack(t){
 function recUnpack(it){
   var d=it&&it.data;
   if(!d||!Array.isArray(d.f)||d.f.length<2)return null;
-  for(var i=0;i<d.f.length;i++){var a=d.f[i];if(!Array.isArray(a)||(a.length!==9&&a.length!==12&&a.length!==16&&a.length!==18&&a.length!==19))return null;for(var k=0;k<a.length;k++)if(!isFinite(a[k]))return null;}
+  for(var i=0;i<d.f.length;i++){var a=d.f[i];if(!Array.isArray(a)||(a.length!==9&&a.length!==12&&a.length!==16&&a.length!==18&&a.length!==19&&a.length!==23))return null;for(var k=0;k<a.length;k++)if(!isFinite(a[k]))return null;}
   return {frames:d.f,dur:d.f[d.f.length-1][0],name:it.name,scene:d.scene||null};
 }
 function recFill(pick){
@@ -2402,15 +2489,16 @@ try{
   if(sp0&&sp1&&sp0.getContext&&bctx)SPR=[{cv:sp0,ctx:sp0.getContext('2d'),R:0,d:0,sig:'',tf:''},{cv:sp1,ctx:sp1.getContext('2d'),R:0,d:0,sig:'',tf:''}];
 }catch(e){SPR=null;}
 function drawSprites(){
-  var L=heloLen(),d=gfxScale(window.devicePixelRatio||1),D=L*.62+(TOUCH?30:22)+18,R=Math.ceil(Math.max(L*1.6+6,D));
+  var L=heloLen(),d=gfxScale(window.devicePixelRatio||1),D=L*.62+(TOUCH?30:22)+18,R=Math.ceil(Math.max(L*1.6+6,D,L*.5+30+46));
   for(var i=1;i>=0;i--){
     var sp=SPR[i],a=AC[i],p=screenPos(i);
     if(sp.R!==R||sp.d!==d){
       sp.R=R;sp.d=d;sp.cv.width=Math.round(2*R*d);sp.cv.height=Math.round(2*R*d);
       sp.cv.style.width=sp.cv.style.height=(2*R)+'px';sp.sig='';
     }
-    var sel=i===0?S.sel!==1:S.sel!==0,rot=!PB&&rotIndex()===i,g0=gunNow(i,0)?1:0,g1=gunNow(i,1)?1:0;
-    var sig=[a.hdg.toFixed(2),S.rotor.toFixed(3),sel,rot,g0,g1,GUN.fwd,GUN.aft,L.toFixed(1),TOUCH].join('|');
+    var sel=i===0?S.sel!==1:S.sel!==0,rot=!PB&&rotIndex()===i,q0=gunNow(i,0),q1=gunNow(i,1),g0=q0?1:0,g1=q1?1:0;
+    var t0=q0&&!q0.ok?q0.tag:'',t1=q1&&!q1.ok?q1.tag:'';
+    var sig=[a.hdg.toFixed(2),S.rotor.toFixed(3),sel,rot,g0,g1,t0,t1,GUN.fwd,GUN.aft,L.toFixed(1),TOUCH].join('|');
     if(sig!==sp.sig){
       sp.sig=sig;
       var c0=ctx;ctx=sp.ctx;
@@ -2420,6 +2508,7 @@ function drawSprites(){
         if(g1)gunArc(a,1,R,R,L);
         drawHelo(R,R,a,L,sel);
         if(rot){var hh=a.hdg*RAD,DD=L*.62+(TOUCH?30:22);rotHandleAt(R,R,R+Math.sin(hh)*DD,R-Math.cos(hh)*DD);}
+        gunTag(t0,a,0,R,R,L);gunTag(t1,a,1,R,R,L);
       }finally{ctx=c0;}
     }
     var tf='translate('+(p.x-R).toFixed(1)+'px,'+(p.y-R).toFixed(1)+'px)';
@@ -2491,7 +2580,7 @@ function readouts(){
       tot=h.node.commit;left=Math.max(0,h.t);
     }
     var timed=tot>0;
-    ch+='<div class="card'+(timed&&left<=10?' last':'')+'"><span class="who2" style="color:'+c.color+'">'+c.name+'</span><span class="time">'+(timed?fmtClock(left):'STAY')+'</span><span class="lbl">'+(timed?'Committed, time left':(PB?'Committed, staying':'Committed until you remove it'))+'</span>'+(timed?'<div class="bar"><i style="width:'+(100*left/tot).toFixed(1)+'%"></i></div>':'')+'</div>';
+    ch+='<div class="card'+(timed&&left<=10?' last':'')+'"><span class="who2" style="color:'+c.color+'">'+c.name+'</span><span class="time">'+(timed?fmtClock(left):'STAY')+'</span><span class="lbl">'+(timed?'Committed, time left':(PB?'Committed, staying':'Committed until you remove it'))+'</span>'+(timed?'<div class="bar"><i style="width:'+(100*left/tot).toFixed(1)+'%"></i></div>':'')+(PB?'':'<button type="button" class="popB" data-ac="'+ci+'" aria-pressed="'+(h.node.pop?'true':'false')+'">'+(h.node.pop?'✓ Popcorn: Jack leaves at the end':'Popcorn')+'</button>')+'</div>';
   });
   var cb=$('commit');
   if(cb._h!==ch){cb._h=ch;cb.innerHTML=ch;cb.hidden=!ch;}
@@ -3030,8 +3119,14 @@ $('scnPaste').addEventListener('click',function(){
 scnFill();if(scnRead().length)scnSay(scnRead().length+' saved on this device');
 $('undoBtn').addEventListener('click',undo);
 $('redoBtn').addEventListener('click',redo);
-$('popBtn').addEventListener('click',function(){popSet(!POP.on);});
 $('popOn').addEventListener('change',function(){popSet(this.checked);});
+/* the countdown card is rebuilt as the clock runs, so the Popcorn button is caught on the way down, not on click */
+$('commit').addEventListener('pointerdown',function(e){
+  var b=e.target&&e.target.closest?e.target.closest('.popB'):null;if(!b||PB)return;
+  e.preventDefault();e.stopPropagation();
+  var c=AC[parseInt(b.getAttribute('data-ac'),10)],h=c&&c.route&&c.route.hold;if(!h||!h.node)return;
+  pushUndo();h.node.pop=!h.node.pop;
+});
 $('gunCtlHead').addEventListener('click',function(){var b=$('gunCtlBody'),open=b.hidden;b.hidden=!open;this.setAttribute('aria-expanded',String(open));$('gunCtlArrow').textContent=open?'▾':'▸';dockMeasure();});
 $('gunHead').addEventListener('click',function(){var b=$('gunBody'),open=b.hidden;b.hidden=!open;this.setAttribute('aria-expanded',String(open));$('gunArrow').textContent=open?'▾':'▸';});
 $('dockMin').addEventListener('click',function(){var d=$('dock'),m=d.classList.toggle('min');this.setAttribute('aria-expanded',String(!m));this.textContent=m?'QUICK BAR ▴':'QUICK BAR ▾';dockMeasure();});
@@ -3043,7 +3138,11 @@ $('dockMin').addEventListener('click',function(){var d=$('dock'),m=d.classList.t
 });
 $('gCease').addEventListener('click',gunsOff);
 function gunNum(id,key,lo,hi){$(id).addEventListener('change',function(){var v=parseFloat(this.value);if(!isFinite(v))v=GUN[key];v=clamp(v,lo,hi);GUN[key]=v;this.value=v;});}
-gunNum('gFwd','fwd',0,90);gunNum('gAft','aft',90,180);gunNum('gRange','range',100,5000);gunNum('gAgl','agl',0,5000);
+gunNum('gFwd','fwd',0,90);gunNum('gAft','aft',90,180);$('gR21').addEventListener('change',function(){var v=clamp(parseFloat(this.value)||1500,100,5000);GTYPE['GAU-21'].range=v;this.value=v;});
+$('gR2').addEventListener('change',function(){var v=clamp(parseFloat(this.value)||750,100,5000);GTYPE['GAU-2'].range=v;this.value=v;});
+gunNum('gPause','pause',0,20);
+[0,1].forEach(function(i){[0,1].forEach(function(sd){$('gy'+i+sd).addEventListener('change',function(){if(PB)return;pushUndo();gunLoad(i,sd,this.value);});});});
+$('gReload').addEventListener('click',function(){if(PB)return;pushUndo();gunReload();});gunNum('gAgl','agl',0,5000);
 $('recBtn').addEventListener('click',function(){if(REC)stopRec();else startRec();});
 $('pbBtn').addEventListener('click',function(){if(PB)exitPB();else enterPB();});
 $('recSaveBtn').addEventListener('click',recOpenSave);
