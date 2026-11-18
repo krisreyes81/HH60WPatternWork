@@ -154,7 +154,10 @@ canvas.spr{inset:auto;left:0;top:0;width:auto;height:auto;pointer-events:none;wi
 .dock .unit{min-width:46px;text-align:center;box-sizing:border-box}
 .dock #spdWho{font-family:var(--display);font-weight:700;letter-spacing:.08em;min-width:64px;background:rgba(12,16,22,.88)}
 .dockHead{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-.dock .ctrGrp{display:flex;gap:4px;align-items:center}
+.dock .ctrGrp{display:flex;gap:4px;align-items:center;background:rgba(12,16,22,.5);border:1px solid rgba(255,255,255,.22);border-radius:10px;padding:3px}
+.dock .dockHead .trkBtn{margin-left:12px}
+.dock .dockHead .recBar{margin-left:12px}
+.dock.narrow .dockHead .trkBtn,.dock.narrow .dockHead .recBar,.dock.side .dockHead .trkBtn,.dock.side .dockHead .recBar{margin-left:0}
 .dock .ctrGrp .unit{background:rgba(12,16,22,.7);border-radius:6px;padding:3px 6px;min-width:0}
 .dock .ctrGrp button{padding:4px 10px;font-size:13px;background:rgba(12,16,22,.88)}
 .dock .ctrGrp button[aria-pressed=true]{background:var(--accent);color:#1b1404}
@@ -287,7 +290,7 @@ details.help .note{margin-top:2px}
   <aside class="panel">
     <div>
       <h1>HH-60 Formation Sim</h1>
-      <p class="sub"><span class="swatch" style="background:var(--lead)"></span>Lead <span class="swatch" style="background:var(--trail);margin-left:10px"></span>Trail. North is up. <span id="build" style="opacity:.6;white-space:nowrap">Build 18 Nov Z</span></p>
+      <p class="sub"><span class="swatch" style="background:var(--lead)"></span>Lead <span class="swatch" style="background:var(--trail);margin-left:10px"></span>Trail. North is up. <span id="build" style="opacity:.6;white-space:nowrap">Build 19 Nov A</span></p>
     </div>
 
     <div class="who">
