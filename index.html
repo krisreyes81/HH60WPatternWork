@@ -123,7 +123,8 @@ canvas.spr{inset:auto;left:0;top:0;width:auto;height:auto;pointer-events:none;wi
 .toasts{display:flex;flex-direction:column;gap:6px;align-items:flex-start;pointer-events:none;max-width:100%}
 .toasts .toast{background:#000;border:2px solid #ff5a4d;color:#fff;border-radius:8px;padding:5px 10px;font-family:var(--display);font-weight:700;font-size:13px;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
 .gunCtl #gReload{width:100%;padding:4px 6px;font-size:12px;min-width:0}
-.gunCtl .gunBar button{min-width:46px;padding:6px 6px}
+.gunCtl .gunBar button{min-width:46px;padding:6px 4px;white-space:nowrap;font-size:12px}
+.gunCtl .gunBar .gset:not(.gload) select{min-width:46px;padding:5px 2px}
 .gunCard #gunCount{color:var(--ink);font-family:var(--mono)}
 .gunCard .gunBody{padding:0 9px 8px}
 .gunCard .gunBody[hidden]{display:none}
@@ -250,6 +251,32 @@ input:disabled,select:disabled{opacity:.55}
   .dockEdit{flex-wrap:wrap}
   .spdBar button{padding:6px 7px}
 }
+details.help{margin:0 0 6px}
+details.help summary{cursor:pointer;color:var(--accent);font-size:12px;letter-spacing:.08em;text-transform:uppercase;list-style:none;padding:5px 0;user-select:none;-webkit-user-select:none}
+details.help summary::-webkit-details-marker{display:none}
+details.help summary::before{content:'\25B8  '}
+details.help[open] summary::before{content:'\25BE  '}
+details.help .note{margin-top:2px}
+.thBar{padding:7px 7px 6px;border-bottom:1px solid rgba(255,255,255,.12);display:flex;flex-direction:column;gap:5px}
+.thBar .thRow{display:flex;gap:5px;align-items:center}
+.thBar b{font-family:var(--display);font-weight:700;letter-spacing:.1em;font-size:13px;color:#ff8d82}
+.thBar select{flex:1 1 auto;width:auto;min-width:0;padding:5px 4px;font-family:var(--mono);font-size:12px;background:rgba(12,16,22,.88)}
+.thBar button{flex:1 1 0;min-width:0;padding:6px 4px;font-size:12px;background:rgba(12,16,22,.88)}
+.thBar #thPop{flex:0 0 auto;padding:6px 8px}
+.thBar button[aria-pressed=true]{background:var(--accent);color:#1b1404}
+.thBar #thNeut[aria-pressed=true]{background:#f2b233;border-color:#f2b233;color:#1b1404}
+.thBar #thDest[aria-pressed=true]{background:#c8372d;border-color:#ff8d82;color:#fff}
+.thBar button:disabled,.thBar select:disabled{opacity:.55}
+.dockEdit{border-radius:10px;padding:4px;border:1px solid transparent}
+.dockEdit[data-sel="0"]{background:rgba(40,110,235,.55);border-color:rgba(63,140,255,.75)}
+.dockEdit[data-sel="1"]{background:rgba(30,150,80,.55);border-color:rgba(53,196,106,.75)}
+.dockEdit[data-sel="2"]{background:linear-gradient(90deg,rgba(40,110,235,.55),rgba(30,150,80,.55));border-color:rgba(242,178,51,.7)}
+.gunCtl .gunBar .gset.gL,.gunCtl .gunBar .gset.gT{padding:5px}
+.gunCtl .gunBar .gset.gL{background:rgba(40,110,235,.5)}
+.gunCtl .gunBar .gset.gT{background:rgba(30,150,80,.5)}
+.gunCtl .gunBar .gset.gL b,.gunCtl .gunBar .gset.gT b{color:#fff !important}
+.gunCtl .gunBar .gset.gTop{border-radius:9px 9px 0 0}
+.gunCtl .gunBar .gset.gBot{border-radius:0 0 9px 9px;margin-top:-6px;padding-top:2px;clip-path:inset(0 0 0 0)}
 </style>
 </head>
 <body>
@@ -257,7 +284,7 @@ input:disabled,select:disabled{opacity:.55}
   <aside class="panel">
     <div>
       <h1>HH-60 Formation Sim</h1>
-      <p class="sub"><span class="swatch" style="background:var(--lead)"></span>Lead <span class="swatch" style="background:var(--trail);margin-left:10px"></span>Trail. North is up. <span id="build" style="opacity:.6;white-space:nowrap">Build 18 Nov T</span></p>
+      <p class="sub"><span class="swatch" style="background:var(--lead)"></span>Lead <span class="swatch" style="background:var(--trail);margin-left:10px"></span>Trail. North is up. <span id="build" style="opacity:.6;white-space:nowrap">Build 18 Nov W</span></p>
     </div>
 
     <div class="who">
@@ -267,7 +294,6 @@ input:disabled,select:disabled{opacity:.55}
         <button type="button" data-sel="1" aria-pressed="false">Trail</button>
         <button type="button" data-sel="2" aria-pressed="false">Both</button>
       </div>
-      <p class="note">Click an aircraft on the map to select it. Drag it to set where it starts. Drag the amber handle off its nose to point it.</p>
       <span class="lab">Map tool</span>
       <div class="seg" id="toolbar">
         <button type="button" data-tool="pan" aria-pressed="true">Move map</button>
@@ -282,7 +308,9 @@ input:disabled,select:disabled{opacity:.55}
 
     <fieldset>
       <legend>Vector sticks</legend>
-      <p class="note">Pick an aircraft, press Draw, then click points on the map. Drag the white handle in the middle of a stick to curve it. Pull it back to the middle to make it straight. Drag an end point to move it. Tap a point you already drew to stack another point on it. Click a Jack to get the option to commit: the aircraft slows, stops there for the time you set, then flies on. Flown sticks clear off the map. Press Play to fly it. Before you click, small text by the cursor shows the distance to the nearest threat.</p>
+      <details class="help"><summary>Instructions</summary>
+        <p class="note">Pick an aircraft, press Draw, then click points on the map. Drag the white handle in the middle of a stick to curve it. Pull it back to the middle to make it straight. Drag an end point to move it. Tap a point you already drew to stack another point on it. Click a Jack to get the option to commit: the aircraft slows, stops there for the time you set, then flies on. Flown sticks clear off the map. Press Play to fly it. Before you click, small text by the cursor shows the distance to the nearest threat.</p>
+      </details>
       <div class="seg">
         <button type="button" data-tool="sticks" aria-pressed="false">✎ Draw sticks</button>
         <button type="button" id="stUndo">Undo last</button>
@@ -310,6 +338,9 @@ input:disabled,select:disabled{opacity:.55}
 
     <fieldset>
       <legend>Turn</legend>
+      <details class="help"><summary>Instructions</summary>
+        <p class="note">Before you first press Play, a heading you enter points the aircraft that way at once, as its starting position. After that it turns to the heading. Setting a heading or turn by hand cancels that aircraft's pattern or sticks.</p>
+      </details>
       <div class="row"><label for="emLine">Turn rate from</label><div class="grow"><select id="emLine">
         <option value="">Manual (set it below)</option>
         <option value="obs">Chart: OBS (onset of blade stall)</option>
@@ -342,11 +373,13 @@ input:disabled,select:disabled{opacity:.55}
         <button type="button" id="turnR">Turn right ▶</button>
       </div>
       <div class="status" id="turnStatus" aria-live="polite">Steady on 000°</div>
-      <p class="note">Before you first press Play, a heading you enter points the aircraft that way at once, as its starting position. After that it turns to the heading. Setting a heading or turn by hand cancels that aircraft's pattern or sticks.</p>
     </fieldset>
 
     <fieldset>
       <legend>Formation</legend>
+      <details class="help"><summary>Instructions</summary>
+        <p class="note">In ground track mode, trail flies the same path lead flew and holds the spacing above, measured along the track it is about to fly. Editing trail on its own takes it out of formation. Tick the box again to rejoin.</p>
+      </details>
       <label class="check"><input type="checkbox" id="formOn"> Trail holds formation on lead</label>
       <div class="row"><label for="form">Trail position</label><div class="grow"><select id="form">
         <option value="sr" selected>Staggered right</option>
@@ -359,11 +392,15 @@ input:disabled,select:disabled{opacity:.55}
       <button type="button" id="formPlace" title="Moves trail to the position and spacing set here">Put trail there now</button>
       <div class="status" id="sepNow" aria-label="Current spacing"></div>
       <button type="button" id="followTrk" aria-pressed="false">Trail follows lead's ground track</button>
-      <p class="note">In ground track mode, trail flies the same path lead flew and holds the spacing above, measured along the track it is about to fly. Editing trail on its own takes it out of formation. Tick the box again to rejoin.</p>
     </fieldset>
 
     <fieldset>
       <legend>Gunnery pattern</legend>
+      <details class="help"><summary>Instructions</summary>
+        <p class="note">The pattern starts where the aircraft is now and repeats. With sticks drawn, it goes on the end of the last stick.</p>
+        <p class="note">On the map, drag the pattern's line or middle handle to move it, and the amber handle to rotate it. The aircraft joins at the nearest point.</p>
+        <p class="note">Leave turn time blank to size turns from the turn rate. Seconds use the airspeed when you press Fly, with no wind. A circle sets the aircraft to the airspeed you enter.</p>
+      </details>
       <div class="row"><label for="pat">Pattern</label><div class="grow"><select id="pat">
         <option value="racetrack" selected>Racetrack</option>
         <option value="bowtie">Bowtie</option>
@@ -393,16 +430,18 @@ input:disabled,select:disabled{opacity:.55}
         <button type="button" id="patFly" class="primary">Fly pattern</button>
         <button type="button" id="patStop">Stop pattern</button>
       </div>
-      <p class="note">The pattern starts where the aircraft is now and repeats. With sticks drawn, it goes on the end of the last stick.</p>
-      <p class="note">On the map, drag the pattern's line or middle handle to move it, and the amber handle to rotate it. The aircraft joins at the nearest point.</p>
-      <p class="note">Leave turn time blank to size turns from the turn rate. Seconds use the airspeed when you press Fly, with no wind. A circle sets the aircraft to the airspeed you enter.</p>
     </fieldset>
+
+    <h2 class="grp">Guns and threats</h2>
 
     <fieldset id="gunSet">
       <legend>Flex fire guns</legend>
-      <p class="note">Use the GUNS window at the bottom right of the map. Tap L or R to turn a gun on. Each gun has its own target picker next to it. A gun that is on shoots only while it is clear to shoot. It stops by itself when it is not, and starts again when it is.</p>
-      <p class="note">Guns also have up and down stops. The sim uses your height above the target and the bank angle to work out how far up or down the gun must point, and holds fire when that is past a stop. That hold reads PLATFORMED. Banking toward the target lifts it against the upper stop. Each gun is checked by itself against its own gun target line. A gun is clear when its target is inside its arc and range, no Jack is within 30° of its line, and the other aircraft is far enough off its line. The other aircraft and a Jack only count when they are inside that gun's own arc, since the gun cannot swing past its stops. The spacing needed is 2 clock positions (60°) when the other aircraft is hot, which means closing on the line with each aircraft forward of the other's wing line, and 1 clock position (30°) when it is cold. When either aircraft is behind the other, it is always 1 clock position (30°).</p>
-      <div class="row"><label for="gFwd">Forward limit</label><input type="number" id="gFwd" min="0" max="90" step="1" value="1"><span class="unit">° off nose</span></div>
+      <details class="help"><summary>Instructions</summary>
+        <p class="note">Use the GUNS window at the bottom right of the map. Tap FIRE L or FIRE R to turn a gun on. Each gun has its own target picker next to it. A gun that is on shoots only while it is clear to shoot. It stops by itself when it is not, and starts again when it is.</p>
+        <p class="note">Guns also have up and down stops. The sim uses your height above the target and the bank angle to work out how far up or down the gun must point, and holds fire when that is past a stop. That hold reads PLATFORMED. Banking toward the target lifts it against the upper stop. Each gun is checked by itself against its own gun target line. A gun is clear when its target is inside its arc and range, no Jack is within 30° of its line, and the other aircraft is far enough off its line. The other aircraft and a Jack only count when they are inside that gun's own arc, since the gun cannot swing past its stops. The spacing needed is 2 clock positions (60°) when the other aircraft is hot, which means closing on the line with each aircraft forward of the other's wing line, and 1 clock position (30°) when it is cold. When either aircraft is behind the other, it is always 1 clock position (30°).</p>
+        <p class="note">Each gunner position carries a GAU-21 or a GAU-2. Pick it in the GUNS window, where the rounds left show next to it. Gunners fire 3 to 5 second bursts with a short pause between. Reset or Reload all fills the guns. Above the GUNS window, pick a threat and press Threat neutralized or Threat destroyed. Destroyed makes the guns shooting at that threat cease fire. Neutralized leaves the guns alone. Press the same button again to make it active. Press Pop-up threat, then click a threat that is down to bring it back up, or click anywhere else to pop up a new threat there. The arc is 90° forward and 81° aft of straight out the side, which is the nose back to 171°. The forward limit starts at 0°, which is the nose, so both guns can shoot a threat straight ahead.</p>
+      </details>
+      <div class="row"><label for="gFwd">Forward limit</label><input type="number" id="gFwd" min="0" max="90" step="1" value="0"><span class="unit">° off nose</span></div>
       <div class="row"><label for="gAft">Aft limit</label><input type="number" id="gAft" min="90" max="180" step="1" value="171"><span class="unit">° off nose</span></div>
       <div class="row"><label for="gR21">GAU-21 range</label><input type="number" id="gR21" min="100" max="5000" step="50" value="1500"><span class="unit">m, 600 rounds, about 1,025 a minute</span></div>
       <div class="row"><label for="gR2">GAU-2 range</label><input type="number" id="gR2" min="100" max="5000" step="50" value="750"><span class="unit">m, 2,700 rounds, 3,000 a minute</span></div>
@@ -410,14 +449,13 @@ input:disabled,select:disabled{opacity:.55}
       <div class="row"><label for="gAgl">Height above target</label><input type="number" id="gAgl" min="0" max="5000" step="50" value="300"><span class="unit">ft</span></div>
       <div class="seg"><button type="button" id="gCease">Cease fire, all guns off</button></div>
       <div class="status" id="gunStatus" aria-live="polite">All guns off</div>
-      <p class="note">Each gunner position carries a GAU-21 or a GAU-2. Pick it in the GUNS window, where the rounds left show next to it. Gunners fire 3 to 5 second bursts with a short pause between. Reset or Reload all fills the guns. The arc is 90° forward and 81° aft of straight out the side, which is the nose back to 171°. The forward limit starts at 1° off the nose, so neither gun shoots straight ahead. Set it to 0 to let both guns shoot on the nose.</p>
     </fieldset>
-
-    <h2 class="grp">Plan the mission</h2>
 
     <fieldset>
       <legend>Threats and survivors</legend>
-      <p class="note">Pick a tool here or in the Map tool bar at the top, then click the map. Erase also removes a vector stick, a gunnery pattern, or a terrain shape when you click it. Drag a threat or Jack on the map to move it. This works in every tool except Measure and Terrain.</p>
+      <details class="help"><summary>Instructions</summary>
+        <p class="note">Pick a tool here or in the Map tool bar at the top, then click the map. Erase also removes a vector stick, a gunnery pattern, or a terrain shape when you click it. Drag a threat or Jack on the map to move it. This works in every tool except Measure and Terrain.</p>
+      </details>
       <div class="seg">
         <button type="button" data-tool="threat" aria-pressed="false">▲ Threat</button>
         <button type="button" data-tool="survivor" aria-pressed="false">J Survivor</button>
@@ -443,42 +481,14 @@ input:disabled,select:disabled{opacity:.55}
       <label class="check"><input type="checkbox" id="labels" checked> Show bearing and range from lead</label>
     </fieldset>
 
-    <fieldset>
-      <legend>Measuring stick</legend>
-      <p class="note">Press Measure, then drag on the map from one point to another.</p>
-      <div class="seg">
-        <button type="button" data-tool="measure" aria-pressed="false">Measure</button>
-        <button type="button" id="measClear">Clear</button>
-      </div>
-      <div class="status" id="measStatus">No measurement</div>
-    </fieldset>
-
-    <h2 class="grp">Conditions and view</h2>
-
-    <fieldset>
-      <legend>Wind</legend>
-      <div class="row"><label for="wdir">Wind from</label><input type="number" id="wdir" min="0" max="360" step="5" value="315"><button type="button" class="nud" data-for="wdir" data-d="-5" aria-label="Minus 5 degrees">−5</button><button type="button" class="nud" data-for="wdir" data-d="5" aria-label="Plus 5 degrees">+5</button></div>
-      <div class="row"><label for="wspd">Speed</label><input type="number" id="wspd" min="0" max="80" step="1" value="0"><span class="unit">kt</span></div>
-      <input type="range" id="wspdR" min="0" max="80" step="1" value="0" aria-label="Wind speed slider">
-      <div class="status" id="relWind"></div>
-    </fieldset>
-
-    <fieldset>
-      <legend>Environment</legend>
-      <div class="row"><label for="env">Background</label><div class="grow"><select id="env">
-        <option value="desert">Desert</option>
-        <option value="ocean" selected>Open water</option>
-        <option value="jungle">Jungle</option>
-        <option value="snow">Snow and mountains</option>
-        <option value="urban">Urban</option>
-        <option value="night">Night</option>
-      </select></div></div>
-    </fieldset>
+    <h2 class="grp">Map and conditions</h2>
 
     <fieldset>
       <legend>Map image</legend>
+      <details class="help"><summary>Instructions</summary>
+        <p class="note">Pick a built-in map. It comes in with north up and its scale already set, with lead at the map's start point. Or load your own screenshot of a map or satellite view. You can also paste a copied screenshot with Ctrl+V. Then set its scale so distances are true.</p>
+      </details>
       <div class="row"><label for="mapBank">Map</label><div class="grow"><select id="mapBank" aria-label="Map"></select></div></div>
-      <p class="note">Pick a built-in map. It comes in with north up and its scale already set, with lead at the map's start point. Or load your own screenshot of a map or satellite view. You can also paste a copied screenshot with Ctrl+V. Then set its scale so distances are true.</p>
       <input type="file" id="mapFile" accept="image/*" hidden>
       <div class="seg">
         <button type="button" id="mapLoad" class="primary">Load image</button>
@@ -499,8 +509,22 @@ input:disabled,select:disabled{opacity:.55}
     </fieldset>
 
     <fieldset>
+      <legend>Environment</legend>
+      <div class="row"><label for="env">Background</label><div class="grow"><select id="env">
+        <option value="desert">Desert</option>
+        <option value="ocean" selected>Open water</option>
+        <option value="jungle">Jungle</option>
+        <option value="snow">Snow and mountains</option>
+        <option value="urban">Urban</option>
+        <option value="night">Night</option>
+      </select></div></div>
+    </fieldset>
+
+    <fieldset>
       <legend>Custom terrain</legend>
-      <p class="note">Pick a type, press Draw terrain, then drag on the map to trace the outline. Let go and the shape fills in. To remove one shape, pick the Erase tool and click it.</p>
+      <details class="help"><summary>Instructions</summary>
+        <p class="note">Pick a type, press Draw terrain, then drag on the map to trace the outline. Let go and the shape fills in. To remove one shape, pick the Erase tool and click it.</p>
+      </details>
       <div class="row"><label for="terType">Type</label><div class="grow"><select id="terType">
         <option value="island" selected>Island (beach and green)</option>
         <option value="water">Water (lake or river)</option>
@@ -515,6 +539,28 @@ input:disabled,select:disabled{opacity:.55}
         <button type="button" id="terClear">Clear all</button>
       </div>
     </fieldset>
+
+    <fieldset>
+      <legend>Wind</legend>
+      <div class="row"><label for="wdir">Wind from</label><input type="number" id="wdir" min="0" max="360" step="5" value="315"><button type="button" class="nud" data-for="wdir" data-d="-5" aria-label="Minus 5 degrees">−5</button><button type="button" class="nud" data-for="wdir" data-d="5" aria-label="Plus 5 degrees">+5</button></div>
+      <div class="row"><label for="wspd">Speed</label><input type="number" id="wspd" min="0" max="80" step="1" value="0"><span class="unit">kt</span></div>
+      <input type="range" id="wspdR" min="0" max="80" step="1" value="0" aria-label="Wind speed slider">
+      <div class="status" id="relWind"></div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Measuring stick</legend>
+      <details class="help"><summary>Instructions</summary>
+        <p class="note">Press Measure, then drag on the map from one point to another.</p>
+      </details>
+      <div class="seg">
+        <button type="button" data-tool="measure" aria-pressed="false">Measure</button>
+        <button type="button" id="measClear">Clear</button>
+      </div>
+      <div class="status" id="measStatus">No measurement</div>
+    </fieldset>
+
+    <h2 class="grp">View</h2>
 
     <fieldset>
       <legend>View</legend>
@@ -548,7 +594,10 @@ input:disabled,select:disabled{opacity:.55}
 
     <fieldset>
       <legend>Saved setups</legend>
-      <p class="note">A setup keeps the background, map image, terrain, wind, chart turn rate choice, threats, Jacks, both aircraft (position, heading, airspeed), spacing, sticks, and patterns as they are right now.</p>
+      <details class="help"><summary>Instructions</summary>
+        <p class="note">A setup keeps the background, map image, terrain, wind, chart turn rate choice, threats, Jacks, both aircraft (position, heading, airspeed), spacing, sticks, and patterns as they are right now.</p>
+        <p class="note">Setups are kept in this browser on this device. To move one to another device or keep a backup, copy its code and paste it there. A code does not carry the map image, so load the picture again on the other device.</p>
+      </details>
       <div class="row"><input type="text" id="scnName" maxlength="40" placeholder="Name this setup" aria-label="Setup name" style="flex:1 1 120px"><button type="button" id="scnSave" class="primary">Save</button></div>
       <div class="row"><div class="grow"><select id="scnList" aria-label="Saved setups"></select></div></div>
       <div class="seg">
@@ -556,7 +605,6 @@ input:disabled,select:disabled{opacity:.55}
         <button type="button" id="scnDel">Delete</button>
       </div>
       <div class="status" id="scnStatus" aria-live="polite">Nothing saved yet</div>
-      <p class="note">Setups are kept in this browser on this device. To move one to another device or keep a backup, copy its code and paste it there. A code does not carry the map image, so load the picture again on the other device.</p>
       <div class="seg">
         <button type="button" id="scnCopy">Copy code</button>
         <button type="button" id="scnPaste">Load from code</button>
@@ -566,7 +614,10 @@ input:disabled,select:disabled{opacity:.55}
 
     <fieldset id="recSet">
       <legend>Saved recordings</legend>
-      <p class="note">Press ● Record on the map, fly, then press Stop. Name it here and press Save. A saved recording keeps both aircraft, the threats, Jacks, terrain and background. It does not keep the map image.</p>
+      <details class="help"><summary>Instructions</summary>
+        <p class="note">Press ● Record on the map, fly, then press Stop. Name it here and press Save. A saved recording keeps both aircraft, the threats, Jacks, terrain and background. It does not keep the map image.</p>
+        <p class="note">Recordings are kept in this browser on this device. Saving with a name you already used replaces the old one.</p>
+      </details>
       <div class="row"><input type="text" id="recName" maxlength="40" placeholder="Name this recording" aria-label="Recording name" style="flex:1 1 120px"><button type="button" id="recSave" class="primary">Save</button></div>
       <div class="row"><div class="grow"><select id="recList" aria-label="Saved recordings"></select></div></div>
       <div class="seg">
@@ -574,12 +625,14 @@ input:disabled,select:disabled{opacity:.55}
         <button type="button" id="recDel">Delete</button>
       </div>
       <div class="status" id="recStatus" aria-live="polite">Nothing saved yet</div>
-      <p class="note">Recordings are kept in this browser on this device. Saving with a name you already used replaces the old one.</p>
     </fieldset>
 
-    <p class="note">↶ Undo on the map takes back your last action and puts the sim back to the moment just before it, and ↷ Redo puts it back. ● Record saves what the aircraft do until you press Stop. Play recording then replays it with the ground tracks and without sticks or patterns. Use the slider to jump around, and Exit playback to return to where you were. + Pattern in the Map tool bar lets you pick a pattern type and adds it, using the sizes set in the Gunnery pattern box. On a touch screen, pinch to zoom and drag with two fingers to move the map. Hide controls gives the map the whole screen and puts the map tools on its left edge. There, ☰ All tools opens any section of the controls right on the map. Keys: 7 8 9 0 1 2 set 70 to 120 kt, − and = change airspeed by 5, M move map, S sticks, R measure, E erase, T trail follows lead, Esc closes a section. Use ◀ 1 s and 1 s ▶ on the map to step back or forward one second at a time. The Left and Right arrow keys do the same, and Space plays or pauses. You can go back up to 10 minutes.</p>
-    <p class="note">You can drag aircraft, threats, Jacks, and patterns in every tool except Measure and Terrain.</p>
-    <p class="note">Wind pushes the aircraft. On sticks or a pattern they crab into the wind to hold the line. Aircraft in formation are drawn larger than scale when zoomed out.</p>
+    <details class="help"><summary>More tips</summary>
+  <p class="note">Click an aircraft on the map to select it. Drag it to set where it starts. Drag the amber handle off its nose to point it.</p>
+      <p class="note">↶ Undo on the map takes back your last action and puts the sim back to the moment just before it, and ↷ Redo puts it back. ● Record saves what the aircraft do until you press Stop. Play recording then replays it with the ground tracks and without sticks or patterns. Use the slider to jump around, and Exit playback to return to where you were. + Pattern in the Map tool bar lets you pick a pattern type and adds it, using the sizes set in the Gunnery pattern box. On a touch screen, pinch to zoom and drag with two fingers to move the map. Hide controls gives the map the whole screen and puts the map tools on its left edge. There, ☰ All tools opens any section of the controls right on the map. Keys: 7 8 9 0 1 2 set 70 to 120 kt, − and = change airspeed by 5, M move map, S sticks, R measure, E erase, T trail follows lead, Esc closes a section. Use ◀ 1 s and 1 s ▶ on the map to step back or forward one second at a time. The Left and Right arrow keys do the same, and Space plays or pauses. You can go back up to 10 minutes.</p>
+      <p class="note">You can drag aircraft, threats, Jacks, and patterns in every tool except Measure and Terrain.</p>
+      <p class="note">Wind pushes the aircraft. On sticks or a pattern they crab into the wind to hold the line. Aircraft in formation are drawn larger than scale when zoomed out.</p>
+    </details>
   </aside>
 
   <main class="stage" id="stage">
@@ -610,13 +663,17 @@ input:disabled,select:disabled{opacity:.55}
       </div>
     </div>
     <div class="gunCard gunCtl" id="gunCtl">
-      <button type="button" class="emHead" id="gunCtlHead" aria-expanded="true" title="Show or hide the gun buttons"><span><b>GUNS</b><span id="gunCtlNote">tap L or R to turn a gun on</span></span><span id="gunCtlArrow">▾</span></button>
+      <div class="thBar" id="thBar" aria-label="Threat status">
+        <div class="thRow"><b>THREAT</b><select id="thSel" aria-label="Threat to mark" title="Which threat the buttons below act on"></select><button type="button" id="thPop" data-tool="popup" aria-pressed="false" title="Press, then click the map. Click a threat that is down to bring it back up. Click anywhere else to pop up a new threat there.">Pop-up threat</button></div>
+        <div class="thRow"><button type="button" id="thNeut" aria-pressed="false" title="Mark this threat neutralized. Guns keep shooting. Press again to make it active.">Threat neutralized</button><button type="button" id="thDest" aria-pressed="false" title="Mark this threat destroyed. Guns shooting at it cease fire. Press again to make it active.">Threat destroyed</button></div>
+      </div>
+      <button type="button" class="emHead" id="gunCtlHead" aria-expanded="true" title="Show or hide the gun buttons"><span><b>GUNS</b><span id="gunCtlNote">tap FIRE to turn a gun on</span></span><span id="gunCtlArrow">▾</span></button>
       <div class="gunCtlBody" id="gunCtlBody">
         <div class="gunBar" id="gunBar" aria-label="Flex fire guns">
-          <span class="gset"><select id="gt00" aria-label="Lead left gun target" title="Lead left gun target"></select><button type="button" id="g00" aria-pressed="false" title="Lead left gun">◀ L</button><b style="color:#6fa8ff">LEAD</b><button type="button" id="g01" aria-pressed="false" title="Lead right gun">R ▶</button><select id="gt01" aria-label="Lead right gun target" title="Lead right gun target"></select></span>
-          <span class="gset gload"><span class="glo"><select id="gy00" aria-label="Lead left gun type" title="Lead left gun"><option value="GAU-21">GAU-21</option><option value="GAU-2">GAU-2</option></select><span class="gam" id="ga00" title="Rounds left">600</span></span><span class="glo"><select id="gy01" aria-label="Lead right gun type" title="Lead right gun"><option value="GAU-21">GAU-21</option><option value="GAU-2">GAU-2</option></select><span class="gam" id="ga01" title="Rounds left">600</span></span></span>
-          <span class="gset"><select id="gt10" aria-label="Trail left gun target" title="Trail left gun target"></select><button type="button" id="g10" aria-pressed="false" title="Trail left gun">◀ L</button><b style="color:#5fdc8c">TRAIL</b><button type="button" id="g11" aria-pressed="false" title="Trail right gun">R ▶</button><select id="gt11" aria-label="Trail right gun target" title="Trail right gun target"></select></span>
-          <span class="gset gload"><span class="glo"><select id="gy10" aria-label="Trail left gun type" title="Trail left gun"><option value="GAU-21">GAU-21</option><option value="GAU-2">GAU-2</option></select><span class="gam" id="ga10" title="Rounds left">600</span></span><span class="glo"><select id="gy11" aria-label="Trail right gun type" title="Trail right gun"><option value="GAU-21">GAU-21</option><option value="GAU-2">GAU-2</option></select><span class="gam" id="ga11" title="Rounds left">600</span></span></span>
+          <span class="gset gL gTop"><select id="gt00" aria-label="Lead left gun target" title="Lead left gun target"></select><button type="button" id="g00" aria-pressed="false" title="Lead left gun">FIRE L</button><b style="color:#6fa8ff">LEAD</b><button type="button" id="g01" aria-pressed="false" title="Lead right gun">FIRE R</button><select id="gt01" aria-label="Lead right gun target" title="Lead right gun target"></select></span>
+          <span class="gset gload gL gBot"><span class="glo"><select id="gy00" aria-label="Lead left gun type" title="Lead left gun"><option value="GAU-21">GAU-21</option><option value="GAU-2">GAU-2</option></select><span class="gam" id="ga00" title="Rounds left">600</span></span><span class="glo"><select id="gy01" aria-label="Lead right gun type" title="Lead right gun"><option value="GAU-21">GAU-21</option><option value="GAU-2">GAU-2</option></select><span class="gam" id="ga01" title="Rounds left">600</span></span></span>
+          <span class="gset gT gTop"><select id="gt10" aria-label="Trail left gun target" title="Trail left gun target"></select><button type="button" id="g10" aria-pressed="false" title="Trail left gun">FIRE L</button><b style="color:#5fdc8c">TRAIL</b><button type="button" id="g11" aria-pressed="false" title="Trail right gun">FIRE R</button><select id="gt11" aria-label="Trail right gun target" title="Trail right gun target"></select></span>
+          <span class="gset gload gT gBot"><span class="glo"><select id="gy10" aria-label="Trail left gun type" title="Trail left gun"><option value="GAU-21">GAU-21</option><option value="GAU-2">GAU-2</option></select><span class="gam" id="ga10" title="Rounds left">600</span></span><span class="glo"><select id="gy11" aria-label="Trail right gun type" title="Trail right gun"><option value="GAU-21">GAU-21</option><option value="GAU-2">GAU-2</option></select><span class="gam" id="ga11" title="Rounds left">600</span></span></span>
           <span class="gset gload"><button type="button" id="gReload" title="Fill every gun back to a full load">Reload all</button></span>
         </div>
       </div>
@@ -955,6 +1012,55 @@ function popJack(nd){
 function popRestore(t){
   while(POP.log.length&&POP.log[POP.log.length-1].t>t+1e-6){var e=POP.log.pop();S.markers.splice(Math.min(e.idx,S.markers.length),0,e.m);}
 }
+/* ---------- threat status ----------
+   A threat is active, neutralized or destroyed. Each change is logged with its time, so stepping back and Reset undo it. */
+var TH={sel:1,log:[],sig:''},THFX={};
+function mkId(m){if(!m.id){var mx=0;S.markers.forEach(function(q){if(q.id>mx)mx=q.id;});m.id=mx+1;}return m.id;}
+function thFx(m,k){THFX[mkId(m)]={t:performance.now(),k:k};}
+function thSet(m,st,x,y){
+  TH.log.push({t:simT,id:mkId(m),st:m.st||'',x:m.x,y:m.y});
+  if(st)m.st=st;else delete m.st;
+  if(x!=null){m.x=x;m.y=y;}
+  thFx(m,st||'up');
+}
+function thRestore(t){
+  while(TH.log.length&&TH.log[TH.log.length-1].t>t+1e-6){
+    var e=TH.log.pop(),m=null;S.markers.forEach(function(q){if(q.id===e.id)m=q;});if(!m)continue;
+    if(e.st)m.st=e.st;else delete m.st;m.x=e.x;m.y=e.y;if(m.id)delete THFX[m.id];
+  }
+}
+/* a destroyed threat: every gun set to shoot it ceases fire. A neutralized one leaves the guns alone. */
+function thMark(st){
+  if(PB)return;
+  var th=threats(),n=clamp(TH.sel,1,Math.max(1,th.length)),m=th[n-1];if(!m)return;
+  pushUndo();
+  if((m.st||'')===st){thSet(m,'');return;}
+  thSet(m,st);
+  if(st==='dest')for(var i=0;i<2;i++)for(var sd=0;sd<2;sd++)if(GUN.tgt[i][sd]===n)GUN.on[i][sd]=false;
+}
+/* pop-up threat: click a threat that is down and it comes back up where it sits. Click anywhere else and a new threat appears there. */
+function thPopUp(w,p){
+  var th=threats(),m=null,bd=24*HIT,k;
+  for(k=0;k<th.length;k++){if(!th[k].st)continue;var q=Math.hypot(sx(th[k].x)-p.x,sy(th[k].y)-p.y);if(q<bd){bd=q;m=th[k];}}
+  if(m){thSet(m,'');TH.sel=th.indexOf(m)+1;}
+  else{m={type:'threat',x:w.x,y:w.y};S.markers.push(m);thFx(m,'up');TH.sel=th.length+1;}
+}
+function thState(){return threats().map(function(m){return (m.st==='dest'?2:m.st==='neut'?1:0)+','+Math.round(m.x)+','+Math.round(m.y);}).join(';');}
+function thUI(){
+  var th=threats(),sel=$('thSel'),sig=th.map(function(m){return m.st||'a';}).join(',')+'|'+(PB?1:0);
+  TH.sel=clamp(TH.sel||1,1,Math.max(1,th.length));
+  if(sig!==TH.sig){
+    TH.sig=sig;sel.textContent='';
+    if(!th.length){var o0=document.createElement('option');o0.value='0';o0.textContent='no threat';sel.appendChild(o0);}
+    th.forEach(function(m,k){var o=document.createElement('option');o.value=String(k+1);o.textContent='T'+(k+1)+' '+(m.st==='dest'?'DEST':m.st==='neut'?'NEUT':'ACTIVE');sel.appendChild(o);});
+    sel.disabled=!!PB||!th.length;$('thNeut').disabled=$('thDest').disabled=!!PB||!th.length;$('thPop').disabled=!!PB;
+  }
+  var v=th.length?String(TH.sel):'0';if(sel.value!==v)sel.value=v;
+  var st=th.length?(th[TH.sel-1].st||''):'';
+  var a=String(st==='neut'),b=String(st==='dest');
+  if($('thNeut').getAttribute('aria-pressed')!==a)$('thNeut').setAttribute('aria-pressed',a);
+  if($('thDest').getAttribute('aria-pressed')!==b)$('thDest').setAttribute('aria-pressed',b);
+}
 function popSet(on){POP.on=!!on;try{$('popOn').checked=POP.on;}catch(e){}}
 /* drop sticks that have been flown */
 function trimSticks(a){
@@ -1112,7 +1218,7 @@ function resetAircraft(){
   [L,T].forEach(function(a){
     var r=a.route;
     if(r&&r.cruise!=null&&(r.slow||r.hold||r.ramp))a.tas=r.cruise;
-    gunsOff();gunReload();popRestore(-1);
+    gunsOff();gunReload();popRestore(-1);thRestore(-1);
     /* a reset clears everything the aircraft was flying: sticks, patterns and commits */
     a.route=null;a.saved=null;
     a.track=[];a.trackGen++;a.turnRem=0;a.hdg=0;
@@ -1226,7 +1332,7 @@ function restoreSnap(u){
 function goToSnap(u){
   restoreSnap(u);simT=u.simT;
   /* the snapshot brings back the markers of its own moment, so later pickups are simply forgotten */
-  POP.log=POP.log.filter(function(e){return e.t<=simT+1e-6;});
+  POP.log=POP.log.filter(function(e){return e.t<=simT+1e-6;});TH.log=TH.log.filter(function(e){return e.t<=simT+1e-6;});
   if(u.hid!==histId){hist=[];snap();}else hist=hist.filter(function(h){return h.t<=simT+1e-6;});
   recTrim();lastKey=null;undoBtnState();
 }
@@ -1246,7 +1352,7 @@ function redo(){
 /* ---------- flex fire guns ----------
    Each aircraft has a left and a right gun. A gun that is turned on fires only while it is clear:
    the target is inside the gun's arc and range, and the other aircraft is clear of the gun target line. */
-var GUN={on:[[false,false],[false,false]],tgt:[[1,1],[1,1]],fwd:1,aft:171,range:1500,hot:60,cold:30,jack:30,agl:300,burst:[3,5],pause:1,elFwd:[-3,-54],elAft:[3,-48]};
+var GUN={on:[[false,false],[false,false]],tgt:[[1,1],[1,1]],fwd:0,aft:171,range:1500,hot:60,cold:30,jack:30,agl:300,burst:[3,5],pause:1,elFwd:[-3,-54],elAft:[3,-48]};
 /* ---------- gun load-outs ----------
    Each of the four gunner positions carries a GAU-21 or a GAU-2. rpm is rounds per minute (the GAU-21 varies burst to burst),
    ammo is the full load, range is the effective range in meters. GS holds each gun's type, rounds left and burst state. */
@@ -1440,6 +1546,7 @@ function winToast(text){
 }
 
 function gunUI(){
+  thUI();
   var th=threats(),i,sd,msg=[],st=[],nFire=0,pf=PB?PB.tape.frames[PB.i]:null;
   if(th.length!==gunNT||gunPB!==!!PB){
     gunNT=th.length;gunPB=!!PB;
@@ -1471,7 +1578,7 @@ function gunUI(){
     if(g&&g.fire)nFire++;
   }
   /* the reasons sit in their own window on the right of the map. It shows while any gun is on. */
-  setText($('gunCtlNote'),st.length?st.length+' on, '+nFire+' firing':'tap L or R to turn a gun on');
+  setText($('gunCtlNote'),st.length?st.length+' on, '+nFire+' firing':'tap FIRE to turn a gun on');
   var anyOn=st.length>0,gc=$('gunCard');
   if(gc.hidden===anyOn)gc.hidden=!anyOn;
   setText($('gunCount'),msg.length?' '+msg.length:' 0');
@@ -1487,15 +1594,17 @@ var REC=null,TAPE=null,PB=null;
 /* commit state for a recording frame: seconds left (-1 when not committed) and the commit's full length (0 means stay) */
 function holdLeft(a){var h=a.route&&a.route.hold;return h&&h.node?Math.max(0,Math.round(h.t*10)/10):-1;}
 function holdTot(a){var h=a.route&&a.route.hold;return h&&h.node?(h.node.commit>0?h.node.commit:0):0;}
-/* frames have grown over time: 9 values (flight only), 12 (one target per aircraft), 16 (plus commits), 18 (one target per gun), 19 (plus which guns are on), 23 (plus rounds left on each gun) */
+/* frames have grown over time: 9 values (flight only), 12 (one target per aircraft), 16 (plus commits), 18 (one target per gun), 19 (plus which guns are on), 23 (plus rounds left on each gun), 24 (plus threat status) */
 function frTgt(f,i,sd){return f.length>=18?f[10+i*2+sd]:f.length>=12?f[10+i]:0;}
 function frHold(f,i){var o=f.length>=18?14:f.length>=16?12:-1;return o<0?[-1,0]:[f[o+i*2],f[o+1+i*2]];}
+/* threat status and position: each frame points into a short list of the states seen so far */
+function thIdx(){var q=thState(),k=REC.thMap[q];if(k==null){k=REC.ths.length;REC.ths.push(q);REC.thMap[q]=k;}return k;}
 function recFrame(){
   if(!REC)return;
   var t=simT-REC.t0,f=REC.frames,L=AC[0],T=AC[1];
   if(f.length&&t-f[f.length-1][0]<0.0999)return;
   if(f.length>=72000){stopRec();return;}
-  f.push([t,L.pos.x,L.pos.y,L.hdg,L.tas,T.pos.x,T.pos.y,T.hdg,T.tas,gunMask(),GUN.tgt[0][0],GUN.tgt[0][1],GUN.tgt[1][0],GUN.tgt[1][1],holdLeft(L),holdTot(L),holdLeft(T),holdTot(T),onMask(),Math.ceil(GS[0][0].ammo),Math.ceil(GS[0][1].ammo),Math.ceil(GS[1][0].ammo),Math.ceil(GS[1][1].ammo)]);
+  f.push([t,L.pos.x,L.pos.y,L.hdg,L.tas,T.pos.x,T.pos.y,T.hdg,T.tas,gunMask(),GUN.tgt[0][0],GUN.tgt[0][1],GUN.tgt[1][0],GUN.tgt[1][1],holdLeft(L),holdTot(L),holdLeft(T),holdTot(T),onMask(),Math.ceil(GS[0][0].ammo),Math.ceil(GS[0][1].ammo),Math.ceil(GS[1][0].ammo),Math.ceil(GS[1][1].ammo),thIdx()]);
 }
 /* stepping back or undoing moves the clock back, so the recording drops whatever came after that moment */
 function recTrim(){
@@ -1503,14 +1612,14 @@ function recTrim(){
   var t=simT-REC.t0,f=REC.frames;
   while(f.length&&f[f.length-1][0]>t+1e-6)f.pop();
 }
-function startRec(){if(PB)return;REC={t0:simT,frames:[]};recFrame();recUI();}
+function startRec(){if(PB)return;REC={t0:simT,frames:[],ths:[],thMap:{}};recFrame();recUI();}
 function stopRec(){
   if(!REC)return;
   /* the threats, Jacks, terrain and background go with the recording, so it looks the same when played later */
   /* Jacks picked up during the recording go back into its scene, each marked with the time it left */
   var mk=JSON.parse(JSON.stringify(S.markers));
   for(var pi=POP.log.length-1;pi>=0;pi--){var pe=POP.log[pi];if(pe.t<REC.t0-1e-6)break;mk.splice(Math.min(pe.idx,mk.length),0,{type:pe.m.type,x:pe.m.x,y:pe.m.y,gone:Math.round((pe.t-REC.t0)*100)/100});}
-  if(REC.frames.length>1)TAPE={frames:REC.frames,dur:REC.frames[REC.frames.length-1][0],name:'',scene:{markers:JSON.stringify(mk),terrain:JSON.parse(JSON.stringify(S.terrain)),env:S.env,guns:[[GS[0][0].type,GS[0][1].type],[GS[1][0].type,GS[1][1].type]]}};
+  if(REC.frames.length>1)TAPE={frames:REC.frames,dur:REC.frames[REC.frames.length-1][0],name:'',scene:{markers:JSON.stringify(mk),terrain:JSON.parse(JSON.stringify(S.terrain)),env:S.env,ths:REC.ths,guns:[[GS[0][0].type,GS[0][1].type],[GS[1][0].type,GS[1][1].type]]}};
   REC=null;recUI();
 }
 function pbApply(){
@@ -1520,6 +1629,19 @@ function pbApply(){
   while(hi-lo>1){var mid=(lo+hi)>>1;if(f[mid][0]<=t)lo=mid;else hi=mid;}
   var a=f[lo],b=f[hi],k=b[0]>a[0]?clamp((t-a[0])/(b[0]-a[0]),0,1):0;
   PB.i=lo;
+  var sc=PB.tape.scene;
+  if(a.length>=24&&sc&&sc.ths&&PB.mk){
+    var q=sc.ths[a[23]];
+    if(q!=null&&q!==PB.ths){
+      var parts=q?q.split(';'):[],nn=0,first=PB.ths==null;PB.ths=q;
+      PB.mk.forEach(function(m){
+        if(m.type!=='threat')return;var z=parts[nn++];if(!z)return;z=z.split(',');
+        var ns=z[0]==='2'?'dest':z[0]==='1'?'neut':'';
+        if((m.st||'')!==ns){if(ns)m.st=ns;else delete m.st;if(!first)thFx(m,ns||'up');}
+        m.x=+z[1];m.y=+z[2];
+      });
+    }
+  }
   [0,1].forEach(function(n){
     var o=1+n*4,c=AC[n];
     c.pos={x:a[o]+(b[o]-a[o])*k,y:a[o+1]+(b[o+1]-a[o+1])*k};
@@ -1565,7 +1687,7 @@ function recPack(t){
 function recUnpack(it){
   var d=it&&it.data;
   if(!d||!Array.isArray(d.f)||d.f.length<2)return null;
-  for(var i=0;i<d.f.length;i++){var a=d.f[i];if(!Array.isArray(a)||(a.length!==9&&a.length!==12&&a.length!==16&&a.length!==18&&a.length!==19&&a.length!==23))return null;for(var k=0;k<a.length;k++)if(!isFinite(a[k]))return null;}
+  for(var i=0;i<d.f.length;i++){var a=d.f[i];if(!Array.isArray(a)||(a.length!==9&&a.length!==12&&a.length!==16&&a.length!==18&&a.length!==19&&a.length!==23&&a.length!==24))return null;for(var k=0;k<a.length;k++)if(!isFinite(a[k]))return null;}
   return {frames:d.f,dur:d.f[d.f.length-1][0],name:it.name,scene:d.scene||null};
 }
 function recFill(pick){
@@ -1694,7 +1816,7 @@ function stepBack(){
   var i=hist.length-1;while(i>=0&&hist[i].sec>sec)i--;
   if(i<0)return;
   hist.length=i+1;applyState(hist[i].st);simT=hist[i].t;
-  popRestore(simT);
+  popRestore(simT);thRestore(simT);
   recTrim();
 }
 function stepFwd(){
@@ -2259,14 +2381,45 @@ function drawWind(dt){
   ctx.stroke();
 }
 
+function thTri(x,y){ctx.beginPath();ctx.moveTo(x,y-13);ctx.lineTo(x+12,y+9);ctx.lineTo(x-12,y+9);ctx.closePath();}
+function drawThreat(m,x,y){
+  var st=m.st||'',fx=m.id?THFX[m.id]:null,now=performance.now(),age=fx?(now-fx.t)/1000:99,k,e;
+  ctx.save();ctx.lineJoin='round';
+  if(st==='dest'){
+    /* a burnt wreck with smoke drifting off it */
+    var tt=now/1000;
+    for(k=0;k<4;k++){var ph=(tt*0.4+k/4)%1;ctx.globalAlpha=.5*(1-ph);ctx.fillStyle='#2e2e2e';ctx.beginPath();ctx.arc(x+ph*16+Math.sin(ph*6+k*2)*3,y-8-ph*38,4+ph*10,0,7);ctx.fill();}
+    ctx.globalAlpha=1;thTri(x,y);ctx.fillStyle='#17110f';ctx.fill();ctx.lineWidth=2.5;ctx.strokeStyle='#6b2a20';ctx.stroke();
+    ctx.strokeStyle='#ff5a4d';ctx.lineWidth=3;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(x-10,y-10);ctx.lineTo(x+10,y+10);ctx.moveTo(x+10,y-10);ctx.lineTo(x-10,y+10);ctx.stroke();
+    if(age<1.3){
+      /* the blast: a fireball that grows and fades, with sparks thrown out */
+      e=age/1.3;var R=12+e*52;
+      var g=ctx.createRadialGradient(x,y,0,x,y,R);g.addColorStop(0,'rgba(255,250,200,'+(1-e)+')');g.addColorStop(.45,'rgba(255,170,40,'+(.9*(1-e))+')');g.addColorStop(1,'rgba(255,60,20,0)');
+      ctx.fillStyle=g;ctx.beginPath();ctx.arc(x,y,R,0,7);ctx.fill();
+      ctx.strokeStyle='rgba(255,220,120,'+(1-e)+')';ctx.lineWidth=2;ctx.beginPath();
+      for(k=0;k<10;k++){var an=k*0.628+m.id,r0=R*.55,r1=R*(1.05+.25*((k*7)%3));ctx.moveTo(x+Math.cos(an)*r0,y+Math.sin(an)*r0);ctx.lineTo(x+Math.cos(an)*r1,y+Math.sin(an)*r1);}
+      ctx.stroke();
+    }
+  }else if(st==='neut'){
+    /* grey and struck through: still there, no longer shooting */
+    thTri(x,y);ctx.fillStyle='#7b8494';ctx.fill();ctx.lineWidth=2.5;ctx.strokeStyle='#f2b233';ctx.setLineDash([4,3]);ctx.stroke();ctx.setLineDash([]);
+    ctx.strokeStyle='#f2b233';ctx.lineWidth=3;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(x-13,y+11);ctx.lineTo(x+13,y-11);ctx.stroke();
+    if(age<1.2){e=age/1.2;ctx.lineWidth=3;for(k=0;k<2;k++){var q=Math.min(1,e+k*.25);ctx.strokeStyle='rgba(242,178,51,'+(1-q)+')';ctx.beginPath();ctx.arc(x,y,46-q*30,0,7);ctx.stroke();}}
+  }else{
+    thTri(x,y);ctx.fillStyle='#ff2d20';ctx.fill();ctx.lineWidth=2.5;ctx.strokeStyle='#3a0500';ctx.stroke();
+    /* a threat that just popped up: red rings spread out from it */
+    if(fx&&fx.k==='up'&&age<1.4){e=age/1.4;ctx.lineWidth=3;for(k=0;k<3;k++){var u=e*1.3-k*.18;if(u<=0||u>=1)continue;ctx.strokeStyle='rgba(255,60,40,'+(1-u)+')';ctx.beginPath();ctx.arc(x,y,14+u*44,0,7);ctx.stroke();}}
+  }
+  ctx.restore();
+  if(st&&!S.showLabels){ctx.font='700 11px "IBM Plex Mono",monospace';ctx.textAlign='center';ctx.textBaseline='middle';haloText(st==='dest'?'DESTROYED':'NEUTRALIZED',x,y+22);}
+}
 function drawMarkers(){
   var nt=0,ns=0,L=AC[0];
   for(var i=0;i<S.markers.length;i++){
     var m=S.markers[i],x=sx(m.x),y=sy(m.y),name;
     if(m.type==='threat'){
-      name='T'+(++nt);
-      ctx.beginPath();ctx.moveTo(x,y-13);ctx.lineTo(x+12,y+9);ctx.lineTo(x-12,y+9);ctx.closePath();
-      ctx.fillStyle='#ff2d20';ctx.fill();ctx.lineWidth=2.5;ctx.strokeStyle='#3a0500';ctx.lineJoin='round';ctx.stroke();
+      name='T'+(++nt)+(m.st==='dest'?' DESTROYED':m.st==='neut'?' NEUTRALIZED':'');
+      drawThreat(m,x,y);
     }else{
       name='J'+(++ns);
       ctx.font='700 26px "Barlow Condensed","Arial Narrow",sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
@@ -2688,7 +2841,7 @@ $('spdWho').addEventListener('click',function(){setSel((S.sel+1)%3);});
 function spdReadout(){
   var a=primary(),key=S.sel+'|'+Math.round(wantSpeed(a));
   if(key===spdShown)return;spdShown=key;
-  var w=$('spdWho');w.textContent=['LEAD','TRAIL','BOTH'][S.sel];w.style.color=['#3f8cff','#35c46a','#f2b233'][S.sel];
+  var w=$('spdWho');$('dockEdit').setAttribute('data-sel',String(S.sel));w.textContent=['LEAD','TRAIL','BOTH'][S.sel];w.style.color=['#3f8cff','#35c46a','#f2b233'][S.sel];
   Array.prototype.forEach.call(spdBtns,function(b){b.setAttribute('aria-pressed',String(Math.abs(+b.dataset.v-wantSpeed(a))<0.5));});
 }
 $('tas').addEventListener('change',function(){setTas(parseFloat(this.value));});
@@ -3138,6 +3291,9 @@ $('dockMin').addEventListener('click',function(){var d=$('dock'),m=d.classList.t
   });
 });
 $('gCease').addEventListener('click',gunsOff);
+$('thSel').addEventListener('change',function(){TH.sel=parseInt(this.value,10)||1;});
+$('thNeut').addEventListener('click',function(){thMark('neut');});
+$('thDest').addEventListener('click',function(){thMark('dest');});
 function gunNum(id,key,lo,hi){$(id).addEventListener('change',function(){var v=parseFloat(this.value);if(!isFinite(v))v=GUN[key];v=clamp(v,lo,hi);GUN[key]=v;this.value=v;});}
 gunNum('gFwd','fwd',0,90);gunNum('gAft','aft',90,180);$('gR21').addEventListener('change',function(){var v=clamp(parseFloat(this.value)||1500,100,5000);GTYPE['GAU-21'].range=v;this.value=v;});
 $('gR2').addEventListener('change',function(){var v=clamp(parseFloat(this.value)||750,100,5000);GTYPE['GAU-2'].range=v;this.value=v;});
@@ -3494,6 +3650,7 @@ function finishPointer(e){
       if(sv)openPop(sticksAircraft(),nd,'J'+sv.n);else closePop();
     }
   }
+  else if(S.tool==='popup'){if(!PB)thPopUp(w,p);setTool('pan');}
   else if(S.tool==='threat'||S.tool==='survivor'){S.markers.push({type:S.tool,x:w.x,y:w.y});}
   else if(S.tool==='erase'){
     var best=-1,bd=24*HIT;
