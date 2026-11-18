@@ -93,11 +93,21 @@ canvas.spr{inset:auto;left:0;top:0;width:auto;height:auto;pointer-events:none;wi
 .commit .card.last{border-color:var(--accent)}
 .commit .card.last .time{color:var(--accent)}
 .commit .card.last .bar i{background:var(--accent)}
-.rightCol{position:absolute;right:12px;top:160px;width:276px;max-width:calc(100% - 24px);display:flex;flex-direction:column;gap:8px;z-index:2;pointer-events:none}
+.rightCol{position:absolute;right:12px;top:160px;width:276px;max-width:calc(100% - 24px);max-height:calc(100% - 222px);overflow-y:auto;overflow-x:hidden;display:flex;flex-direction:column;gap:8px;z-index:2;pointer-events:none;scrollbar-width:thin}
+.rightCol>*{flex:0 0 auto}
 .rightCol>*{pointer-events:auto}
 .emCard,.gunCard{width:100%;background:rgba(12,16,22,.9);border:1px solid rgba(255,255,255,.16);border-radius:8px;z-index:2;overflow:hidden}
 .emCard[hidden],.gunCard[hidden]{display:none}
 .gunCard .emHead b{color:#ff8d82}
+.gunCtl .emHead b{color:var(--accent)}
+.gunCtl #gunCtlNote{color:var(--muted,#9aa5b5);font-size:11px}
+.gunCtl .gunCtlBody{padding:0 7px 8px}
+.gunCtl .gunCtlBody[hidden]{display:none}
+.gunCtl .gunBar{position:static;max-width:none;flex-direction:column;align-items:stretch;gap:5px;flex-wrap:nowrap}
+.gunCtl .gunBar .gset{justify-content:space-between;background:none;padding:0;gap:4px}
+.gunCtl .gunBar .gset b{flex:1 1 auto;text-align:center;padding:0}
+.gunCtl .gunBar select{min-width:54px}
+.gunCtl .gunBar button{min-width:46px;padding:6px 6px}
 .gunCard #gunCount{color:var(--ink);font-family:var(--mono)}
 .gunCard .gunBody{padding:0 9px 8px}
 .gunCard .gunBody[hidden]{display:none}
@@ -225,7 +235,7 @@ input:disabled,select:disabled{opacity:.55}
   <aside class="panel">
     <div>
       <h1>HH-60 Formation Sim</h1>
-      <p class="sub"><span class="swatch" style="background:var(--lead)"></span>Lead <span class="swatch" style="background:var(--trail);margin-left:10px"></span>Trail. North is up. <span id="build" style="opacity:.6;white-space:nowrap">Build 18 Nov I</span></p>
+      <p class="sub"><span class="swatch" style="background:var(--lead)"></span>Lead <span class="swatch" style="background:var(--trail);margin-left:10px"></span>Trail. North is up. <span id="build" style="opacity:.6;white-space:nowrap">Build 18 Nov J</span></p>
     </div>
 
     <div class="who">
@@ -369,7 +379,7 @@ input:disabled,select:disabled{opacity:.55}
 
     <fieldset id="gunSet">
       <legend>Flex fire guns</legend>
-      <p class="note">Use the GUNS bar on the map. Tap L or R to turn a gun on. Each gun has its own target picker next to it. A gun that is on shoots only while it is clear to shoot. It stops by itself when it is not, and starts again when it is.</p>
+      <p class="note">Use the GUNS window on the right side of the map. Tap L or R to turn a gun on. Each gun has its own target picker next to it. A gun that is on shoots only while it is clear to shoot. It stops by itself when it is not, and starts again when it is.</p>
       <p class="note">Guns also have up and down stops. The sim uses your height above the target and the bank angle to work out how far up or down the gun must point, and holds fire when that is past a stop. Banking toward the target lifts it against the upper stop. Each gun is checked by itself against its own gun target line. A gun is clear when its target is inside its arc and range, no Jack is within 30° of its line, and the other aircraft is far enough off its line. The other aircraft and a Jack only count when they are inside that gun's own arc, since the gun cannot swing past its stops. The spacing needed is 2 clock positions (60°) when the other aircraft is hot, which means closing on the line, and 1 clock position (30°) when it is cold.</p>
       <div class="row"><label for="gFwd">Forward limit</label><input type="number" id="gFwd" min="0" max="90" step="1" value="1"><span class="unit">° off nose</span></div>
       <div class="row"><label for="gAft">Aft limit</label><input type="number" id="gAft" min="90" max="180" step="1" value="171"><span class="unit">° off nose</span></div>
@@ -583,6 +593,15 @@ input:disabled,select:disabled{opacity:.55}
           <div class="emNow" id="emNow"></div>
         </div>
       </div>
+      <div class="gunCard gunCtl" id="gunCtl">
+        <button type="button" class="emHead" id="gunCtlHead" aria-expanded="true" title="Show or hide the gun buttons"><span><b>GUNS</b><span id="gunCtlNote">tap L or R to turn a gun on</span></span><span id="gunCtlArrow">▾</span></button>
+        <div class="gunCtlBody" id="gunCtlBody">
+          <div class="gunBar" id="gunBar" aria-label="Flex fire guns">
+            <span class="gset"><select id="gt00" aria-label="Lead left gun target" title="Lead left gun target"></select><button type="button" id="g00" aria-pressed="false" title="Lead left gun">◀ L</button><b style="color:#6fa8ff">LEAD</b><button type="button" id="g01" aria-pressed="false" title="Lead right gun">R ▶</button><select id="gt01" aria-label="Lead right gun target" title="Lead right gun target"></select></span>
+            <span class="gset"><select id="gt10" aria-label="Trail left gun target" title="Trail left gun target"></select><button type="button" id="g10" aria-pressed="false" title="Trail left gun">◀ L</button><b style="color:#5fdc8c">TRAIL</b><button type="button" id="g11" aria-pressed="false" title="Trail right gun">R ▶</button><select id="gt11" aria-label="Trail right gun target" title="Trail right gun target"></select></span>
+          </div>
+        </div>
+      </div>
       <div class="gunCard" id="gunCard" hidden>
         <button type="button" class="emHead" id="gunHead" aria-expanded="true" title="Show or hide why guns are holding fire"><span><b>GUN HOLDS</b><span id="gunCount"></span></span><span id="gunArrow">▾</span></button>
         <div class="gunBody" id="gunBody"><div id="gunMsg" aria-live="polite"></div></div>
@@ -600,11 +619,6 @@ input:disabled,select:disabled{opacity:.55}
     <div class="dock" id="dock" aria-label="Quick bar">
       <div class="dockHead"><button type="button" id="dockMin" aria-expanded="true" title="Hide or show the quick bar">QUICK BAR ▾</button><span class="ctrGrp" aria-label="Keep the view centered"><span class="unit">CENTER</span><button type="button" id="ctrL" aria-pressed="false" title="Keep lead centered">Lead</button><button type="button" id="ctrT" aria-pressed="false" title="Keep trail centered">Trail</button><button type="button" id="ctrB" aria-pressed="false" title="Keep both aircraft centered. Zooms out when needed.">Both</button></span><div class="recBar" id="recBar" aria-label="Record and play back"><button type="button" id="recBtn" aria-pressed="false" title="Record what the aircraft do, then play it back">● Record</button><button type="button" id="pbBtn" hidden>▶ Play recording</button><button type="button" id="recSaveBtn" hidden title="Name and save this recording">Save…</button><input type="range" id="pbScrub" min="0" max="1000" step="1" value="0" hidden aria-label="Playback position"></div></div>
       <div class="dockBody" id="dockBody">
-        <div class="gunBar" id="gunBar" aria-label="Flex fire guns">
-          <span class="unit">GUNS</span>
-          <span class="gset"><select id="gt00" aria-label="Lead left gun target" title="Lead left gun target"></select><button type="button" id="g00" aria-pressed="false" title="Lead left gun">◀ L</button><b style="color:#6fa8ff">LEAD</b><button type="button" id="g01" aria-pressed="false" title="Lead right gun">R ▶</button><select id="gt01" aria-label="Lead right gun target" title="Lead right gun target"></select></span>
-          <span class="gset"><select id="gt10" aria-label="Trail left gun target" title="Trail left gun target"></select><button type="button" id="g10" aria-pressed="false" title="Trail left gun">◀ L</button><b style="color:#5fdc8c">TRAIL</b><button type="button" id="g11" aria-pressed="false" title="Trail right gun">R ▶</button><select id="gt11" aria-label="Trail right gun target" title="Trail right gun target"></select></span>
-        </div>
         <div class="dockEdit" id="dockEdit">
           <button type="button" id="spdWho" title="Which aircraft the heading and airspeed rows change. Tap to switch between lead, trail, and both.">LEAD</button>
           <div class="dockRows">
@@ -1342,6 +1356,7 @@ function gunUI(){
     if(g)st.push(nm+(g.ok?': firing at T'+g.n:': holding'));
   }
   /* the reasons sit in their own window on the right of the map. It shows while any gun is on. */
+  setText($('gunCtlNote'),st.length?st.length+' on, '+(st.length-msg.length)+' firing':'tap L or R to turn a gun on');
   var anyOn=st.length>0,gc=$('gunCard');
   if(gc.hidden===anyOn)gc.hidden=!anyOn;
   setText($('gunCount'),msg.length?' '+msg.length:' 0');
@@ -1502,6 +1517,7 @@ function recUI(){
   sc.hidden=!PB;
   var sb=$('recSaveBtn');sb.hidden=!TAPE||!!REC||!!PB;sb.textContent=TAPE&&TAPE.name?'Saved ✓':'Save…';
   $('dockEdit').style.display=PB?'none':'';
+  dockMeasure();
   $('reset').disabled=!!PB;
   ['undoBtn','redoBtn','reset'].forEach(function(id){$(id).style.display=PB?'none':'';});
 }
@@ -2250,6 +2266,10 @@ function dockMeasure(){
        If the map is too short for both, it goes beside the list. */
     d.classList.toggle('side',!!(full&&ft&&ft.offsetHeight&&98+ft.offsetHeight+8+d.offsetHeight+54>H));
     dockH=d&&d.offsetHeight?d.offsetHeight+60:0;
+    /* the windows on the right stop above the quick bar when the bar reaches under them, and above the bottom bar otherwise */
+    var rc=$('rightCol'),dr=d.getBoundingClientRect(),sr=stage.getBoundingClientRect();
+    var under=dr.right>sr.right-12-276-8&&dr.height>0;
+    rc.style.maxHeight=Math.max(120,(under?dr.top-sr.top:H-58)-160-8)+'px';
   }catch(e){dockH=0;}
 }
 function bgKey(){
@@ -2962,6 +2982,7 @@ $('scnPaste').addEventListener('click',function(){
 scnFill();if(scnRead().length)scnSay(scnRead().length+' saved on this device');
 $('undoBtn').addEventListener('click',undo);
 $('redoBtn').addEventListener('click',redo);
+$('gunCtlHead').addEventListener('click',function(){var b=$('gunCtlBody'),open=b.hidden;b.hidden=!open;this.setAttribute('aria-expanded',String(open));$('gunCtlArrow').textContent=open?'▾':'▸';});
 $('gunHead').addEventListener('click',function(){var b=$('gunBody'),open=b.hidden;b.hidden=!open;this.setAttribute('aria-expanded',String(open));$('gunArrow').textContent=open?'▾':'▸';});
 $('dockMin').addEventListener('click',function(){var d=$('dock'),m=d.classList.toggle('min');this.setAttribute('aria-expanded',String(!m));this.textContent=m?'QUICK BAR ▴':'QUICK BAR ▾';dockMeasure();});
 [0,1].forEach(function(i){
