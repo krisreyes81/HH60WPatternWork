@@ -99,6 +99,7 @@ canvas.spr{inset:auto;left:0;top:0;width:auto;height:auto;pointer-events:none;wi
 .emCard,.gunCard{width:100%;background:rgba(12,16,22,.9);border:1px solid rgba(255,255,255,.16);border-radius:8px;z-index:2;overflow:hidden}
 .emCard[hidden],.gunCard[hidden]{display:none}
 .gunCard .emHead b{color:#ff8d82}
+.gunCtl{position:absolute;right:12px;bottom:60px;width:276px;max-width:calc(100% - 24px)}
 .gunCtl .emHead b{color:var(--accent)}
 .gunCtl #gunCtlNote{color:var(--muted,#9aa5b5);font-size:11px}
 .gunCtl .gunCtlBody{padding:0 7px 8px}
@@ -120,6 +121,10 @@ canvas.spr{inset:auto;left:0;top:0;width:auto;height:auto;pointer-events:none;wi
 .emCard .emTable tr.on td{background:rgba(242,178,51,.22);color:#fff}
 .dock{position:absolute;left:12px;bottom:54px;display:flex;flex-direction:column;align-items:flex-start;gap:5px;z-index:2;width:max-content;max-width:calc(100% - 24px);background:rgba(12,16,22,.34);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:6px}
 .dock.min{background:none;border-color:transparent;padding:0}
+/* when the quick bar would reach under the guns window, the TURN buttons drop to their own line */
+.dock.narrow{max-width:calc(100% - 312px)}
+.dock.narrow .hdgBar{flex-wrap:wrap}
+.dock.narrow .hdgBar .gap{flex-basis:100%;width:0;height:0}
 .app.nopanel .floatTools{top:98px;transform:none}
 .app.nopanel .dock.side{left:188px;max-width:calc(100% - 200px)}
 .dock.min .dockBody{display:none}
@@ -137,6 +142,8 @@ canvas.spr{inset:auto;left:0;top:0;width:auto;height:auto;pointer-events:none;wi
 .dock .ctrGrp .unit{background:rgba(12,16,22,.7);border-radius:6px;padding:3px 6px;min-width:0}
 .dock .ctrGrp button{padding:4px 10px;font-size:13px;background:rgba(12,16,22,.88)}
 .dock .ctrGrp button[aria-pressed=true]{background:var(--accent);color:#1b1404}
+.dock .dockHead .trkBtn,.dock .dockHead .popBtn{padding:4px 10px;font-size:13px;background:rgba(12,16,22,.88)}
+.dock .dockHead .trkBtn[aria-pressed=true],.dock .dockHead .popBtn[aria-pressed=true]{background:var(--accent);color:#1b1404}
 .dock.min .dockHead{background:rgba(12,16,22,.5);border:1px solid rgba(255,255,255,.09);border-radius:12px;padding:5px}
 .hdgBar{position:absolute;left:12px;bottom:100px;display:flex;gap:4px;align-items:center;flex-wrap:wrap;z-index:2;max-width:calc(100% - 24px)}
 .hdgBar button{background:rgba(12,16,22,.88);padding:6px 9px;font-family:var(--mono);font-size:14px;min-width:42px}
@@ -235,7 +242,7 @@ input:disabled,select:disabled{opacity:.55}
   <aside class="panel">
     <div>
       <h1>HH-60 Formation Sim</h1>
-      <p class="sub"><span class="swatch" style="background:var(--lead)"></span>Lead <span class="swatch" style="background:var(--trail);margin-left:10px"></span>Trail. North is up. <span id="build" style="opacity:.6;white-space:nowrap">Build 18 Nov J</span></p>
+      <p class="sub"><span class="swatch" style="background:var(--lead)"></span>Lead <span class="swatch" style="background:var(--trail);margin-left:10px"></span>Trail. North is up. <span id="build" style="opacity:.6;white-space:nowrap">Build 18 Nov N</span></p>
     </div>
 
     <div class="who">
@@ -251,9 +258,8 @@ input:disabled,select:disabled{opacity:.55}
         <button type="button" data-tool="pan" aria-pressed="true">Move map</button>
         <button type="button" data-tool="sticks" aria-pressed="false">✎ Sticks</button>
         <select class="patPick" aria-label="Add a gunnery pattern" title="Pick a pattern to add it"><option value="" selected>+ Pattern…</option><option value="racetrack">Racetrack</option><option value="bowtie">Bowtie</option><option value="dogbone">Dogbone</option><option value="circle">Circle</option></select>
-        <button type="button" class="trkBtn" aria-pressed="false" title="Trail flies the same path over the ground that lead flew">Trail follows lead</button>
-        <button type="button" data-tool="measure" aria-pressed="false">Measure</button>
         <button type="button" data-tool="erase" aria-pressed="false">Erase</button>
+        <button type="button" data-tool="measure" aria-pressed="false">Measure</button>
       </div>
     </div>
 
@@ -379,8 +385,8 @@ input:disabled,select:disabled{opacity:.55}
 
     <fieldset id="gunSet">
       <legend>Flex fire guns</legend>
-      <p class="note">Use the GUNS window on the right side of the map. Tap L or R to turn a gun on. Each gun has its own target picker next to it. A gun that is on shoots only while it is clear to shoot. It stops by itself when it is not, and starts again when it is.</p>
-      <p class="note">Guns also have up and down stops. The sim uses your height above the target and the bank angle to work out how far up or down the gun must point, and holds fire when that is past a stop. Banking toward the target lifts it against the upper stop. Each gun is checked by itself against its own gun target line. A gun is clear when its target is inside its arc and range, no Jack is within 30° of its line, and the other aircraft is far enough off its line. The other aircraft and a Jack only count when they are inside that gun's own arc, since the gun cannot swing past its stops. The spacing needed is 2 clock positions (60°) when the other aircraft is hot, which means closing on the line, and 1 clock position (30°) when it is cold.</p>
+      <p class="note">Use the GUNS window at the bottom right of the map. Tap L or R to turn a gun on. Each gun has its own target picker next to it. A gun that is on shoots only while it is clear to shoot. It stops by itself when it is not, and starts again when it is.</p>
+      <p class="note">Guns also have up and down stops. The sim uses your height above the target and the bank angle to work out how far up or down the gun must point, and holds fire when that is past a stop. Banking toward the target lifts it against the upper stop. Each gun is checked by itself against its own gun target line. A gun is clear when its target is inside its arc and range, no Jack is within 30° of its line, and the other aircraft is far enough off its line. The other aircraft and a Jack only count when they are inside that gun's own arc, since the gun cannot swing past its stops. The spacing needed is 2 clock positions (60°) when the other aircraft is hot, which means closing on the line with each aircraft forward of the other's wing line, and 1 clock position (30°) when it is cold. When either aircraft is behind the other, it is always 1 clock position (30°).</p>
       <div class="row"><label for="gFwd">Forward limit</label><input type="number" id="gFwd" min="0" max="90" step="1" value="1"><span class="unit">° off nose</span></div>
       <div class="row"><label for="gAft">Aft limit</label><input type="number" id="gAft" min="90" max="180" step="1" value="171"><span class="unit">° off nose</span></div>
       <div class="row"><label for="gRange">Max range</label><input type="number" id="gRange" min="100" max="5000" step="100" value="1500"><span class="unit">m</span></div>
@@ -400,6 +406,7 @@ input:disabled,select:disabled{opacity:.55}
         <button type="button" data-tool="survivor" aria-pressed="false">J Survivor</button>
         <button type="button" data-tool="erase" aria-pressed="false">Erase</button>
       </div>
+      <label class="check"><input type="checkbox" id="popOn"> Popcorn: take a Jack off the map when an aircraft finishes its commit there</label>
       <p class="note">Or place one by bearing (degrees) and range from lead:</p>
       <div class="row">
         <select id="mType" aria-label="Marker type" style="flex:1 1 90px;width:auto">
@@ -585,21 +592,21 @@ input:disabled,select:disabled{opacity:.55}
         <div><b>SPACING</b><span id="rSep"></span></div>
       </div>
     </div>
+    <div class="gunCard gunCtl" id="gunCtl">
+      <button type="button" class="emHead" id="gunCtlHead" aria-expanded="true" title="Show or hide the gun buttons"><span><b>GUNS</b><span id="gunCtlNote">tap L or R to turn a gun on</span></span><span id="gunCtlArrow">▾</span></button>
+      <div class="gunCtlBody" id="gunCtlBody">
+        <div class="gunBar" id="gunBar" aria-label="Flex fire guns">
+          <span class="gset"><select id="gt00" aria-label="Lead left gun target" title="Lead left gun target"></select><button type="button" id="g00" aria-pressed="false" title="Lead left gun">◀ L</button><b style="color:#6fa8ff">LEAD</b><button type="button" id="g01" aria-pressed="false" title="Lead right gun">R ▶</button><select id="gt01" aria-label="Lead right gun target" title="Lead right gun target"></select></span>
+          <span class="gset"><select id="gt10" aria-label="Trail left gun target" title="Trail left gun target"></select><button type="button" id="g10" aria-pressed="false" title="Trail left gun">◀ L</button><b style="color:#5fdc8c">TRAIL</b><button type="button" id="g11" aria-pressed="false" title="Trail right gun">R ▶</button><select id="gt11" aria-label="Trail right gun target" title="Trail right gun target"></select></span>
+        </div>
+      </div>
+    </div>
     <div class="rightCol" id="rightCol">
       <div class="emCard" id="emCard" hidden>
         <button type="button" class="emHead" id="emHead" aria-expanded="true" title="Show or hide the chart table"><span id="emHeadTxt"></span><span id="emHeadArrow">▾</span></button>
         <div class="emBody" id="emBody">
           <div id="emCardTable"></div>
           <div class="emNow" id="emNow"></div>
-        </div>
-      </div>
-      <div class="gunCard gunCtl" id="gunCtl">
-        <button type="button" class="emHead" id="gunCtlHead" aria-expanded="true" title="Show or hide the gun buttons"><span><b>GUNS</b><span id="gunCtlNote">tap L or R to turn a gun on</span></span><span id="gunCtlArrow">▾</span></button>
-        <div class="gunCtlBody" id="gunCtlBody">
-          <div class="gunBar" id="gunBar" aria-label="Flex fire guns">
-            <span class="gset"><select id="gt00" aria-label="Lead left gun target" title="Lead left gun target"></select><button type="button" id="g00" aria-pressed="false" title="Lead left gun">◀ L</button><b style="color:#6fa8ff">LEAD</b><button type="button" id="g01" aria-pressed="false" title="Lead right gun">R ▶</button><select id="gt01" aria-label="Lead right gun target" title="Lead right gun target"></select></span>
-            <span class="gset"><select id="gt10" aria-label="Trail left gun target" title="Trail left gun target"></select><button type="button" id="g10" aria-pressed="false" title="Trail left gun">◀ L</button><b style="color:#5fdc8c">TRAIL</b><button type="button" id="g11" aria-pressed="false" title="Trail right gun">R ▶</button><select id="gt11" aria-label="Trail right gun target" title="Trail right gun target"></select></span>
-          </div>
         </div>
       </div>
       <div class="gunCard" id="gunCard" hidden>
@@ -617,7 +624,7 @@ input:disabled,select:disabled{opacity:.55}
       </div>
     </div>
     <div class="dock" id="dock" aria-label="Quick bar">
-      <div class="dockHead"><button type="button" id="dockMin" aria-expanded="true" title="Hide or show the quick bar">QUICK BAR ▾</button><span class="ctrGrp" aria-label="Keep the view centered"><span class="unit">CENTER</span><button type="button" id="ctrL" aria-pressed="false" title="Keep lead centered">Lead</button><button type="button" id="ctrT" aria-pressed="false" title="Keep trail centered">Trail</button><button type="button" id="ctrB" aria-pressed="false" title="Keep both aircraft centered. Zooms out when needed.">Both</button></span><div class="recBar" id="recBar" aria-label="Record and play back"><button type="button" id="recBtn" aria-pressed="false" title="Record what the aircraft do, then play it back">● Record</button><button type="button" id="pbBtn" hidden>▶ Play recording</button><button type="button" id="recSaveBtn" hidden title="Name and save this recording">Save…</button><input type="range" id="pbScrub" min="0" max="1000" step="1" value="0" hidden aria-label="Playback position"></div></div>
+      <div class="dockHead"><button type="button" id="dockMin" aria-expanded="true" title="Hide or show the quick bar">QUICK BAR ▾</button><span class="ctrGrp" aria-label="Keep the view centered"><span class="unit">CENTER</span><button type="button" id="ctrL" aria-pressed="false" title="Keep lead centered">Lead</button><button type="button" id="ctrT" aria-pressed="false" title="Keep trail centered">Trail</button><button type="button" id="ctrB" aria-pressed="false" title="Keep both aircraft centered. Zooms out when needed.">Both</button></span><button type="button" class="trkBtn" aria-pressed="false" title="Trail flies the same path over the ground that lead flew">Trail follows lead</button><button type="button" id="popBtn" class="popBtn" aria-pressed="false" title="Popcorn: when an aircraft finishes a timed commit at a Jack, that Jack comes off the map">Popcorn</button><div class="recBar" id="recBar" aria-label="Record and play back"><button type="button" id="recBtn" aria-pressed="false" title="Record what the aircraft do, then play it back">● Record</button><button type="button" id="pbBtn" hidden>▶ Play recording</button><button type="button" id="recSaveBtn" hidden title="Name and save this recording">Save…</button><input type="range" id="pbScrub" min="0" max="1000" step="1" value="0" hidden aria-label="Playback position"></div></div>
       <div class="dockBody" id="dockBody">
         <div class="dockEdit" id="dockEdit">
           <button type="button" id="spdWho" title="Which aircraft the heading and airspeed rows change. Tap to switch between lead, trail, and both.">LEAD</button>
@@ -664,9 +671,8 @@ input:disabled,select:disabled{opacity:.55}
       <button type="button" data-tool="pan" aria-pressed="true">Move map</button>
       <button type="button" data-tool="sticks" aria-pressed="false">✎ Sticks</button>
       <select class="patPick" aria-label="Add a gunnery pattern" title="Pick a pattern to add it"><option value="" selected>+ Pattern…</option><option value="racetrack">Racetrack</option><option value="bowtie">Bowtie</option><option value="dogbone">Dogbone</option><option value="circle">Circle</option></select>
-      <button type="button" class="trkBtn" aria-pressed="false" title="Trail flies the same path over the ground that lead flew">Trail follows lead</button>
-      <button type="button" data-tool="measure" aria-pressed="false">Measure</button>
       <button type="button" data-tool="erase" aria-pressed="false">Erase</button>
+      <button type="button" data-tool="measure" aria-pressed="false">Measure</button>
       <button type="button" id="menuBtn" aria-expanded="false" title="Every section of the controls, opened on the map">☰ All tools</button>
     </div>
     <div class="drawer" id="drawer" hidden>
@@ -908,10 +914,28 @@ function holdStep(a,r,dt){
   if(S.windKt>0)turnToward(a,S.windFrom,dt);
   if(nd.commit>0)h.t-=dt;
   if(nd.commit==null||(nd.commit>0&&h.t<=0)){
+    /* popcorn: the commit ran its full time, so the Jack at this point has been picked up */
+    if(nd.commit>0)popJack(nd);
     nd.done=true;r.hold=null;r.slow=false;r.ramp=true;
     r.idx=r.segEnd[r.nodes.indexOf(nd)]+1;trimSticks(a);
   }
 }
+/* ---------- popcorn ----------
+   With Popcorn on, a Jack comes off the map when an aircraft finishes a timed commit on it.
+   Each pickup is logged with its time, so stepping back, Reset and recordings can put the Jack back where it was. */
+var POP={on:false,log:[]};
+function popJack(nd){
+  if(!POP.on)return;
+  for(var i=0;i<S.markers.length;i++){
+    var m=S.markers[i];
+    if(m.type==='survivor'&&Math.hypot(m.x-nd.x,m.y-nd.y)<8){S.markers.splice(i,1);POP.log.push({t:simT,idx:i,m:m});return;}
+  }
+}
+/* put back every Jack picked up after time t, latest first, each in its old place in the list */
+function popRestore(t){
+  while(POP.log.length&&POP.log[POP.log.length-1].t>t+1e-6){var e=POP.log.pop();S.markers.splice(Math.min(e.idx,S.markers.length),0,e.m);}
+}
+function popSet(on){POP.on=!!on;try{$('popBtn').setAttribute('aria-pressed',String(POP.on));$('popOn').checked=POP.on;}catch(e){}}
 /* drop sticks that have been flown */
 function trimSticks(a){
   var r=a.route;
@@ -1067,7 +1091,7 @@ function resetAircraft(){
   [L,T].forEach(function(a){
     var r=a.route;
     if(r&&r.cruise!=null&&(r.slow||r.hold||r.ramp))a.tas=r.cruise;
-    gunsOff();
+    gunsOff();popRestore(-1);
     /* a reset clears everything the aircraft was flying: sticks, patterns and commits */
     a.route=null;a.saved=null;
     a.track=[];a.trackGen++;a.turnRem=0;a.hdg=0;
@@ -1178,6 +1202,8 @@ function restoreSnap(u){
 }
 function goToSnap(u){
   restoreSnap(u);simT=u.simT;
+  /* the snapshot brings back the markers of its own moment, so later pickups are simply forgotten */
+  POP.log=POP.log.filter(function(e){return e.t<=simT+1e-6;});
   if(u.hid!==histId){hist=[];snap();}else hist=hist.filter(function(h){return h.t<=simT+1e-6;});
   recTrim();lastKey=null;undoBtnState();
 }
@@ -1251,9 +1277,12 @@ function gunCheck(i,sd,nOver){
   if(a.route&&a.route.hold)va={x:0,y:0};
   if(o.route&&o.route.hold)vo={x:0,y:0};
   var s1=sepDeg({x:a.pos.x+va.x,y:a.pos.y+va.y},tg,{x:o.pos.x+vo.x,y:o.pos.y+vo.y});
-  var hot=s1<s0-0.2,need=hot?GUN.hot:GUN.cold;
-  res.sep=s0;res.hot=hot;
-  if(s0<need){res.why='WEZ conflict. '+o.name+' is '+Math.round(s0)+'° off the gun target line and '+(hot?'hot':'cold')+' (needs '+need+'°)';res.tag='WEZ';return res;}
+  /* one aircraft behind the other: when either one sits aft of the other's 3-9 line, the 30 degree rule is used even if the gap is closing.
+     The 60 degree rule is kept for when each is in front of the other's wing line, which is the nose-on case. */
+  var oRel=Math.abs(adiff(Math.atan2(o.pos.x-a.pos.x,o.pos.y-a.pos.y)/RAD,a.hdg)),aRel=Math.abs(adiff(Math.atan2(a.pos.x-o.pos.x,a.pos.y-o.pos.y)/RAD,o.hdg));
+  var behind=oRel>90||aRel>90,closing=s1<s0-0.2,hot=closing&&!behind,need=hot?GUN.hot:GUN.cold;
+  res.sep=s0;res.hot=hot;res.behind=behind;
+  if(s0<need){res.why='WEZ conflict. '+o.name+' is '+Math.round(s0)+'° off the gun target line and '+(hot?'hot':behind?'in trail':'cold')+' (needs '+need+'°)';res.tag='WEZ';return res;}
   res.ok=true;return res;
 }
 function gunMask(){
@@ -1392,11 +1421,16 @@ function startRec(){if(PB)return;REC={t0:simT,frames:[]};recFrame();recUI();}
 function stopRec(){
   if(!REC)return;
   /* the threats, Jacks, terrain and background go with the recording, so it looks the same when played later */
-  if(REC.frames.length>1)TAPE={frames:REC.frames,dur:REC.frames[REC.frames.length-1][0],name:'',scene:{markers:JSON.stringify(S.markers),terrain:JSON.parse(JSON.stringify(S.terrain)),env:S.env}};
+  /* Jacks picked up during the recording go back into its scene, each marked with the time it left */
+  var mk=JSON.parse(JSON.stringify(S.markers));
+  for(var pi=POP.log.length-1;pi>=0;pi--){var pe=POP.log[pi];if(pe.t<REC.t0-1e-6)break;mk.splice(Math.min(pe.idx,mk.length),0,{type:pe.m.type,x:pe.m.x,y:pe.m.y,gone:Math.round((pe.t-REC.t0)*100)/100});}
+  if(REC.frames.length>1)TAPE={frames:REC.frames,dur:REC.frames[REC.frames.length-1][0],name:'',scene:{markers:JSON.stringify(mk),terrain:JSON.parse(JSON.stringify(S.terrain)),env:S.env}};
   REC=null;recUI();
 }
 function pbApply(){
   var f=PB.tape.frames,t=clamp(PB.t,0,PB.tape.dur),lo=0,hi=f.length-1;
+  /* a Jack that was picked up shows until the moment it left */
+  if(PB.mk)S.markers=PB.mk.filter(function(m){return m.gone==null||t<m.gone;});
   while(hi-lo>1){var mid=(lo+hi)>>1;if(f[mid][0]<=t)lo=mid;else hi=mid;}
   var a=f[lo],b=f[hi],k=b[0]>a[0]?clamp((t-a[0])/(b[0]-a[0]),0,1):0;
   PB.i=lo;
@@ -1418,7 +1452,7 @@ function enterPB(tape){
   S.formOn=false;S.rejoin=false;
   var sc=tape.scene;
   if(sc){
-    try{S.markers=JSON.parse(sc.markers);S.terrain=JSON.parse(JSON.stringify(sc.terrain||[]));if(ENV[sc.env])S.env=sc.env;}catch(e){}
+    try{S.markers=JSON.parse(sc.markers);PB.mk=S.markers;S.terrain=JSON.parse(JSON.stringify(sc.terrain||[]));if(ENV[sc.env])S.env=sc.env;}catch(e){}
   }
   pbApply();
   /* a saved recording may have been flown somewhere else on the map, so bring it into view */
@@ -1572,6 +1606,7 @@ function stepBack(){
   var i=hist.length-1;while(i>=0&&hist[i].sec>sec)i--;
   if(i<0)return;
   hist.length=i+1;applyState(hist[i].st);simT=hist[i].t;
+  popRestore(simT);
   recTrim();
 }
 function stepFwd(){
@@ -2261,15 +2296,28 @@ function drawRose(){
 var dockH=0;
 function dockMeasure(){
   try{
-    var d=$('dock'),ft=$('floatTools'),full=$('app').classList.contains('nopanel');
+    var d=$('dock'),ft=$('floatTools'),rc=$('rightCol'),gc=$('gunCtl'),full=$('app').classList.contains('nopanel'),sr=stage.getBoundingClientRect();
+    d.classList.remove('narrow','side');d.style.bottom='';
+    var gr=gc.getBoundingClientRect(),lift=0;
+    function under(){return !d.classList.contains('min')&&d.getBoundingClientRect().right>gr.left-10;}
+    function tall(){return !!(full&&ft&&ft.offsetHeight&&98+ft.offsetHeight+8+d.offsetHeight+54+lift>H);}
+    function clearGuns(){
+      /* the guns window sits at the bottom right, just above the bottom bar. If the quick bar would run under it,
+         the TURN buttons drop to their own line. If that is still not enough, the quick bar moves up above the guns window. */
+      if(!under())return;
+      d.classList.add('narrow');
+      if(under()||d.offsetHeight>250){d.classList.remove('narrow');lift=Math.round(sr.bottom-gr.top);d.style.bottom=(lift+8)+'px';}
+    }
     /* with the controls hidden the quick bar sits at the far left, right under the shortcut list.
        If the map is too short for both, it goes beside the list. */
-    d.classList.toggle('side',!!(full&&ft&&ft.offsetHeight&&98+ft.offsetHeight+8+d.offsetHeight+54>H));
-    dockH=d&&d.offsetHeight?d.offsetHeight+60:0;
-    /* the windows on the right stop above the quick bar when the bar reaches under them, and above the bottom bar otherwise */
-    var rc=$('rightCol'),dr=d.getBoundingClientRect(),sr=stage.getBoundingClientRect();
-    var under=dr.right>sr.right-12-276-8&&dr.height>0;
-    rc.style.maxHeight=Math.max(120,(under?dr.top-sr.top:H-58)-160-8)+'px';
+    if(tall())d.classList.add('side');
+    clearGuns();
+    if(!d.classList.contains('side')&&tall()){d.classList.add('side');if(!lift)clearGuns();}
+    dockH=d.offsetHeight?d.offsetHeight+60+lift:0;
+    /* the windows on the right stop above the guns window, or above the quick bar if it reaches under them */
+    var dr=d.getBoundingClientRect(),rr=rc.getBoundingClientRect(),top=gr.top;
+    if(dr.height>0&&dr.right>rr.left-8&&dr.top<top)top=dr.top;
+    rc.style.maxHeight=Math.max(96,top-sr.top-160-8)+'px';
   }catch(e){dockH=0;}
 }
 function bgKey(){
@@ -2982,7 +3030,9 @@ $('scnPaste').addEventListener('click',function(){
 scnFill();if(scnRead().length)scnSay(scnRead().length+' saved on this device');
 $('undoBtn').addEventListener('click',undo);
 $('redoBtn').addEventListener('click',redo);
-$('gunCtlHead').addEventListener('click',function(){var b=$('gunCtlBody'),open=b.hidden;b.hidden=!open;this.setAttribute('aria-expanded',String(open));$('gunCtlArrow').textContent=open?'▾':'▸';});
+$('popBtn').addEventListener('click',function(){popSet(!POP.on);});
+$('popOn').addEventListener('change',function(){popSet(this.checked);});
+$('gunCtlHead').addEventListener('click',function(){var b=$('gunCtlBody'),open=b.hidden;b.hidden=!open;this.setAttribute('aria-expanded',String(open));$('gunCtlArrow').textContent=open?'▾':'▸';dockMeasure();});
 $('gunHead').addEventListener('click',function(){var b=$('gunBody'),open=b.hidden;b.hidden=!open;this.setAttribute('aria-expanded',String(open));$('gunArrow').textContent=open?'▾':'▸';});
 $('dockMin').addEventListener('click',function(){var d=$('dock'),m=d.classList.toggle('min');this.setAttribute('aria-expanded',String(!m));this.textContent=m?'QUICK BAR ▴':'QUICK BAR ▾';dockMeasure();});
 [0,1].forEach(function(i){
