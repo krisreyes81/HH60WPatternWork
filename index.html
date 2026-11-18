@@ -218,7 +218,7 @@ input:disabled,select:disabled{opacity:.55}
   <aside class="panel">
     <div>
       <h1>HH-60 Formation Sim</h1>
-      <p class="sub"><span class="swatch" style="background:var(--lead)"></span>Lead <span class="swatch" style="background:var(--trail);margin-left:10px"></span>Trail. North is up. <span id="build" style="opacity:.6;white-space:nowrap">Build 18 Nov E</span></p>
+      <p class="sub"><span class="swatch" style="background:var(--lead)"></span>Lead <span class="swatch" style="background:var(--trail);margin-left:10px"></span>Trail. North is up. <span id="build" style="opacity:.6;white-space:nowrap">Build 18 Nov F</span></p>
     </div>
 
     <div class="who">
@@ -3377,10 +3377,10 @@ function perfTestStart(){
   PERF.test={i:0,t0:0,n:0,res:[],dot:d,k:0};PERF.on=true;$('perfOn').checked=true;$('perfBox').hidden=false;
   $('perfBox').textContent='SPEED TEST running. Please do not touch anything for 15 seconds.';
 }
-function perfTestFrame(t){
+function perfTestFrame(t,isRaf){
   var T=PERF.test;
   if(!T.t0){T.t0=t;T.n=0;}
-  T.n++;T.k++;
+  T.k++;
   var i=T.i,sav;
   if(i===1){T.dot.style.display='block';T.dot.style.transform='translate('+(W/2+Math.sin(T.k/12)*160).toFixed(1)+'px,'+(H/2).toFixed(1)+'px)';}
   else if(i===2){if(SPR){S.rotor+=0.2;drawSprites();}}
@@ -3393,7 +3393,7 @@ function perfTestFrame(t){
     if(T.i>=PT_NAMES.length){
       var out='SPEED TEST  '+$('build').textContent+'   frames per second in each stage\n';
       for(var k=0;k<PT_NAMES.length;k++)out+=('    '+T.res[k].toFixed(0)).slice(-4)+'  '+PT_NAMES[k]+'\n';
-      out+='Map area '+Math.round(W)+' x '+Math.round(H)+', screen scale '+(window.devicePixelRatio||1).toFixed(2)+', graphics: '+perfGpu().slice(0,60);
+      out+='Timer assist: '+(RAF.timer?'ON':'off')+'. '+'Map area '+Math.round(W)+' x '+Math.round(H)+', screen scale '+(window.devicePixelRatio||1).toFixed(2)+', graphics: '+perfGpu().slice(0,60);
       try{T.dot.parentNode.removeChild(T.dot);}catch(e){}
       PERF.test=null;PERF.hold=Date.now()+600000;$('perfBox').textContent=out;gfxDirty=true;LITE.until=performance.now()+500;
     }
@@ -3410,6 +3410,7 @@ function perfTick(gap){
   var inFrame=false;try{inFrame=window.self!==window.top;}catch(e){inFrame=true;}
   $('perfBox').textContent=
     'PERFORMANCE  '+$('build').textContent+'\n'+
+    'Browser asks for '+(1000/Math.max(1,RAF.ema)).toFixed(0)+' frames a second. Timer assist '+(RAF.timer?'ON':'off')+'.\n'+
     'Frames: '+fps.toFixed(0)+' per second (slowest gap '+Math.round(PERF.gapMax*1000)+' ms)'+(S.playing?'':'   [paused: redraws are held to about 14 a second]')+'\n'+
     'Program time per frame: sim '+(PERF.sim/n).toFixed(1)+' ms, drawing '+(PERF.draw/n).toFixed(1)+' ms, readouts '+(PERF.read/n).toFixed(1)+' ms\n'+
     'Map area: '+Math.round(W)+' x '+Math.round(H)+', screen scale '+d.toFixed(2)+', canvas '+cv.width+' x '+cv.height+', drawing level '+['Sharp','Balanced','Fast','Faster','Fastest'][GFX.lvl]+', slow-computer mode '+(LITE.on?'ON':'off')+'\n'+
@@ -3417,9 +3418,27 @@ function perfTick(gap){
     'Browser: '+br+', cores '+(navigator.hardwareConcurrency||'?')+', memory '+(navigator.deviceMemory?navigator.deviceMemory+' GB':'?')+(inFrame?', inside a frame':'');
   PERF.sim=PERF.draw=PERF.read=PERF.n=PERF.frames=PERF.gapSum=PERF.gapMax=0;PERF.last=now;
 }
+/* The browser normally asks for a new frame about 60 times a second. Some computers only ask a few times a second.
+   When that happens a timer also runs the sim, about 30 times a second, in case the screen can show more than the browser asks for. */
+var RAF={ema:16,last:0,timer:null,tick:0};
 function frame(t){
   requestAnimationFrame(frame);
-  if(PERF.test){try{perfTestFrame(t);}catch(err){PERF.test=null;reportErr('speed test',err);}lastT=t;return;}
+  var g=RAF.last?t-RAF.last:0;RAF.last=t;
+  if(g>0&&g<1500){
+    RAF.ema+=(g-RAF.ema)*0.2;
+    RAF.slow=g>70?(RAF.slow||0)+1:0;
+    /* a steady run of slow frames turns the timer on; it turns off again if the browser speeds back up */
+    if(RAF.slow>8&&!RAF.timer){try{RAF.timer=setInterval(function(){if(!document.hidden)runFrame(performance.now(),false);},33);}catch(e){}}
+    else if(RAF.timer&&RAF.ema<40){try{clearInterval(RAF.timer);}catch(e){}RAF.timer=null;}
+  }
+  /* the speed test counts only the frames the browser itself asked for */
+  if(PERF.test&&PERF.test.t0)PERF.test.n++;
+  runFrame(t,true);
+}
+function runFrame(t,isRaf){
+  if(!isRaf&&t-RAF.tick<20)return;
+  RAF.tick=t;
+  if(PERF.test){try{perfTestFrame(t,isRaf);}catch(err){PERF.test=null;reportErr('speed test',err);}lastT=t;return;}
   var gap=(t-lastT)/1000||0;
   /* a slow computer draws fewer frames, but the sim still runs at true speed: each frame covers the real time that passed */
   var real=Math.min(0.5,gap);lastT=t;
