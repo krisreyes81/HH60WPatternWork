@@ -73,7 +73,7 @@ button[aria-pressed=true]{background:var(--accent);color:#1b1404;border-color:va
 canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}
 #bg{pointer-events:none;right:auto;bottom:auto;will-change:transform}
 canvas.spr{inset:auto;left:0;top:0;width:auto;height:auto;pointer-events:none;will-change:transform}
-.hud{position:absolute;left:10px;top:10px;right:136px;display:flex;flex-direction:column;align-items:flex-start;gap:4px;pointer-events:none}
+.hud{position:absolute;left:10px;top:10px;right:136px;display:flex;flex-direction:column;align-items:flex-end;gap:4px;pointer-events:none}
 .hud .hudRow{display:flex;gap:4px;flex-wrap:wrap;background:none;border:0;border-radius:0;padding:0;white-space:normal}
 .hud .hudRow.sel .nm{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
 .hud div{background:rgba(12,16,22,.82);border:1px solid rgba(255,255,255,.14);border-radius:6px;padding:2px 6px;font-family:var(--mono);font-size:12px;font-variant-numeric:tabular-nums;white-space:nowrap}
@@ -82,8 +82,8 @@ canvas.spr{inset:auto;left:0;top:0;width:auto;height:auto;pointer-events:none;wi
 .pop{position:absolute;left:50%;top:112px;transform:translateX(-50%);width:min(340px,calc(100% - 24px));background:var(--panel);border:2px solid var(--trail);border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:10px;z-index:7;box-shadow:0 8px 24px rgba(0,0,0,.5)}
 .pop[hidden]{display:none}
 .pop strong{font-family:var(--display);font-size:18px;letter-spacing:.06em;text-transform:uppercase}
-.sideNotes{position:absolute;left:12px;top:98px;display:flex;flex-direction:column;gap:8px;align-items:flex-start;pointer-events:none;z-index:5;width:min(270px,calc(100% - 24px))}
-.app.nopanel .sideNotes{left:12px;top:144px}
+.sideNotes{position:absolute;left:12px;top:12px;display:flex;flex-direction:column;gap:8px;align-items:flex-start;pointer-events:none;z-index:5;width:min(270px,calc(100% - 24px))}
+.app.nopanel .sideNotes{left:12px;top:60px}
 .commit{display:flex;flex-direction:column;gap:6px;pointer-events:none;width:100%}
 .commit[hidden]{display:none}
 .commit .card{background:rgba(12,16,22,.92);border:2px solid #2bff6a;border-radius:10px;padding:6px 10px 7px;display:grid;grid-template-columns:1fr auto;align-items:center;column-gap:10px}
@@ -145,7 +145,7 @@ canvas.spr{inset:auto;left:0;top:0;width:auto;height:auto;pointer-events:none;wi
 .dock.narrow{max-width:calc(100% - 312px)}
 .dock.narrow .hdgBar{flex-wrap:wrap}
 .dock.narrow .hdgBar .gap{flex-basis:100%;width:0;height:0}
-.app.nopanel .floatTools{top:92px;left:10px;transform:none}
+.app.nopanel .floatTools{top:10px;left:10px;transform:none}
 .app.nopanel .dock.side{left:12px;max-width:calc(100% - 24px)}
 .dock.min .dockBody{display:none}
 .dock #dockMin{font-family:var(--display);font-weight:700;letter-spacing:.1em;font-size:12px;padding:4px 10px;background:rgba(12,16,22,.88);color:var(--muted,#9aa5b5)}
@@ -243,7 +243,7 @@ input:disabled,select:disabled{opacity:.55}
 .menuList button{text-align:left}
 .menuGrp{grid-column:1 / -1;font-family:var(--display);font-size:13px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-top:6px}
 .menuGrp:first-child{margin-top:0}
-.floatTools button{background:rgba(12,16,22,.88);text-align:left;padding:6px 9px;font-size:14px}
+.floatTools button{background:rgba(12,16,22,.88);text-align:left;padding:6px 8px;font-size:14px}
 .floatTools button[aria-pressed=true]{background:var(--accent)}
 .app.nopanel{grid-template-columns:1fr}
 .app.nopanel .panel{display:none}
@@ -265,7 +265,7 @@ input:disabled,select:disabled{opacity:.55}
   .who{position:static}
   .app.nopanel .stage{height:100vh;height:100dvh;max-height:none}
   .drawer{left:12px;right:12px;width:auto;top:auto;bottom:60px;max-height:62%}
-  .hud{right:12px;top:auto;bottom:100px}
+  .hud{right:12px;top:auto;bottom:100px;align-items:flex-start}
   /* small screens: the bottom edge belongs to the play controls, so the airspeed buttons go to the top */
   .dock{bottom:auto !important;top:54px;left:8px;max-width:calc(100% - 16px)}
   .app.nopanel .floatTools{top:8px;left:8px}
@@ -327,6 +327,8 @@ details.cat>fieldset{margin-bottom:12px}
 .gunCtl #gunCtlSize{flex:0 0 auto;padding:3px 7px;font-size:12px;min-width:0;min-height:28px}
 .gunCtl.compact .gload,.gunCtl.compact .thRow.tgtRow{display:none}
 .gunCtl.compact .gunBar .gset.gTop{border-radius:9px}
+.emCard .emHead>span:first-child,.gunCard .emHead>span:first-child{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis}
+.emCard .emHead>span:last-child,.gunCard .emHead>span:last-child{flex:0 0 auto;color:var(--accent);font-size:15px}
 </style>
 </head>
 <body>
@@ -334,7 +336,7 @@ details.cat>fieldset{margin-bottom:12px}
   <aside class="panel">
     <div>
       <h1>HH-60 Formation Sim</h1>
-      <p class="sub"><span class="swatch" style="background:var(--lead)"></span>Lead <span class="swatch" style="background:var(--trail);margin-left:10px"></span>Trail. North is up. <span id="build" style="opacity:.6;white-space:nowrap">Build 19 Nov K</span></p>
+      <p class="sub"><span class="swatch" style="background:var(--lead)"></span>Lead <span class="swatch" style="background:var(--trail);margin-left:10px"></span>Trail. North is up. <span id="build" style="opacity:.6;white-space:nowrap">Build 19 Nov L</span></p>
     </div>
 
     <div class="who">
@@ -780,8 +782,8 @@ details.cat>fieldset{margin-bottom:12px}
     </div>
     <div class="rightCol" id="rightCol">
       <div class="emCard" id="emCard" hidden>
-        <button type="button" class="emHead" id="emHead" aria-expanded="true" title="Show or hide the chart table"><span id="emHeadTxt"></span><span id="emHeadArrow">▾</span></button>
-        <div class="emBody" id="emBody">
+        <button type="button" class="emHead" id="emHead" aria-expanded="false" title="Show or hide the chart table"><span id="emHeadTxt"></span><span id="emHeadArrow">▸</span></button>
+        <div class="emBody" id="emBody" hidden>
           <div id="emCardTable"></div>
           <div class="emNow" id="emNow"></div>
         </div>
@@ -2817,7 +2819,20 @@ function dockMeasure(){
     var edge=sr.left+10;
     Array.prototype.forEach.call(document.querySelectorAll('.hud > *'),function(e){var r=e.getBoundingClientRect();if(r.width&&r.right>edge)edge=r.right;});
     if(full&&ft&&ft.offsetWidth){var fr=ft.getBoundingClientRect();if(fr.right>edge)edge=fr.right;}
-    rc.classList.toggle('up',sr.right-136-276-10>edge);
+    rc.classList.remove('up');
+    /* with the controls hidden the tool row shares the top with the readouts. If they would touch, the tool row drops under them. */
+    var hl=1e9,hb=sr.top;
+    Array.prototype.forEach.call(document.querySelectorAll('.hud > *'),function(e){var r=e.getBoundingClientRect();if(!r.width)return;if(r.left<hl)hl=r.left;if(r.bottom>hb)hb=r.bottom;});
+    var sn=$('sideNotes'),dw=$('drawer'),wide=window.innerWidth>900;
+    if(full&&ft&&ft.offsetWidth&&wide){
+      ft.style.top='';var fr2=ft.getBoundingClientRect(),drop=fr2.right>hl-8&&hb>fr2.top;
+      ft.style.top=drop?Math.round(hb-sr.top+6)+'px':'';
+      var fb=ft.getBoundingClientRect().bottom-sr.top+8;sn.style.top=Math.round(fb)+'px';dw.style.top=Math.round(fb)+'px';
+    }else{
+      if(ft)ft.style.top='';dw.style.top='';
+      /* the countdown and call-outs sit at the top left, or just under the readouts when those reach that far */
+      sn.style.top=(wide&&hl<sr.left+12+270+8)?Math.round(hb-sr.top+8)+'px':'';
+    }
     var gr=gc.getBoundingClientRect(),lift=0;
     function under(){return !d.classList.contains('min')&&d.getBoundingClientRect().right>gr.left-10;}
     function tall(){return !!(full&&ft&&ft.offsetHeight&&92+ft.offsetHeight+8+d.offsetHeight+54+lift>H);}
@@ -3146,7 +3161,7 @@ function emUpdate(){
   box.innerHTML=h+'<p class="note" style="margin-top:6px">180° width is how wide a full 180° turn is (the turn diameter). Vh for this line: '+emCurve().vh+' KIAS. Between table speeds the rate is a straight-line estimate. Check these numbers against your chart.</p>';
   /* the same table on the map, with the pressure altitude and temperature in its title */
   $('emCardTable').innerHTML=h;
-  $('emHeadTxt').innerHTML='<b>CHART</b>'+({obs:'OBS',p0:'Ps 0',p5:'Ps 500'})[S.em]+' · '+(S.emPA?S.emPA.toLocaleString('en-US')+' ft':'Sea level')+' · '+S.emOAT+' °C';
+  $('emHeadTxt').innerHTML='<b>EM CHART</b>'+({obs:'OBS',p0:'Ps 0',p5:'Ps 500'})[S.em]+' · '+(S.emPA?S.emPA.toLocaleString('en-US')+' ft':'Sea level')+' · '+S.emOAT+' °C';
   circUI();
 }
 function emReadout(){
@@ -3166,7 +3181,7 @@ function emReadout(){
 ['emLine','emPA','emOAT'].forEach(function(id){$(id).addEventListener('change',emUpdate);});
 function emCardOpen(open){$('emBody').hidden=!open;$('emHead').setAttribute('aria-expanded',String(open));$('emHeadArrow').textContent=open?'▾':'▸';}
 $('emHead').addEventListener('click',function(){emCardOpen($('emBody').hidden);});
-try{if(window.innerWidth<700)emCardOpen(false);}catch(e){}
+
 emUpdate();
 function setRate(v){v=clamp(parseFloat(v)||S.rate,0.5,90);S.rate=v;$('rate').value=v;}
 $('rate').addEventListener('change',function(){setRate(this.value);});
