@@ -157,9 +157,10 @@ canvas.spr{inset:auto;left:0;top:0;width:auto;height:auto;pointer-events:none;wi
 .dock #spdWho{font-family:var(--display);font-weight:700;letter-spacing:.08em;min-width:64px;background:rgba(12,16,22,.88)}
 .dockHead{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .dock .ctrGrp{display:flex;gap:4px;align-items:center;background:rgba(12,16,22,.5);border:1px solid rgba(255,255,255,.22);border-radius:10px;padding:3px}
-.dock .dockHead .trkBtn{margin-left:12px}
+.dock .dockHead .trkGrp{display:flex;gap:4px;align-items:center;margin-left:12px}
+.dock .dockHead #spQuick{width:auto;min-width:0;padding:4px 4px;font-size:13px;font-family:var(--mono);background:rgba(12,16,22,.88)}
 .dock .dockHead .recBar{margin-left:12px}
-.dock.narrow .dockHead .trkBtn,.dock.narrow .dockHead .recBar,.dock.side .dockHead .trkBtn,.dock.side .dockHead .recBar{margin-left:0}
+.dock.narrow .dockHead .trkGrp,.dock.narrow .dockHead .recBar,.dock.side .dockHead .trkGrp,.dock.side .dockHead .recBar{margin-left:0}
 .dock .ctrGrp .unit{background:rgba(12,16,22,.7);border-radius:6px;padding:3px 6px;min-width:0}
 .dock .ctrGrp button{padding:4px 10px;font-size:13px;background:rgba(12,16,22,.88)}
 .dock .ctrGrp button[aria-pressed=true]{background:var(--accent);color:#1b1404}
@@ -288,6 +289,25 @@ details.help .note{margin-top:2px}
 .gunCtl .gunBar .gset.gL b,.gunCtl .gunBar .gset.gT b{color:#fff !important}
 .gunCtl .gunBar .gset.gTop{border-radius:9px 9px 0 0}
 .gunCtl .gunBar .gset.gBot{border-radius:0 0 9px 9px;margin-top:-6px;padding-top:2px;clip-path:inset(0 0 0 0)}
+details.cat{border-top:1px solid var(--line);padding-top:4px;display:block;flex:0 0 auto}
+details.cat>summary{cursor:pointer;list-style:none;display:flex;align-items:baseline;gap:10px;padding:10px 2px 8px;user-select:none;-webkit-user-select:none}
+details.cat>summary::-webkit-details-marker{display:none}
+details.cat>summary::before{content:'\25B8';color:var(--accent);flex:0 0 auto;width:12px}
+details.cat[open]>summary::before{content:'\25BE'}
+details.cat .catName{font-family:var(--display);font-size:15px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ink);flex:0 0 auto}
+details.cat .catHint{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+details.cat[open]>summary{margin-bottom:4px}
+details.cat>fieldset{margin-bottom:12px}
+#evMin,#evSec{width:58px;flex:0 0 58px;padding-left:6px;padding-right:4px}
+.evList{display:flex;flex-direction:column;gap:4px}
+.evList .evRow{display:flex;align-items:center;gap:8px;background:var(--raised);border:1px solid var(--line);border-radius:6px;padding:3px 4px 3px 8px;font-size:13px}
+.evList .evRow.done{opacity:.55}
+.evList .evT{font-family:var(--mono);color:var(--accent);flex:0 0 auto}
+.evList .evWhat{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.evList .evDel{flex:0 0 auto;padding:2px 9px;min-height:30px}
+.gunCtl #gunCtlSize{flex:0 0 auto;padding:3px 7px;font-size:12px;min-width:0;min-height:28px}
+.gunCtl.compact .gload,.gunCtl.compact .thRow.tgtRow{display:none}
+.gunCtl.compact .gunBar .gset.gTop{border-radius:9px}
 </style>
 </head>
 <body>
@@ -295,7 +315,7 @@ details.help .note{margin-top:2px}
   <aside class="panel">
     <div>
       <h1>HH-60 Formation Sim</h1>
-      <p class="sub"><span class="swatch" style="background:var(--lead)"></span>Lead <span class="swatch" style="background:var(--trail);margin-left:10px"></span>Trail. North is up. <span id="build" style="opacity:.6;white-space:nowrap">Build 19 Nov C</span></p>
+      <p class="sub"><span class="swatch" style="background:var(--lead)"></span>Lead <span class="swatch" style="background:var(--trail);margin-left:10px"></span>Trail. North is up. <span id="build" style="opacity:.6;white-space:nowrap">Build 19 Nov H</span></p>
     </div>
 
     <div class="who">
@@ -315,21 +335,7 @@ details.help .note{margin-top:2px}
       </div>
     </div>
 
-    <h2 class="grp">Fly the aircraft</h2>
-
-    <fieldset>
-      <legend>Vector sticks</legend>
-      <details class="help"><summary>Instructions</summary>
-        <p class="note">Pick an aircraft, press Draw, then click points on the map. Drag the white handle in the middle of a stick to curve it. Pull it back to the middle to make it straight. Drag an end point to move it. Tap a point you already drew to stack another point on it. Click a Jack to get the option to commit: the aircraft slows, stops there for the time you set, then flies on. Flown sticks clear off the map. Press Play to fly it. Before you click, small text by the cursor shows the distance to the nearest threat.</p>
-      </details>
-      <div class="seg">
-        <button type="button" data-tool="sticks" aria-pressed="false">✎ Draw sticks</button>
-        <button type="button" id="stUndo">Undo last</button>
-        <button type="button" id="stClear">Clear</button>
-      </div>
-      <div class="status" id="stStatus">No sticks drawn</div>
-    </fieldset>
-
+    <details class="cat" open data-cat="ac"><summary><span class="catName">Aircraft</span><span class="catHint">Speed, heading, turns, formation</span></summary>
     <fieldset>
       <legend>Flight</legend>
       <div class="row"><label for="hdg">Heading</label><input type="number" id="hdg" min="0" max="360" step="5" value="0" placeholder="route"><button type="button" class="nud" data-for="hdg" data-d="-5" aria-label="Minus 5 degrees">−5</button><button type="button" class="nud" data-for="hdg" data-d="5" aria-label="Plus 5 degrees">+5</button></div>
@@ -404,6 +410,21 @@ details.help .note{margin-top:2px}
       <div class="status" id="sepNow" aria-label="Current spacing"></div>
       <button type="button" id="followTrk" aria-pressed="false">Trail follows lead's ground track</button>
     </fieldset>
+    </details>
+
+    <details class="cat" open data-cat="route"><summary><span class="catName">Route</span><span class="catHint">Vector sticks and gunnery patterns</span></summary>
+    <fieldset>
+      <legend>Vector sticks</legend>
+      <details class="help"><summary>Instructions</summary>
+        <p class="note">Pick an aircraft, press Draw, then click points on the map. Drag the white handle in the middle of a stick to curve it. Pull it back to the middle to make it straight. Drag an end point to move it. Tap a point you already drew to stack another point on it. Click a Jack to get the option to commit: the aircraft slows, stops there for the time you set, then flies on. Flown sticks clear off the map. Press Play to fly it. Before you click, small text by the cursor shows the distance to the nearest threat.</p>
+      </details>
+      <div class="seg">
+        <button type="button" data-tool="sticks" aria-pressed="false">✎ Draw sticks</button>
+        <button type="button" id="stUndo">Undo last</button>
+        <button type="button" id="stClear">Clear</button>
+      </div>
+      <div class="status" id="stStatus">No sticks drawn</div>
+    </fieldset>
 
     <fieldset>
       <legend>Gunnery pattern</legend>
@@ -442,9 +463,9 @@ details.help .note{margin-top:2px}
         <button type="button" id="patStop">Stop pattern</button>
       </div>
     </fieldset>
+    </details>
 
-    <h2 class="grp">Guns and threats</h2>
-
+    <details class="cat" open data-cat="guns"><summary><span class="catName">Guns and threats</span><span class="catHint">Gun limits, bursts, threats, Jack</span></summary>
     <fieldset id="gunSet">
       <legend>Flex fire guns</legend>
       <details class="help"><summary>Instructions</summary>
@@ -493,9 +514,9 @@ details.help .note{margin-top:2px}
       </div>
       <label class="check"><input type="checkbox" id="labels" checked> Show bearing and range from lead</label>
     </fieldset>
+    </details>
 
-    <h2 class="grp">Map and conditions</h2>
-
+    <details class="cat" open data-cat="map"><summary><span class="catName">Map</span><span class="catHint">Map picture, background, terrain</span></summary>
     <fieldset>
       <legend>Map image</legend>
       <details class="help"><summary>Instructions</summary>
@@ -552,7 +573,9 @@ details.help .note{margin-top:2px}
         <button type="button" id="terClear">Clear all</button>
       </div>
     </fieldset>
+    </details>
 
+    <details class="cat" open data-cat="wx"><summary><span class="catName">Weather</span><span class="catHint">Wind</span></summary>
     <fieldset>
       <legend>Wind</legend>
       <div class="row"><label for="wdir">Wind from</label><input type="number" id="wdir" min="0" max="360" step="5" value="315"><button type="button" class="nud" data-for="wdir" data-d="-5" aria-label="Minus 5 degrees">−5</button><button type="button" class="nud" data-for="wdir" data-d="5" aria-label="Plus 5 degrees">+5</button></div>
@@ -560,7 +583,9 @@ details.help .note{margin-top:2px}
       <input type="range" id="wspdR" min="0" max="80" step="1" value="0" aria-label="Wind speed slider">
       <div class="status" id="relWind"></div>
     </fieldset>
+    </details>
 
+    <details class="cat" open data-cat="tools"><summary><span class="catName">Tools</span><span class="catHint">Measuring stick</span></summary>
     <fieldset>
       <legend>Measuring stick</legend>
       <details class="help"><summary>Instructions</summary>
@@ -572,9 +597,9 @@ details.help .note{margin-top:2px}
       </div>
       <div class="status" id="measStatus">No measurement</div>
     </fieldset>
+    </details>
 
-    <h2 class="grp">View</h2>
-
+    <details class="cat" open data-cat="view"><summary><span class="catName">View</span><span class="catHint">What shows on the map</span></summary>
     <fieldset>
       <legend>View</legend>
       <div class="row"><label for="zoom">Zoom</label><div class="grow"><input type="range" id="zoom" min="-2.4" max="0.5" step="0.01" value="-0.35"></div></div>
@@ -602,34 +627,71 @@ details.help .note{margin-top:2px}
       <label class="check"><input type="checkbox" id="perfOn"> Show performance info on the map</label>
       <div class="seg"><button type="button" id="perfTest">Run speed test (15 seconds)</button></div>
     </fieldset>
+    </details>
 
-    <h2 class="grp">Save and load</h2>
+    <details class="cat" open data-cat="scn"><summary><span class="catName">Scenario</span><span class="catHint">Build, time events, save, share</span></summary>
+    <fieldset id="evSet">
+      <legend>Scenario builder</legend>
+      <details class="help"><summary>Instructions</summary>
+        <p class="note">1. Set the start picture with the clock at T+ 0:00. Pick the map, place both aircraft, threats and Jack, draw sticks or a pattern, set the guns.</p>
+        <p class="note">2. Add timed events below. Each one happens by itself when the clock reaches its time. For a pop-up, pick the type and time, press Place on map, then click where it comes up. It shows on the map as a faint marker with its time until it happens.</p>
+        <p class="note">3. Save it under Saved scenarios. The events are saved with it and travel with a link, file or code.</p>
+        <p class="note">4. Press Play. Reset and step back put events back so they happen again. Untick Show timed events to hide them from whoever is flying it.</p>
+      </details>
+      <div class="row"><label for="evType">Event</label><div class="grow"><select id="evType">
+        <option value="threat" selected>Pop-up threat</option>
+        <option value="jack">Pop-up Jack (survivor)</option>
+        <option value="dest">Threat destroyed</option>
+        <option value="neut">Threat neutralized</option>
+        <option value="msg">Message on screen</option>
+      </select></div></div>
+      <div class="row"><label for="evMin">At T+</label><input type="number" id="evMin" min="0" max="180" step="1" value="1" aria-label="Minutes"><span class="unit">min</span><input type="number" id="evSec" min="0" max="59" step="5" value="0" aria-label="Seconds"><span class="unit">sec</span></div>
+      <div class="row" id="evNRow" hidden><label for="evN">Threat number</label><input type="number" id="evN" min="1" max="20" step="1" value="1"><span class="unit">T1, T2, and so on</span></div>
+      <div class="row" id="evTextRow" hidden><input type="text" id="evText" maxlength="40" placeholder="Message, like TROOPS IN CONTACT" aria-label="Message text" style="flex:1 1 120px"></div>
+      <div class="seg">
+        <button type="button" id="evPlace" class="primary" data-tool="evplace" aria-pressed="false" title="Press, then click the map where it comes up">Place on map</button>
+        <button type="button" id="evAdd" class="primary" hidden>Add event</button>
+        <button type="button" id="evClear">Clear all</button>
+      </div>
+      <div class="evList" id="evList" aria-label="Timed events"></div>
+      <div class="status" id="evStatus" aria-live="polite">No timed events yet</div>
+      <label class="check"><input type="checkbox" id="evShow" checked> Show timed events on the map</label>
+    </fieldset>
 
     <fieldset>
-      <legend>Saved setups</legend>
+      <legend>Saved scenarios</legend>
       <details class="help"><summary>Instructions</summary>
-        <p class="note">A setup keeps the background, map image, terrain, wind, chart turn rate choice, threats, Jacks, both aircraft (position, heading, airspeed), spacing, sticks, and patterns as they are right now.</p>
-        <p class="note">Setups are kept in this browser on this device. To move one to another device or keep a backup, copy its code and paste it there. A code does not carry the map image, so load the picture again on the other device.</p>
+        <p class="note">A scenario keeps the background, map image, terrain, wind, chart turn rate choice, threats, Jacks, both aircraft (position, heading, airspeed), spacing, sticks, and patterns as they are right now.</p>
+        <p class="note">Scenarios are kept in this browser on this device. To send a scenario to someone, use Copy link, Share file, or Copy code. They open the link, open the file with Open file, or paste the code and press Load from code. Maps from the map list travel with the scenario. A picture you loaded yourself does not, so load it again on the other device.</p>
       </details>
-      <div class="row"><input type="text" id="scnName" maxlength="40" placeholder="Name this setup" aria-label="Setup name" style="flex:1 1 120px"><button type="button" id="scnSave" class="primary">Save</button></div>
-      <div class="row"><div class="grow"><select id="scnList" aria-label="Saved setups"></select></div></div>
+      <div class="row"><input type="text" id="scnName" maxlength="40" placeholder="Name this scenario" aria-label="Scenario name" style="flex:1 1 120px"><button type="button" id="scnSave" class="primary">Save</button></div>
+      <div class="row"><div class="grow"><select id="scnList" aria-label="Saved scenarios"></select></div></div>
       <div class="seg">
         <button type="button" id="scnLoad">Load</button>
         <button type="button" id="scnDel">Delete</button>
       </div>
       <div class="status" id="scnStatus" aria-live="polite">Nothing saved yet</div>
       <div class="seg">
+        <button type="button" id="scnLink" title="Copies a link to your site that opens with this scenario loaded">Copy link</button>
+        <button type="button" id="scnFile" title="Sends the scenario as a file. On an iPad this opens the share sheet.">Share file</button>
+        <button type="button" id="scnOpen" title="Loads a scenario file someone sent you">Open file</button>
+      </div>
+      <div class="seg">
         <button type="button" id="scnCopy">Copy code</button>
         <button type="button" id="scnPaste">Load from code</button>
       </div>
-      <textarea id="scnCode" rows="2" spellcheck="false" placeholder="A setup code shows here when you copy. Paste one here to load it." aria-label="Setup code"></textarea>
+      <input type="file" id="scnPick" accept=".hh60,.txt,.json,text/plain,application/json" hidden>
+      <textarea id="scnCode" rows="2" spellcheck="false" placeholder="A scenario code shows here when you copy. Paste one here to load it." aria-label="Scenario code"></textarea>
     </fieldset>
 
+    </details>
+
+    <details class="cat" open data-cat="save"><summary><span class="catName">Recordings</span><span class="catHint">Saved runs to play back</span></summary>
     <fieldset id="recSet">
       <legend>Saved recordings</legend>
       <details class="help"><summary>Instructions</summary>
         <p class="note">Press ● Record on the map, fly, then press Stop. Name it here and press Save. A saved recording keeps both aircraft, the threats, Jacks, terrain and background. It does not keep the map image.</p>
-        <p class="note">Recordings are kept in this browser on this device. Saving with a name you already used replaces the old one.</p>
+        <p class="note">Recordings are kept in this browser on this device. Saving with a name you already used replaces the old one. Share file sends the picked recording to someone. They load it with Open file.</p>
       </details>
       <div class="row"><input type="text" id="recName" maxlength="40" placeholder="Name this recording" aria-label="Recording name" style="flex:1 1 120px"><button type="button" id="recSave" class="primary">Save</button></div>
       <div class="row"><div class="grow"><select id="recList" aria-label="Saved recordings"></select></div></div>
@@ -637,8 +699,14 @@ details.help .note{margin-top:2px}
         <button type="button" id="recPlay">Play</button>
         <button type="button" id="recDel">Delete</button>
       </div>
+      <div class="seg">
+        <button type="button" id="recFile" title="Sends the picked recording as a file. On an iPad this opens the share sheet.">Share file</button>
+        <button type="button" id="recOpen" title="Loads a recording file someone sent you">Open file</button>
+      </div>
+      <input type="file" id="recPick" accept=".hh60,.txt,.json,text/plain,application/json" hidden>
       <div class="status" id="recStatus" aria-live="polite">Nothing saved yet</div>
     </fieldset>
+    </details>
 
     <details class="help"><summary>More tips</summary>
   <p class="note">Click an aircraft on the map to select it. Drag it to set where it starts. Drag the amber handle off its nose to point it.</p>
@@ -679,9 +747,9 @@ details.help .note{margin-top:2px}
       <div class="thBar" id="thBar" aria-label="Threat status">
         <div class="thRow"><b>THREAT</b><select id="thSel" aria-label="Threat to mark" title="Which threat the buttons below act on"></select><button type="button" id="thPop" data-tool="popup" aria-pressed="false" title="Press, then click the map. Click a threat that is down to bring it back up. Click anywhere else to pop up a new threat there.">Pop-up threat</button></div>
         <div class="thRow"><button type="button" id="thNeut" aria-pressed="false" title="Mark this threat neutralized. Guns keep shooting. Press again to make it active.">Threat neutralized</button><button type="button" id="thDest" aria-pressed="false" title="Mark this threat destroyed. Guns shooting at it cease fire. Press again to make it active.">Threat destroyed</button></div>
-        <div class="thRow"><button type="button" id="thAll" title="Sets all four guns to the threat picked above. Guns that are on shift fire to it.">All guns target T1</button><button type="button" id="thLead" title="Sets both of lead's guns to the threat picked above.">Lead target T1</button><button type="button" id="thTrail" title="Sets both of trail's guns to the threat picked above.">Trail target T1</button></div>
+        <div class="thRow tgtRow"><button type="button" id="thAll" title="Sets all four guns to the threat picked above. Guns that are on shift fire to it.">All guns target T1</button><button type="button" id="thLead" title="Sets both of lead's guns to the threat picked above.">Lead target T1</button><button type="button" id="thTrail" title="Sets both of trail's guns to the threat picked above.">Trail target T1</button></div>
       </div>
-      <div class="gunCtlTop"><button type="button" class="emHead" id="gunCtlHead" aria-expanded="true" title="Show or hide the gun buttons"><span><b>GUNS</b><span id="gunCtlNote">tap FIRE to turn a gun on</span></span><span id="gunCtlArrow">▾</span></button><button type="button" id="gReload" title="Fill every gun back to a full load">Reload</button></div>
+      <div class="gunCtlTop"><button type="button" class="emHead" id="gunCtlHead" aria-expanded="true" title="Show or hide the gun buttons"><span><b>GUNS</b><span id="gunCtlNote">tap FIRE to turn a gun on</span></span><span id="gunCtlArrow">▾</span></button><button type="button" id="gunCtlSize" title="Show less or more of this window">Less</button><button type="button" id="gReload" title="Fill every gun back to a full load">Reload</button></div>
       <div class="gunCtlBody" id="gunCtlBody">
         <div class="gunBar" id="gunBar" aria-label="Flex fire guns">
           <span class="gset gL gTop"><select id="gt00" aria-label="Lead left gun target" title="Lead left gun target"></select><button type="button" id="g00" aria-pressed="false" title="Lead left gun">FIRE L</button><b style="color:#6fa8ff">LEAD</b><button type="button" id="g01" aria-pressed="false" title="Lead right gun">FIRE R</button><select id="gt01" aria-label="Lead right gun target" title="Lead right gun target"></select></span>
@@ -714,7 +782,7 @@ details.help .note{margin-top:2px}
       </div>
     </div>
     <div class="dock" id="dock" aria-label="Quick bar">
-      <div class="dockHead"><button type="button" id="dockMin" aria-expanded="true" title="Hide or show the quick bar">QUICK BAR ▾</button><span class="ctrGrp" aria-label="Keep the view centered"><span class="unit">CENTER</span><button type="button" id="ctrL" aria-pressed="false" title="Keep lead centered">Lead</button><button type="button" id="ctrT" aria-pressed="false" title="Keep trail centered">Trail</button><button type="button" id="ctrB" aria-pressed="false" title="Keep both aircraft centered. Zooms out when needed.">Both</button></span><button type="button" class="trkBtn" aria-pressed="false" title="Trail flies the same path over the ground that lead flew">Trail follows lead</button><div class="recBar" id="recBar" aria-label="Record and play back"><button type="button" id="recBtn" aria-pressed="false" title="Record what the aircraft do, then play it back">● Record</button><button type="button" id="pbBtn" hidden>▶ Play recording</button><button type="button" id="recSaveBtn" hidden title="Name and save this recording">Save…</button><input type="range" id="pbScrub" min="0" max="1000" step="1" value="0" hidden aria-label="Playback position"></div></div>
+      <div class="dockHead"><button type="button" id="dockMin" aria-expanded="true" title="Hide or show the quick bar">QUICK BAR ▾</button><span class="ctrGrp" aria-label="Keep the view centered"><span class="unit">CENTER</span><button type="button" id="ctrL" aria-pressed="false" title="Keep lead centered">Lead</button><button type="button" id="ctrT" aria-pressed="false" title="Keep trail centered">Trail</button><button type="button" id="ctrB" aria-pressed="false" title="Keep both aircraft centered. Zooms out when needed.">Both</button></span><span class="trkGrp"><button type="button" class="trkBtn" aria-pressed="false" title="Trail flies the same path over the ground that lead flew">Trail follows lead</button><select id="spQuick" aria-label="Trail spacing" title="How far behind lead trail holds while it follows. The same setting as Spacing in the Formation box."></select></span><div class="recBar" id="recBar" aria-label="Record and play back"><button type="button" id="recBtn" aria-pressed="false" title="Record what the aircraft do, then play it back">● Record</button><button type="button" id="pbBtn" hidden>▶ Play recording</button><button type="button" id="recSaveBtn" hidden title="Name and save this recording">Save…</button><input type="range" id="pbScrub" min="0" max="1000" step="1" value="0" hidden aria-label="Playback position"></div></div>
       <div class="dockBody" id="dockBody">
         <div class="dockEdit" id="dockEdit">
           <button type="button" id="spdWho" title="Which aircraft the heading and airspeed rows change. Tap to switch between lead, trail, and both.">LEAD</button>
@@ -1236,7 +1304,7 @@ function resetAircraft(){
   [L,T].forEach(function(a){
     var r=a.route;
     if(r&&r.cruise!=null&&(r.slow||r.hold||r.ramp))a.tas=r.cruise;
-    gunsOff();gunReload();popRestore(-1);thRestore(-1);
+    gunsOff();gunReload();popRestore(-1);thRestore(-1);evRestore(-1);
     /* a reset clears everything the aircraft was flying: sticks, patterns and commits */
     a.route=null;a.saved=null;
     a.track=[];a.trackGen++;a.turnRem=0;a.hdg=0;
@@ -1311,21 +1379,102 @@ function advance(dt){
   var n=Math.ceil(dt/0.05),h=dt/n;
   for(var i=0;i<n;i++){
     var hb=[AC[0].hdg,AC[1].hdg];step(h);bankStep(hb,h);var p=simT;simT+=h;
+    if(EV.list.length)evFire();
     if(Math.floor(simT+1e-6)>Math.floor(p+1e-6))snap();
     recFrame();
+  }
+}
+/* ---------- scenario builder: timed events ----------
+   Each event happens by itself when the clock reaches its time: a threat or a Jack pops up at a set point,
+   a threat goes down, or a message shows. Stepping back and Reset put events back so they happen again. */
+var EV={list:[],show:true,sig:'',n:1};
+var EVNAME={threat:'Pop-up threat',jack:'Pop-up Jack',dest:'Threat destroyed',neut:'Threat neutralized',msg:'Message'};
+function evWhat(e){return e.type==='msg'?'Message: '+e.text:(e.type==='dest'||e.type==='neut')?'T'+e.n+(e.type==='dest'?' destroyed':' neutralized'):EVNAME[e.type];}
+function evSort(){EV.list.sort(function(a,b){return a.t-b.t||a.id-b.id;});}
+function evNew(o){
+  var mx=0;EV.list.forEach(function(e){if(e.id>mx)mx=e.id;});o.id=mx+1;
+  /* a time the clock has already passed waits for the next run */
+  o.done=o.t<=simT+1e-6;EV.list.push(o);evSort();return o;
+}
+function evDo(e){
+  var m,n;
+  if(e.type==='threat'){
+    m={type:'threat',x:e.x,y:e.y};S.markers.push(m);thFx(m,'up');e.mid=m.id;
+    var all=threats(),act=all.filter(function(q){return !q.st;});n=all.indexOf(m)+1;
+    if(act.length===1&&act[0]===m)gunsAll(n);
+    evSay('POP-UP THREAT T'+n);
+  }else if(e.type==='jack'){
+    m={type:'survivor',x:e.x,y:e.y};S.markers.push(m);e.mid=mkId(m);
+    evSay('SURVIVOR J'+S.markers.filter(function(q){return q.type==='survivor';}).length+' UP');
+  }else if(e.type==='dest'||e.type==='neut'){
+    m=threats()[e.n-1];
+    if(m&&(m.st||'')!==e.type){
+      thSet(m,e.type);
+      if(e.type==='dest')for(var i=0;i<2;i++)for(var sd=0;sd<2;sd++)if(GUN.tgt[i][sd]===e.n)GUN.on[i][sd]=false;
+      evSay('T'+e.n+(e.type==='dest'?' DESTROYED':' NEUTRALIZED'));
+    }
+  }else if(e.type==='msg')evSay(e.text);
+}
+/* the call-out, also kept with a recording so playback shows it at the same moment */
+function evSay(text){winToast(text);if(REC)REC.msgs.push([Math.round((simT-REC.t0)*100)/100,text]);}
+function evFire(){
+  for(var i=0;i<EV.list.length;i++){var e=EV.list[i];if(!e.done&&e.t<=simT+1e-6){e.done=true;evDo(e);}}
+}
+function evRestore(t){
+  EV.list.forEach(function(e){
+    if(!e.done||e.t<=t+1e-6)return;
+    e.done=false;
+    if(e.mid){S.markers=S.markers.filter(function(m){return m.id!==e.mid;});delete e.mid;}
+  });
+}
+function evStatus(t){$('evStatus').textContent=t;}
+function evTime(){return clamp(Math.round((parseFloat($('evMin').value)||0)*60+(parseFloat($('evSec').value)||0)),1,3*3600);}
+function evFormUI(){
+  var k=$('evType').value,pt=k==='threat'||k==='jack';
+  $('evNRow').hidden=!(k==='dest'||k==='neut');$('evTextRow').hidden=k!=='msg';
+  $('evPlace').hidden=!pt;$('evAdd').hidden=pt;
+  if(!pt&&S.tool==='evplace')setTool('pan');
+}
+function evUI(){
+  var sig=EV.list.map(function(e){return e.id+':'+e.t+':'+(e.done?1:0)+':'+e.type+':'+(e.n||'')+':'+(e.text||'');}).join('|')+'#'+(PB?1:0);
+  if(sig===EV.sig)return;EV.sig=sig;
+  var box=$('evList');box.textContent='';
+  EV.list.forEach(function(e){
+    var r=document.createElement('div');r.className='evRow'+(e.done?' done':'');
+    var a=document.createElement('span');a.className='evT';a.textContent='T+ '+fmtMS(e.t);
+    var b=document.createElement('span');b.className='evWhat';b.textContent=(e.done?'✓ ':'')+evWhat(e);
+    var d=document.createElement('button');d.type='button';d.className='evDel';d.textContent='✕';d.setAttribute('data-ev',String(e.id));d.setAttribute('aria-label','Delete this event');d.disabled=!!PB;
+    r.appendChild(a);r.appendChild(b);r.appendChild(d);box.appendChild(r);
+  });
+  var left=EV.list.filter(function(e){return !e.done;}).length;
+  if(!EV.list.length)evStatus('No timed events yet');
+  else evStatus(EV.list.length+(EV.list.length===1?' event, ':' events, ')+left+' still to come');
+}
+/* faint markers for the pop-ups still to come */
+function drawEvents(){
+  if(PB||!EV.show)return;
+  for(var i=0;i<EV.list.length;i++){
+    var e=EV.list[i];if(e.done||(e.type!=='threat'&&e.type!=='jack'))continue;
+    var x=sx(e.x),y=sy(e.y);
+    ctx.save();ctx.globalAlpha=.75;ctx.lineJoin='round';
+    if(e.type==='threat'){thTri(x,y);ctx.fillStyle='rgba(255,45,32,.18)';ctx.fill();ctx.setLineDash([4,3]);ctx.lineWidth=2;ctx.strokeStyle='#ff6a5e';ctx.stroke();ctx.setLineDash([]);}
+    else{ctx.font='700 26px "Barlow Condensed","Arial Narrow",sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.setLineDash([3,3]);ctx.lineWidth=1.5;ctx.strokeStyle='#2bff6a';ctx.strokeText('J',x,y);ctx.setLineDash([]);}
+    ctx.restore();
+    ctx.font='500 12px "IBM Plex Mono",monospace';ctx.textAlign='left';ctx.textBaseline='middle';
+    haloText('T+ '+fmtMS(e.t),x+17,y);
   }
 }
 /* ---------- undo: a snapshot is saved just before each action ---------- */
 var undoStack=[],histId=0,lastKey=null,lastPush=0;
 function snapUndo(){
-  return {st:capture(),simT:simT,hid:histId,pop:JSON.stringify(POP.log),th:JSON.stringify(TH.log),markers:JSON.stringify(S.markers),terrain:S.terrain.slice(),
+  return {st:capture(),simT:simT,hid:histId,pop:JSON.stringify(POP.log),th:JSON.stringify(TH.log),gt:JSON.stringify(GUN.tgt),ev:JSON.stringify(EV.list),markers:JSON.stringify(S.markers),terrain:S.terrain.slice(),
     meas:S.meas?JSON.stringify(S.meas):null,spU:S.spUnit,sp:S.spacing,
     saved:AC.map(function(a){return a.saved?JSON.stringify(a.saved):null;}),
     home:AC.map(function(a){return a.home?{x:a.home.x,y:a.home.y}:null;})};
 }
 /* a short fingerprint of everything the user can edit, used to tell whether a touch on the map changed anything */
 function editSig(){
-  return JSON.stringify({m:S.markers,t:S.terrain.map(function(t){return t.type+t.pts.length;}),me:S.meas,f:S.formOn,
+  return JSON.stringify({ev:EV.list.map(function(e){return e.id+'@'+e.t;}),m:S.markers,t:S.terrain.map(function(t){return t.type+t.pts.length;}),me:S.meas,f:S.formOn,
     a:AC.map(function(a){
       var r=a.route,q=null;
       if(r)q=r.kind==='follow'?'f':r.kind==='sticks'?{n:r.nodes,b:r.bends,k:r.after&&r.after.kind,o:r.after&&[r.after.pts[0],r.after.pts[1]]}:{k:r.kind,p:[r.pts[0],r.pts[1]],n:r.pts.length};
@@ -1346,9 +1495,11 @@ function restoreSnap(u){
   S.markers=JSON.parse(u.markers);S.terrain=u.terrain.slice();S.meas=u.meas?JSON.parse(u.meas):null;
   AC.forEach(function(a,i){a.saved=u.saved[i]?JSON.parse(u.saved[i]):null;a.home=u.home[i];});
   setSpacing(u.spU,u.sp);S.hover=null;S.draft=null;
+  try{if(u.ev)EV.list=JSON.parse(u.ev);}catch(e){}
 }
 function goToSnap(u){
   restoreSnap(u);simT=u.simT;
+  try{if(u.gt)GUN.tgt=JSON.parse(u.gt);}catch(e){}
   /* the snapshot brings back the markers of its own moment, so later pickups are simply forgotten */
   /* each snapshot carries its own list of pickups and threat changes, so undo and redo both keep them in step with the map */
   try{POP.log=u.pop?JSON.parse(u.pop):POP.log.filter(function(e){return e.t<=simT+1e-6;});TH.log=u.th?JSON.parse(u.th):TH.log.filter(function(e){return e.t<=simT+1e-6;});}catch(e){POP.log=[];TH.log=[];}
@@ -1565,7 +1716,7 @@ function winToast(text){
 }
 
 function gunUI(){
-  thUI();
+  thUI();evUI();
   var th=threats(),i,sd,msg=[],st=[],nFire=0,pf=PB?PB.tape.frames[PB.i]:null;
   if(th.length!==gunNT||gunPB!==!!PB){
     gunNT=th.length;gunPB=!!PB;
@@ -1624,6 +1775,8 @@ function recFrame(){
   var t=simT-REC.t0,f=REC.frames,L=AC[0],T=AC[1];
   if(f.length&&t-f[f.length-1][0]<0.0999)return;
   if(f.length>=72000){stopRec();return;}
+  /* the first moment each Jack is on the map, so one placed part way through shows from then in playback */
+  for(var mi=0;mi<S.markers.length;mi++){var mm=S.markers[mi];if(mm.type!=='survivor')continue;var mk0=mkId(mm);if(REC.born[mk0]==null)REC.born[mk0]=Math.round(t*100)/100;}
   f.push([t,L.pos.x,L.pos.y,L.hdg,L.tas,T.pos.x,T.pos.y,T.hdg,T.tas,gunMask(),GUN.tgt[0][0],GUN.tgt[0][1],GUN.tgt[1][0],GUN.tgt[1][1],holdLeft(L),holdTot(L),holdLeft(T),holdTot(T),onMask(),Math.ceil(GS[0][0].ammo),Math.ceil(GS[0][1].ammo),Math.ceil(GS[1][0].ammo),Math.ceil(GS[1][1].ammo),thIdx()]);
 }
 /* stepping back or undoing moves the clock back, so the recording drops whatever came after that moment */
@@ -1631,15 +1784,18 @@ function recTrim(){
   if(!REC)return;
   var t=simT-REC.t0,f=REC.frames;
   while(f.length&&f[f.length-1][0]>t+1e-6)f.pop();
+  REC.msgs=REC.msgs.filter(function(m){return m[0]<=t+1e-6;});
+  for(var k in REC.born)if(REC.born[k]>t+1e-6)delete REC.born[k];
 }
-function startRec(){if(PB)return;REC={t0:simT,frames:[],ths:[],thMap:{}};recFrame();recUI();}
+function startRec(){if(PB)return;REC={t0:simT,frames:[],ths:[],thMap:{},msgs:[],born:{}};recFrame();recUI();}
 function stopRec(){
   if(!REC)return;
   /* the threats, Jacks, terrain and background go with the recording, so it looks the same when played later */
   /* Jacks picked up during the recording go back into its scene, each marked with the time it left */
   var mk=JSON.parse(JSON.stringify(S.markers));
-  for(var pi=POP.log.length-1;pi>=0;pi--){var pe=POP.log[pi];if(pe.t<REC.t0-1e-6)break;mk.splice(Math.min(pe.idx,mk.length),0,{type:pe.m.type,x:pe.m.x,y:pe.m.y,gone:Math.round((pe.t-REC.t0)*100)/100});}
-  if(REC.frames.length>1)TAPE={frames:REC.frames,dur:REC.frames[REC.frames.length-1][0],name:'',scene:{markers:JSON.stringify(mk),terrain:JSON.parse(JSON.stringify(S.terrain)),env:S.env,ths:REC.ths,guns:[[GS[0][0].type,GS[0][1].type],[GS[1][0].type,GS[1][1].type]]}};
+  for(var pi=POP.log.length-1;pi>=0;pi--){var pe=POP.log[pi];if(pe.t<REC.t0-1e-6)break;mk.splice(Math.min(pe.idx,mk.length),0,{type:pe.m.type,x:pe.m.x,y:pe.m.y,id:pe.m.id,gone:Math.round((pe.t-REC.t0)*100)/100});}
+  mk.forEach(function(m){if(m.type==='survivor'&&m.id&&REC.born[m.id]>0.05)m.born=REC.born[m.id];});
+  if(REC.frames.length>1)TAPE={frames:REC.frames,dur:REC.frames[REC.frames.length-1][0],name:'',scene:{markers:JSON.stringify(mk),terrain:JSON.parse(JSON.stringify(S.terrain)),env:S.env,ths:REC.ths,msgs:REC.msgs,guns:[[GS[0][0].type,GS[0][1].type],[GS[1][0].type,GS[1][1].type]]}};
   REC=null;recUI();
 }
 function pbApply(){
@@ -1666,7 +1822,10 @@ function pbApply(){
     }
   }
   /* a Jack that was picked up shows until the moment it left */
-  if(PB.mk)S.markers=PB.mk.filter(function(m){return (m.gone==null||t<m.gone)&&!m.hid;});
+  if(PB.mk)S.markers=PB.mk.filter(function(m){return (m.gone==null||t<m.gone)&&(m.born==null||t>=m.born)&&!m.hid;});
+  /* call-outs made during the run show again as playback passes them */
+  if(sc&&sc.msgs&&PB.pt!=null&&t>PB.pt&&t-PB.pt<1.5){for(var mi=0;mi<sc.msgs.length;mi++){var mg=sc.msgs[mi];if(mg[0]>PB.pt&&mg[0]<=t)winToast(mg[1]);}}
+  PB.pt=t;
   [0,1].forEach(function(n){
     var o=1+n*4,c=AC[n];
     c.pos={x:a[o]+(b[o]-a[o])*k,y:a[o+1]+(b[o+1]-a[o+1])*k};
@@ -1794,9 +1953,14 @@ function recUI(){
 /* ---------- saved setups: the whole starting picture, kept in this browser ---------- */
 var SCN_KEY='hh60sim.setups.v1';
 function scenarioNow(){
-  var u=snapUndo();u.simT=0;delete u.pop;delete u.th;
+  var u=snapUndo();u.simT=0;delete u.pop;delete u.th;delete u.gt;
+  /* events are saved as still to come. Anything an event already put on the map is left out, since it will come up again. */
+  try{
+    var el=JSON.parse(u.ev),gone={};el.forEach(function(e){if(e.mid)gone[e.mid]=1;e.done=false;delete e.mid;});u.ev=JSON.stringify(el);
+    u.markers=JSON.stringify(JSON.parse(u.markers).filter(function(m){return !(m.id&&gone[m.id]);}));
+  }catch(e){}
   u.st.ac.forEach(function(o){o.len=0;o.gen=-1;o.turnRem=0;});
-  return {v:1,env:S.env,windFrom:S.windFrom,windKt:S.windKt,rate:S.rate,form:S.form,formAsp:S.formAsp,formSide:S.formSide,scale:S.scale,follow:S.follow,cam:{x:S.cam.x,y:S.cam.y},u:u,map:mapForSave(),em:{line:S.em,pa:S.emPA,oat:S.emOAT},acc:S.acc,dec:S.dec};
+  return {v:1,env:S.env,windFrom:S.windFrom,windKt:S.windKt,rate:S.rate,form:S.form,formAsp:S.formAsp,formSide:S.formSide,scale:S.scale,follow:S.follow,cam:{x:S.cam.x,y:S.cam.y},u:u,map:mapForSave(),em:{line:S.em,pa:S.emPA,oat:S.emOAT},acc:S.acc,dec:S.dec,gun:{on:GUN.on,tgt:GUN.tgt},evShow:EV.show};
 }
 function scenarioOk(sc){
   return sc&&sc.v===1&&ENV[sc.env]&&sc.u&&sc.u.st&&Array.isArray(sc.u.st.ac)&&sc.u.st.ac.length===2&&typeof sc.u.markers==='string'&&Array.isArray(sc.u.terrain);
@@ -1815,13 +1979,67 @@ function applyScenario(sc){
   if(sc.scale>0){S.scale=clamp(sc.scale,Math.pow(10,-2.4),Math.pow(10,0.5));$('zoom').value=Math.log10(S.scale);}
   setCenter(sc.follow?'lead':'off');
   if(sc.cam)S.cam={x:+sc.cam.x||0,y:+sc.cam.y||0};
+  EV.list=[];
   restoreSnap(sc.u);
+  EV.list.forEach(function(e){e.done=false;delete e.mid;});evSort();
+  if(sc.evShow!=null){EV.show=!!sc.evShow;$('evShow').checked=EV.show;}
   mapFromSave(sc.map);
+  /* which guns are on and what each one is set to shoot */
+  if(sc.gun&&Array.isArray(sc.gun.on)&&Array.isArray(sc.gun.tgt)){for(var gi=0;gi<2;gi++)for(var gs=0;gs<2;gs++){GUN.on[gi][gs]=!!(sc.gun.on[gi]&&sc.gun.on[gi][gs]);GUN.tgt[gi][gs]=Math.max(1,parseInt(sc.gun.tgt[gi]&&sc.gun.tgt[gi][gs],10)||1);}}
+  else gunsOff();
   simT=0;POP.log=[];TH.log=[];hist=[];histId++;snap();setPlaying(false);circUI();
 }
 function scnRead(){try{var a=JSON.parse(localStorage.getItem(SCN_KEY)||'[]');return Array.isArray(a)?a:[];}catch(e){return [];}}
 function scnWrite(a){try{localStorage.setItem(SCN_KEY,JSON.stringify(a));return true;}catch(e){return false;}}
-function scnEncode(sc){var c={};for(var k in sc)if(k!=='map')c[k]=sc[k];return 'HH60:'+btoa(unescape(encodeURIComponent(JSON.stringify(c))));}
+/* a code carries the setup without a loaded picture. A map from the map list is only a name, so it travels along. */
+function scnSlim(sc){var c={};for(var k in sc)if(k!=='map')c[k]=sc[k];if(sc.map&&sc.map.bank)c.map={bank:sc.map.bank,w:sc.map.w,x:sc.map.x,y:sc.map.y,mpp:sc.map.mpp,rot:sc.map.rot,alpha:sc.map.alpha,cal:sc.map.cal};return c;}
+function scnJSON(sc){return JSON.stringify(scnSlim(sc),function(k,v){return typeof v==='number'&&isFinite(v)?Math.round(v*1e4)/1e4:v;});}
+function scnEncode(sc){return 'HH60:'+btoa(unescape(encodeURIComponent(scnJSON(sc))));}
+function b64u(bytes){var t='';for(var i=0;i<bytes.length;i++)t+=String.fromCharCode(bytes[i]);return btoa(t).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');}
+function unb64u(t){t=t.replace(/-/g,'+').replace(/_/g,'/');while(t.length%4)t+='=';var b=atob(t),a=new Uint8Array(b.length);for(var i=0;i<b.length;i++)a[i]=b.charCodeAt(i);return a;}
+function zip(text,undo){
+  var st=undo?new DecompressionStream('deflate-raw'):new CompressionStream('deflate-raw');
+  var w=st.writable.getWriter();w.write(undo?text:new TextEncoder().encode(text));w.close();
+  return new Response(st.readable).arrayBuffer().then(function(b){return new Uint8Array(b);});
+}
+/* the short code: the same setup squeezed, so links and codes are a third of the size. Older browsers get the long code. */
+function scnPack(sc){
+  try{if(typeof CompressionStream==='function')return zip(scnJSON(sc)).then(function(b){return 'HH60Z:'+b64u(b);},function(){return scnEncode(sc);});}catch(e){}
+  return Promise.resolve(scnEncode(sc));
+}
+function scnUnpack(t){
+  t=String(t||'').trim();var h=t.indexOf('#s=');if(h>=0)t=t.slice(h+3);
+  try{t=decodeURIComponent(t);}catch(e){}
+  if(t.indexOf('HH60Z:')===0){
+    try{return zip(unb64u(t.slice(6).replace(/\s+/g,'')),true).then(function(b){var sc=JSON.parse(new TextDecoder().decode(b));return scenarioOk(sc)?sc:null;},function(){return null;});}
+    catch(e){return Promise.resolve(null);}
+  }
+  return Promise.resolve(scnDecode(t));
+}
+/* hand a small text file to the person: the share sheet where there is one (iPad), a download everywhere else */
+function sendFile(name,text,say){
+  var blob=new Blob([text],{type:'text/plain'});
+  try{
+    var f=new File([blob],name,{type:'text/plain'});
+    if(navigator.canShare&&navigator.canShare({files:[f]})){navigator.share({files:[f],title:name}).then(function(){say('Shared '+name+'.');},function(){say('Share was cancelled.');});return;}
+  }catch(e){}
+  try{
+    var a=document.createElement('a'),u=URL.createObjectURL(blob);a.href=u;a.download=name;document.body.appendChild(a);a.click();
+    setTimeout(function(){try{document.body.removeChild(a);URL.revokeObjectURL(u);}catch(e){}},1500);
+    say('Saved '+name+' to your downloads. If nothing happened, this page cannot save files here. Open the sim on your site and try again.');
+  }catch(e){say('This page cannot save files here. Open the sim on your site and try again.');}
+}
+function fileSlug(n){return String(n||'setup').replace(/[^A-Za-z0-9 _-]+/g,'').trim().replace(/\s+/g,'-').slice(0,40)||'setup';}
+function readFile(inp,cb){
+  var f=inp.files&&inp.files[0];inp.value='';if(!f)return;
+  var r=new FileReader();r.onload=function(){cb(String(r.result||''),f.name);};r.onerror=function(){cb('',f.name);};r.readAsText(f);
+}
+/* links point at the site the sim is hosted on. Inside another page (the Claude preview) the address is not one people can open, so the hosted site is used. */
+var SITE='https://krisreyes81.github.io/HH60WPatternWork/';
+function siteBase(){
+  try{if(window.top===window.self&&/^https?:$/.test(location.protocol))return location.origin+location.pathname;}catch(e){}
+  return SITE;
+}
 function scnDecode(t){
   t=String(t||'').trim();
   try{var sc=JSON.parse(t.indexOf('HH60:')===0?decodeURIComponent(escape(atob(t.slice(5).replace(/\s+/g,'')))):t);return scenarioOk(sc)?sc:null;}catch(e){return null;}
@@ -1841,7 +2059,7 @@ function stepBack(){
   var i=hist.length-1;while(i>=0&&hist[i].sec>sec)i--;
   if(i<0)return;
   hist.length=i+1;applyState(hist[i].st);simT=hist[i].t;
-  popRestore(simT);thRestore(simT);
+  popRestore(simT);thRestore(simT);evRestore(simT);
   recTrim();
 }
 function stepFwd(){
@@ -2457,6 +2675,7 @@ function drawMarkers(){
       haloText(name+'  '+pad3(Math.atan2(dx,dy)/RAD)+' / '+fmtBoth(Math.hypot(dx,dy)),x+17,y);
     }
   }
+  drawEvents();
 }
 
 /* amber ring with a curved arrow, used for every rotate handle */
@@ -2560,10 +2779,15 @@ function drawRose(){
 
 /* how much of the bottom of the map the quick bar covers, so views can be fitted above it */
 var dockH=0;
+var GCM={user:null};
 function dockMeasure(){
   try{
     var d=$('dock'),ft=$('floatTools'),rc=$('rightCol'),gc=$('gunCtl'),full=$('app').classList.contains('nopanel'),sr=stage.getBoundingClientRect();
     d.classList.remove('narrow','side');d.style.bottom='';
+    /* a small map gets the short guns window by itself. The Less or More button overrides that. */
+    var tight=sr.height<740||sr.width<740,cmp=GCM.user==null?tight:GCM.user;
+    if(gc.classList.contains('compact')!==cmp){gc.classList.toggle('compact',cmp);}
+    setText($('gunCtlSize'),cmp?'More':'Less');
     var tb=document.querySelector('.transport').getBoundingClientRect(),base=tb.height?Math.max(54,Math.round(sr.bottom-tb.top)+6):54;
     gc.style.bottom=(base+6)+'px';if(base>54)d.style.bottom=base+'px';
     var gr=gc.getBoundingClientRect(),lift=0;
@@ -2779,6 +3003,7 @@ function readouts(){
   emReadout();spdReadout();accReadout();
   setText($('sepNow'),'Now: '+sepT+(onTrk?' along the track. Straight line: '+fmtBoth(direct)+'.':''));
   var fb=$('followTrk'),on=String(!!(AC[1].route&&AC[1].route.kind==='follow'));
+  spqUI();
   if(fb.getAttribute('aria-pressed')!==on){fb.setAttribute('aria-pressed',on);Array.prototype.forEach.call(trkBtns,function(b){b.setAttribute('aria-pressed',on);});}
   var txt;
   if(S.windKt<=0){txt='Calm. No drift.';}
@@ -3035,6 +3260,17 @@ function toggleFollow(){if(PB)return;pushUndo();
   syncControls();
 }
 $('followTrk').addEventListener('click',toggleFollow);
+/* quick spacing list beside Trail follows lead: a few common spacings. It shows the Formation box setting and changes it. */
+var SPQ=[['disc',1],['disc',2],['disc',3],['disc',5],['nm',0.1],['nm',0.2],['nm',0.3],['nm',0.5],['nm',1],['nm',2]],spqSig='';
+function spqLabel(u,v){return u==='nm'?v+' NM':u==='m'?v+' m':v+(v===1?' disc':' discs');}
+function spqUI(){
+  var sel=$('spQuick'),cur=S.spUnit+':'+S.spacing;if(cur===spqSig)return;spqSig=cur;
+  var hit=false;sel.textContent='';
+  SPQ.forEach(function(q){var k=q[0]+':'+q[1],o=document.createElement('option');o.value=k;o.textContent=spqLabel(q[0],q[1]);sel.appendChild(o);if(k===cur)hit=true;});
+  if(!hit){var o2=document.createElement('option');o2.value=cur;o2.textContent=spqLabel(S.spUnit,S.spacing);sel.insertBefore(o2,sel.firstChild);}
+  sel.value=cur;
+}
+$('spQuick').addEventListener('change',function(){if(PB){spqSig='';return;}var q=this.value.split(':');pushUndo();setSpacing(q[0],parseFloat(q[1]));spqSig='';spqUI();});
 var trkBtns=document.querySelectorAll('.trkBtn');
 Array.prototype.forEach.call(trkBtns,function(b){b.addEventListener('click',toggleFollow);});
 function formUI(){$('aspRow').hidden=S.form!=='custom';}
@@ -3268,7 +3504,7 @@ try{document.addEventListener('dblclick',function(e){e.preventDefault();},{passi
   }catch(err){}
 })();
 $('scnSave').addEventListener('click',function(){
-  var name=$('scnName').value.trim()||('Setup '+new Date().toLocaleString());
+  var name=$('scnName').value.trim()||('Scenario '+new Date().toLocaleString());
   var list=scnRead().filter(function(it){return it.name!==name;});
   list.push({name:name,data:scenarioNow()});
   list.sort(function(a,b){return a.name.localeCompare(b.name);});
@@ -3279,31 +3515,69 @@ $('scnSave').addEventListener('click',function(){
     ok=noMap&&scnWrite(list);
   }
   if(ok){scnFill(name);$('scnName').value='';scnSay('Saved "'+name+'"'+(noMap?', but without the map image. It was too big for this browser to keep.':''));}
-  else scnSay('This browser would not keep the setup. Use Copy code to keep it yourself.');
+  else scnSay('This browser would not keep the scenario. Use Copy code to keep it yourself.');
 });
 $('scnLoad').addEventListener('click',function(){
   var name=$('scnList').value,it=scnRead().filter(function(x){return x.name===name;})[0];
-  if(!it||!scenarioOk(it.data)){scnSay('Pick a saved setup first.');return;}
+  if(!it||!scenarioOk(it.data)){scnSay('Pick a saved scenario first.');return;}
   applyScenario(it.data);scnSay('Loaded "'+name+'". Press Play to start.');
 });
 $('scnDel').addEventListener('click',function(){
-  var name=$('scnList').value;if(!name){scnSay('Pick a saved setup first.');return;}
+  var name=$('scnList').value;if(!name){scnSay('Pick a saved scenario first.');return;}
   scnWrite(scnRead().filter(function(x){return x.name!==name;}));scnFill();scnSay('Deleted "'+name+'"');
 });
-$('scnCopy').addEventListener('click',function(){
-  /* the picked setup if there is one, otherwise what is on the map now */
+/* the picked setup if there is one, otherwise what is on the map now */
+function scnPicked(){
   var name=$('scnList').value,it=scnRead().filter(function(x){return x.name===name;})[0];
-  var code=scnEncode(it?it.data:scenarioNow()),box=$('scnCode');
-  box.value=code;
-  var done=function(ok){scnSay((ok?'Copied the code for ':'Code is in the box below for ')+(it?'"'+name+'"':'the setup on the map')+(ok?'.':'. Select it and copy it.'));};
-  try{navigator.clipboard.writeText(code).then(function(){done(true);},function(){box.focus();box.select();done(false);});}
+  return {name:it?name:'',data:it?it.data:scenarioNow(),what:it?'"'+name+'"':'the scenario on the map'};
+}
+function scnOut(text,what,kind){
+  var box=$('scnCode');box.value=text;
+  var done=function(ok){scnSay((ok?'Copied the '+kind+' for ':'The '+kind+' is in the box below for ')+what+(ok?'.':'. Select it and copy it.'));};
+  try{navigator.clipboard.writeText(text).then(function(){done(true);},function(){box.focus();box.select();done(false);});}
   catch(e){box.focus();box.select();done(false);}
+}
+$('scnCopy').addEventListener('click',function(){var q=scnPicked();scnPack(q.data).then(function(code){scnOut(code,q.what,'code');});});
+$('scnLink').addEventListener('click',function(){var q=scnPicked();scnPack(q.data).then(function(code){scnOut(siteBase()+'#s='+code,q.what,'link');});});
+$('scnFile').addEventListener('click',function(){var q=scnPicked();scnPack(q.data).then(function(code){sendFile('hh60-scenario-'+fileSlug(q.name||'map')+'.hh60.txt',code,scnSay);});});
+function scnTake(text,from){
+  scnUnpack(text).then(function(sc){
+    if(!sc){scnSay('That is not a scenario '+from+'. A scenario code starts with HH60.');return;}
+    applyScenario(sc);scnSay('Loaded the scenario from the '+from+'. Save it to keep it on this device.');
+  });
+}
+$('scnPaste').addEventListener('click',function(){scnTake($('scnCode').value,'code');});
+$('scnOpen').addEventListener('click',function(){$('scnPick').click();});
+$('scnPick').addEventListener('change',function(){readFile(this,function(t){scnTake(t,'file');});});
+/* recordings as files */
+$('recFile').addEventListener('click',function(){
+  var name=$('recList').value,it=recRead().filter(function(x){return x.name===name;})[0];
+  if(!it&&TAPE)it={name:TAPE.name||'recording',data:recPack(TAPE)};
+  if(!it){recSay('Save or make a recording first.');return;}
+  sendFile('hh60-recording-'+fileSlug(it.name)+'.hh60.txt',JSON.stringify({hh60rec:1,name:it.name,data:it.data}),recSay);
 });
-$('scnPaste').addEventListener('click',function(){
-  var sc=scnDecode($('scnCode').value);
-  if(!sc){scnSay('That is not a setup code. Paste the whole code, starting with HH60:');return;}
-  applyScenario(sc);scnSay('Loaded the setup from the code. Save it to keep it on this device.');
+$('recOpen').addEventListener('click',function(){$('recPick').click();});
+$('recPick').addEventListener('change',function(){
+  readFile(this,function(t){
+    var o=null;try{o=JSON.parse(t);}catch(e){}
+    var it=o&&o.hh60rec===1?{name:String(o.name||'Shared recording').slice(0,40),data:o.data}:null;
+    if(!it||!recUnpack(it)){recSay('That is not a recording file.');return;}
+    var list=recRead().filter(function(x){return x.name!==it.name;});list.push(it);list.sort(function(a,b){return a.name.localeCompare(b.name);});
+    if(recWrite(list)){recFill(it.name);recSay('Added "'+it.name+'". Press Play to watch it.');}
+    else{if(PB)exitPB();if(REC)stopRec();enterPB(recUnpack(it));recSay('Playing "'+it.name+'". This browser is out of room, so it was not saved.');}
+  });
 });
+/* a link that carries a setup: load it once the sim is up, then clean the address bar */
+setTimeout(function(){
+  try{
+    var h=location.hash||'';if(h.indexOf('#s=')!==0)return;
+    scnUnpack(h).then(function(sc){
+      if(!sc){scnSay('The link did not carry a scenario this version can read.');return;}
+      applyScenario(sc);scnSay('Loaded the scenario from the link. Save it to keep it on this device.');
+      try{history.replaceState(null,'',location.pathname+location.search);}catch(e){}
+    });
+  }catch(e){}
+},700);
 scnFill();if(scnRead().length)scnSay(scnRead().length+' saved on this device');
 $('undoBtn').addEventListener('click',undo);
 $('redoBtn').addEventListener('click',redo);
@@ -3316,15 +3590,34 @@ $('commit').addEventListener('pointerdown',function(e){
   pushUndo();h.node.pop=!h.node.pop;
 });
 $('gunCtlHead').addEventListener('click',function(){var b=$('gunCtlBody'),open=b.hidden;b.hidden=!open;this.setAttribute('aria-expanded',String(open));$('gunCtlArrow').textContent=open?'▾':'▸';dockMeasure();});
+$('gunCtlSize').addEventListener('click',function(){GCM.user=!$('gunCtl').classList.contains('compact');dockMeasure();});
 $('gunHead').addEventListener('click',function(){var b=$('gunBody'),open=b.hidden;b.hidden=!open;this.setAttribute('aria-expanded',String(open));$('gunArrow').textContent=open?'▾':'▸';});
 $('dockMin').addEventListener('click',function(){var d=$('dock'),m=d.classList.toggle('min');this.setAttribute('aria-expanded',String(!m));this.textContent=m?'QUICK BAR ▴':'QUICK BAR ▾';dockMeasure();});
 [0,1].forEach(function(i){
   [0,1].forEach(function(sd){
     $('g'+i+sd).addEventListener('click',function(){if(!PB)GUN.on[i][sd]=!GUN.on[i][sd];});
-    $('gt'+i+sd).addEventListener('change',function(){GUN.tgt[i][sd]=parseInt(this.value,10)||1;});
+    $('gt'+i+sd).addEventListener('change',function(){if(!PB)pushUndo();GUN.tgt[i][sd]=parseInt(this.value,10)||1;});
   });
 });
 $('gCease').addEventListener('click',gunsOff);
+$('evType').addEventListener('change',evFormUI);evFormUI();
+$('evPlace').addEventListener('click',function(){setTimeout(function(){if($('app').classList.contains('nopanel')&&S.tool==='evplace')closeDrawer();},0);});
+$('evAdd').addEventListener('click',function(){
+  if(PB)return;
+  var k=$('evType').value,o={t:evTime(),type:k};
+  if(k==='msg'){o.text=$('evText').value.trim().slice(0,40);if(!o.text){evStatus('Type the message first.');return;}}
+  else if(k==='dest'||k==='neut')o.n=clamp(parseInt($('evN').value,10)||1,1,20);
+  else return;
+  pushUndo();var ne=evNew(o);
+  evStatus('Added '+evWhat(ne)+' at T+ '+fmtMS(ne.t)+(ne.done?'. The clock is already past it, so it happens on the next run.':'.'));
+});
+$('evClear').addEventListener('click',function(){if(PB||!EV.list.length)return;pushUndo();evRestore(-1);EV.list=[];});
+$('evList').addEventListener('click',function(e){
+  var b=e.target&&e.target.closest?e.target.closest('.evDel'):null;if(!b||PB)return;
+  var id=parseInt(b.getAttribute('data-ev'),10);pushUndo();
+  EV.list=EV.list.filter(function(q){return q.id!==id;});
+});
+$('evShow').addEventListener('change',function(){EV.show=this.checked;});
 $('thSel').addEventListener('change',function(){TH.sel=parseInt(this.value,10)||1;});
 $('thNeut').addEventListener('click',function(){thMark('neut');});
 $('thDest').addEventListener('click',function(){thMark('dest');});
@@ -3366,14 +3659,23 @@ Array.prototype.forEach.call(document.querySelectorAll('.nud'),function(b){
 /* ---------- full map mode: every section of the panel can open on the map ----------
    The real section is moved into the drawer and put back afterwards, so there is only ever one copy of each control. */
 var dOpen=null,dPh=null,menuEl=null,selPh=null;
+(function(){
+  var KEY='hh60sim.cats.v1',shut={};
+  try{shut=JSON.parse(localStorage.getItem(KEY)||'{}')||{};}catch(e){shut={};}
+  Array.prototype.forEach.call(document.querySelectorAll('.panel details.cat'),function(c){
+    if(shut[c.dataset.cat])c.open=false;
+    c.addEventListener('toggle',function(){shut[c.dataset.cat]=c.open?0:1;try{localStorage.setItem(KEY,JSON.stringify(shut));}catch(e){}});
+  });
+})();
 function buildMenu(){
   menuEl=document.createElement('div');menuEl.className='menuList';
-  Array.prototype.forEach.call(document.querySelector('.panel').children,function(ch){
-    if(ch.tagName==='H2'){var h=document.createElement('div');h.className='menuGrp';h.textContent=ch.textContent;menuEl.appendChild(h);}
-    else if(ch.tagName==='FIELDSET'){
+  Array.prototype.forEach.call(document.querySelectorAll('.panel details.cat'),function(cat){
+    var h=document.createElement('div');h.className='menuGrp';h.textContent=cat.querySelector('.catName').textContent;menuEl.appendChild(h);
+    Array.prototype.forEach.call(cat.children,function(ch){
+      if(ch.tagName!=='FIELDSET')return;
       var b=document.createElement('button');b.type='button';b.textContent=ch.querySelector('legend').textContent;
       b.addEventListener('click',function(){openSection(ch);});menuEl.appendChild(b);
-    }
+    });
   });
 }
 function returnSection(){
@@ -3696,6 +3998,10 @@ function finishPointer(e){
     }
   }
   else if(S.tool==='popup'){if(!PB)thPopUp(w,p);setTool('pan');}
+  else if(S.tool==='evplace'){
+    if(!PB){var ek=$('evType').value;if(ek!=='threat'&&ek!=='jack')ek='threat';var ne=evNew({t:evTime(),type:ek,x:w.x,y:w.y});evStatus('Added '+EVNAME[ek]+' at T+ '+fmtMS(ne.t)+(ne.done?'. The clock is already past it, so it happens on the next run.':'.'));}
+    setTool('pan');
+  }
   else if(S.tool==='threat'||S.tool==='survivor'){S.markers.push({type:S.tool,x:w.x,y:w.y});}
   else if(S.tool==='erase'){
     var best=-1,bd=24*HIT;
