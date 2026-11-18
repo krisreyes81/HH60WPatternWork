@@ -93,17 +93,25 @@ canvas.spr{inset:auto;left:0;top:0;width:auto;height:auto;pointer-events:none;wi
 .commit .card.last{border-color:var(--accent)}
 .commit .card.last .time{color:var(--accent)}
 .commit .card.last .bar i{background:var(--accent)}
-.emCard{position:absolute;right:12px;top:160px;width:276px;max-width:calc(100% - 24px);background:rgba(12,16,22,.9);border:1px solid rgba(255,255,255,.16);border-radius:8px;z-index:2;overflow:hidden}
-.emCard[hidden]{display:none}
-.emCard .emHead{display:flex;width:100%;gap:8px;align-items:baseline;justify-content:space-between;background:none;border:0;border-radius:0;padding:7px 10px;font-family:var(--mono);font-size:12.5px;font-weight:500;text-align:left;min-height:0}
-.emCard .emHead span{white-space:nowrap}
-.emCard .emHead b{font-family:var(--display);font-weight:700;letter-spacing:.1em;color:var(--accent);margin-right:6px}
+.rightCol{position:absolute;right:12px;top:160px;width:276px;max-width:calc(100% - 24px);display:flex;flex-direction:column;gap:8px;z-index:2;pointer-events:none}
+.rightCol>*{pointer-events:auto}
+.emCard,.gunCard{width:100%;background:rgba(12,16,22,.9);border:1px solid rgba(255,255,255,.16);border-radius:8px;z-index:2;overflow:hidden}
+.emCard[hidden],.gunCard[hidden]{display:none}
+.gunCard .emHead b{color:#ff8d82}
+.gunCard #gunCount{color:var(--ink);font-family:var(--mono)}
+.gunCard .gunBody{padding:0 9px 8px}
+.gunCard .gunBody[hidden]{display:none}
+.gunCard #gunMsg{white-space:pre-line;font-family:var(--mono);font-size:12px;line-height:1.45;color:#ffd0ca}
+.emCard .emHead,.gunCard .emHead{display:flex;width:100%;gap:8px;align-items:baseline;justify-content:space-between;background:none;border:0;border-radius:0;padding:7px 10px;font-family:var(--mono);font-size:12.5px;font-weight:500;text-align:left;min-height:0}
+.emCard .emHead span,.gunCard .emHead span{white-space:nowrap}
+.emCard .emHead b,.gunCard .emHead b{font-family:var(--display);font-weight:700;letter-spacing:.1em;color:var(--accent);margin-right:6px}
 .emCard .emBody{padding:0 8px 8px;display:flex;flex-direction:column;gap:6px}
 .emCard .emNow{font-family:var(--mono);font-size:12px;color:var(--ink)}
 .emCard .emTable tr.on td{background:rgba(242,178,51,.22);color:#fff}
 .dock{position:absolute;left:12px;bottom:54px;display:flex;flex-direction:column;align-items:flex-start;gap:5px;z-index:2;width:max-content;max-width:calc(100% - 24px);background:rgba(12,16,22,.34);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:6px}
 .dock.min{background:none;border-color:transparent;padding:0}
-.app.nopanel .dock{left:188px;max-width:calc(100% - 200px)}
+.app.nopanel .floatTools{top:98px;transform:none}
+.app.nopanel .dock.side{left:188px;max-width:calc(100% - 200px)}
 .dock.min .dockBody{display:none}
 .dock #dockMin{font-family:var(--display);font-weight:700;letter-spacing:.1em;font-size:12px;padding:4px 10px;background:rgba(12,16,22,.88);color:var(--muted,#9aa5b5)}
 .dockBody{display:flex;flex-direction:column;align-items:flex-start;gap:5px}
@@ -112,7 +120,6 @@ canvas.spr{inset:auto;left:0;top:0;width:auto;height:auto;pointer-events:none;wi
 .dock .gunBar,.dock .hdgBar,.dock .spdBar,.dock .recBar{position:static;max-width:none}
 .dock .recBar button{padding:4px 10px;font-size:13px}
 .dock .gunBar{flex-wrap:wrap}
-.dock .gunBar #gunMsg{flex-basis:auto;width:100%;max-width:600px;box-sizing:border-box;white-space:pre-line}
 .dock .unit{min-width:46px;text-align:center;box-sizing:border-box}
 .dock #spdWho{font-family:var(--display);font-weight:700;letter-spacing:.08em;min-width:64px;background:rgba(12,16,22,.88)}
 .dockHead{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
@@ -218,7 +225,7 @@ input:disabled,select:disabled{opacity:.55}
   <aside class="panel">
     <div>
       <h1>HH-60 Formation Sim</h1>
-      <p class="sub"><span class="swatch" style="background:var(--lead)"></span>Lead <span class="swatch" style="background:var(--trail);margin-left:10px"></span>Trail. North is up. <span id="build" style="opacity:.6;white-space:nowrap">Build 18 Nov F</span></p>
+      <p class="sub"><span class="swatch" style="background:var(--lead)"></span>Lead <span class="swatch" style="background:var(--trail);margin-left:10px"></span>Trail. North is up. <span id="build" style="opacity:.6;white-space:nowrap">Build 18 Nov H</span></p>
     </div>
 
     <div class="who">
@@ -568,11 +575,17 @@ input:disabled,select:disabled{opacity:.55}
         <div><b>SPACING</b><span id="rSep"></span></div>
       </div>
     </div>
-    <div class="emCard" id="emCard" hidden>
-      <button type="button" class="emHead" id="emHead" aria-expanded="true" title="Show or hide the chart table"><span id="emHeadTxt"></span><span id="emHeadArrow">▾</span></button>
-      <div class="emBody" id="emBody">
-        <div id="emCardTable"></div>
-        <div class="emNow" id="emNow"></div>
+    <div class="rightCol" id="rightCol">
+      <div class="emCard" id="emCard" hidden>
+        <button type="button" class="emHead" id="emHead" aria-expanded="true" title="Show or hide the chart table"><span id="emHeadTxt"></span><span id="emHeadArrow">▾</span></button>
+        <div class="emBody" id="emBody">
+          <div id="emCardTable"></div>
+          <div class="emNow" id="emNow"></div>
+        </div>
+      </div>
+      <div class="gunCard" id="gunCard" hidden>
+        <button type="button" class="emHead" id="gunHead" aria-expanded="true" title="Show or hide why guns are holding fire"><span><b>GUN HOLDS</b><span id="gunCount"></span></span><span id="gunArrow">▾</span></button>
+        <div class="gunBody" id="gunBody"><div id="gunMsg" aria-live="polite"></div></div>
       </div>
     </div>
     <div class="commit" id="commit" hidden aria-live="off"></div>
@@ -591,7 +604,6 @@ input:disabled,select:disabled{opacity:.55}
           <span class="unit">GUNS</span>
           <span class="gset"><select id="gt00" aria-label="Lead left gun target" title="Lead left gun target"></select><button type="button" id="g00" aria-pressed="false" title="Lead left gun">◀ L</button><b style="color:#6fa8ff">LEAD</b><button type="button" id="g01" aria-pressed="false" title="Lead right gun">R ▶</button><select id="gt01" aria-label="Lead right gun target" title="Lead right gun target"></select></span>
           <span class="gset"><select id="gt10" aria-label="Trail left gun target" title="Trail left gun target"></select><button type="button" id="g10" aria-pressed="false" title="Trail left gun">◀ L</button><b style="color:#5fdc8c">TRAIL</b><button type="button" id="g11" aria-pressed="false" title="Trail right gun">R ▶</button><select id="gt11" aria-label="Trail right gun target" title="Trail right gun target"></select></span>
-          <div id="gunMsg" aria-live="polite"></div>
         </div>
         <div class="dockEdit" id="dockEdit">
           <button type="button" id="spdWho" title="Which aircraft the heading and airspeed rows change. Tap to switch between lead, trail, and both.">LEAD</button>
@@ -1325,10 +1337,14 @@ function gunUI(){
     if(b.getAttribute('aria-pressed')!==String(on))b.setAttribute('aria-pressed',String(on));
     b.classList.toggle('firing',!!(g&&g.ok));b.classList.toggle('blocked',!!(g&&!g.ok));
     if(PB&&pf&&pf.length>=12){var tv=String(frTgt(pf,i,sd)),se=$('gt'+i+sd);if(th.length&&se.value!==tv)se.value=tv;}
-    if(g&&!g.ok)msg.push(nm+' gun holding: '+g.why);
+    if(g&&!g.ok)msg.push(nm.toUpperCase()+' GUN: '+g.why);
     if(g)st.push(nm+(g.ok?': firing at T'+g.n:': holding'));
   }
-  setText($('gunMsg'),msg.join('\n'));
+  /* the reasons sit in their own window on the right of the map. It shows while any gun is on. */
+  var anyOn=st.length>0,gc=$('gunCard');
+  if(gc.hidden===anyOn)gc.hidden=!anyOn;
+  setText($('gunCount'),msg.length?' '+msg.length:' 0');
+  setText($('gunMsg'),msg.length?msg.join('\n\n'):'No holds. Every gun that is on is clear to fire.');
   setText($('gunStatus'),st.length?st.join('. '):'All guns off');
 }
 
@@ -2226,7 +2242,15 @@ function drawRose(){
 
 /* how much of the bottom of the map the quick bar covers, so views can be fitted above it */
 var dockH=0;
-function dockMeasure(){try{var d=$('dock');dockH=d&&d.offsetHeight?d.offsetHeight+60:0;}catch(e){dockH=0;}}
+function dockMeasure(){
+  try{
+    var d=$('dock'),ft=$('floatTools'),full=$('app').classList.contains('nopanel');
+    /* with the controls hidden the quick bar sits at the far left, right under the shortcut list.
+       If the map is too short for both, it goes beside the list. */
+    d.classList.toggle('side',!!(full&&ft&&ft.offsetHeight&&98+ft.offsetHeight+8+d.offsetHeight+54>H));
+    dockH=d&&d.offsetHeight?d.offsetHeight+60:0;
+  }catch(e){dockH=0;}
+}
 function bgKey(){
   var m=S.map,t=0,i,j,q;
   for(i=0;i<S.terrain.length;i++){q=S.terrain[i].pts;t+=q.length*31+S.terrain[i].type.length;for(j=0;j<q.length;j++)t+=q[j].x+q[j].y*1.7;}
@@ -2360,7 +2384,7 @@ function setText(el,t){if(el.textContent!==t)el.textContent=t;}
 function readouts(){
   fixHolds();
   gunUI();
-  var ha=primary();setText($('hdgNow'),pad3(norm(ha.turnRem>0?ha.turnTarget:ha.hdg)%360));
+  var ha=primary(),hs=stickHdg(ha);setText($('hdgNow'),pad3(hs!=null?hs:norm(ha.turnRem>0?ha.turnTarget:ha.hdg)%360));
   AC.forEach(function(c,k){
     var v=gndVel(c),gs=Math.hypot(v.x,v.y)/KT,trk=norm(Math.atan2(v.x,v.y)/RAD);
     if(c.route&&c.route.hold)gs=0;
@@ -2558,9 +2582,74 @@ $('turnL').addEventListener('click',function(){turnBtn(-1);});
 /* ---------- quick heading bar on the map ----------
    The arrows change the heading by the step picked. They go through the Heading box, so they act just like typing a heading there:
    before the sim starts the aircraft points that way at once, and after that it turns to it. */
+/* ---------- a heading check while flying sticks ----------
+   The sticks are kept. Only the stick being flown is changed, so the aircraft takes up the new heading from where it is now. */
+function onSticks(c){var r=c.route;return !!(r&&r.kind==='sticks'&&r.nodes&&r.nodes.length>=2);}
+/* the ground track an aircraft makes on heading h, with the wind */
+function trackFor(c,h){
+  var r=c.route,k=(r&&r.cruise!=null?r.cruise:c.tas),v=k*TK(),f=fwd(h),w=windVel();
+  if(!(v>1))return norm(h);
+  return norm(Math.atan2(f.x*v+w.x,f.y*v+w.y)/RAD);
+}
+/* the heading the aircraft holds, or will hold, on the stick it is flying */
+function stickHdg(c){
+  var r=c.route;if(!onSticks(c))return null;
+  var hold=r.hold&&r.hold.node,k=hold?r.nodes.indexOf(hold)+1:1,from=hold?hold:c.pos,to=r.nodes[k];
+  if(!to)return null;
+  /* a check already given on this stick is remembered exactly */
+  if(r.chk&&r.chk.node===to&&r.bends[k])return r.chk.h;
+  /* on a curved stick the heading is the way the path leaves the aircraft, not the straight line to the end */
+  var pi=hold?r.segEnd[k-1]+1:r.idx,q=r.pts[pi];
+  while(q&&Math.hypot(q.x-from.x,q.y-from.y)<2&&pi<r.segEnd[k]){pi++;q=r.pts[pi];}
+  if(r.bends[k]&&q)to=q;
+  var d=Math.hypot(to.x-from.x,to.y-from.y);if(d<1)return null;
+  var b=norm(Math.atan2(to.x-from.x,to.y-from.y)/RAD);
+  return Math.round(windCorrect(c,b))%360;
+}
+function stickCheck(c,deg){
+  var r=c.route,hold=r.hold&&r.hold.node,h0=stickHdg(c);
+  if(h0==null){
+    /* stopped at the last point with nothing after it: just turn on the spot */
+    c.hdg=norm(Math.round(c.hdg)+deg);return;
+  }
+  var h1=norm(h0+deg),tb=trackFor(c,h1)*RAD,k=hold?r.nodes.indexOf(hold)+1:1,from=hold?hold:{x:c.pos.x,y:c.pos.y},to=r.nodes[k];
+  var len=Math.hypot(to.x-from.x,to.y-from.y),dir={x:Math.sin(tb),y:Math.cos(tb)};
+  if(!hold){
+    /* the stick now starts where the aircraft is */
+    r.nodes[0]={x:c.pos.x,y:c.pos.y};r.idx=1;
+  }
+  if(to.commit!=null&&!to.done){
+    /* the stick ends at a commit point, which must stay put: leave the end where it is and curve the stick,
+       so the aircraft sets off on the new heading and bends back in to the commit point */
+    var cx=from.x+dir.x*len/2,cy=from.y+dir.y*len/2;
+    r.bends[k]={x:(cx+(from.x+to.x)/2)/2,y:(cy+(from.y+to.y)/2)/2};
+    r.chk={node:to,h:Math.round(h1)%360};
+  }else{
+    /* swing the end of the stick round the aircraft to the new track. The sticks after it stay where they are. */
+    to.x=from.x+dir.x*len;to.y=from.y+dir.y*len;r.bends[k]=null;
+  }
+  rebuild(r);
+  if(!hold)r.idx=1;
+  if(!S.playing&&simT<0.05&&!hold){c.hdg=h1;r.startHdg=h1;}
+  saveSticks(c);
+}
 function hdgNudge(dir){
   if(PB)return;
   var a=primary(),st=parseFloat($('hdgStep').value)||1,el=$('hdg'),T=AC[1];
+  var tg=editTargets(),stk=tg.filter(onSticks);
+  if(stk.length){
+    pushUndo();
+    stk.forEach(function(c){stickCheck(c,dir*st);});
+    /* any picked aircraft that is not on sticks gets the same check as a plain heading change */
+    var now0=!S.playing&&simT<0.05;
+    tg.forEach(function(c){
+      if(onSticks(c))return;
+      var h=norm(Math.round(norm(c.turnRem>0?c.turnTarget:c.hdg))+dir*st)%360;
+      if(now0){c.turnRem=0;c.hdg=h;}else turnTo(c,h);
+    });
+    if(now0){hist=[];snap();}
+    syncHeadingSelect();return;
+  }
   function want(c){return norm(Math.round(norm(c.turnRem>0?c.turnTarget:c.hdg))+dir*st)%360;}
   if(S.sel===2&&!S.formOn&&!(T.route&&T.route.kind==='follow')){
     /* with both picked and each aircraft on its own heading, each one moves by the step from where it is */
@@ -2872,6 +2961,7 @@ $('scnPaste').addEventListener('click',function(){
 scnFill();if(scnRead().length)scnSay(scnRead().length+' saved on this device');
 $('undoBtn').addEventListener('click',undo);
 $('redoBtn').addEventListener('click',redo);
+$('gunHead').addEventListener('click',function(){var b=$('gunBody'),open=b.hidden;b.hidden=!open;this.setAttribute('aria-expanded',String(open));$('gunArrow').textContent=open?'▾':'▸';});
 $('dockMin').addEventListener('click',function(){var d=$('dock'),m=d.classList.toggle('min');this.setAttribute('aria-expanded',String(!m));this.textContent=m?'QUICK BAR ▴':'QUICK BAR ▾';dockMeasure();});
 [0,1].forEach(function(i){
   [0,1].forEach(function(sd){
@@ -2951,6 +3041,7 @@ $('panelBtn').addEventListener('click',function(){
   this.textContent=hid?'Show controls':'Hide controls';this.setAttribute('aria-expanded',String(!hid));
   if(!hid)closeDrawer();
   dockSel(!!hid);
+  dockMeasure();
 });
 /* when the page is hosted on its own site, hook up the home screen icon and offline copy */
 try{
