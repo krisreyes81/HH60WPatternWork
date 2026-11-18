@@ -225,7 +225,7 @@ input:disabled,select:disabled{opacity:.55}
   <aside class="panel">
     <div>
       <h1>HH-60 Formation Sim</h1>
-      <p class="sub"><span class="swatch" style="background:var(--lead)"></span>Lead <span class="swatch" style="background:var(--trail);margin-left:10px"></span>Trail. North is up. <span id="build" style="opacity:.6;white-space:nowrap">Build 18 Nov H</span></p>
+      <p class="sub"><span class="swatch" style="background:var(--lead)"></span>Lead <span class="swatch" style="background:var(--trail);margin-left:10px"></span>Trail. North is up. <span id="build" style="opacity:.6;white-space:nowrap">Build 18 Nov I</span></p>
     </div>
 
     <div class="who">
@@ -500,14 +500,14 @@ input:disabled,select:disabled{opacity:.55}
         <option value="4">Fastest (softest picture)</option>
       </select></div></div>
       <div class="status" id="gfxNow"></div>
-      <label class="check"><input type="checkbox" id="liteOn"> Slow-computer mode (turns on by itself when needed)</label>
-      <label class="check"><input type="checkbox" id="perfOn"> Show performance info on the map</label>
-      <div class="seg"><button type="button" id="perfTest">Run speed test (15 seconds)</button></div>
       <label class="check"><input type="checkbox" id="follow"> Keep lead centered</label>
       <label class="check"><input type="checkbox" id="followTrail"> Keep trail centered</label>
       <label class="check"><input type="checkbox" id="followBoth"> Keep both aircraft centered (zooms out when needed)</label>
       <label class="check"><input type="checkbox" id="track" checked> Show ground tracks</label>
       <label class="check"><input type="checkbox" id="grid" checked> Show grid</label>
+      <label class="check"><input type="checkbox" id="liteOn"> Slow-computer mode (turns on by itself when needed)</label>
+      <label class="check"><input type="checkbox" id="perfOn"> Show performance info on the map</label>
+      <div class="seg"><button type="button" id="perfTest">Run speed test (15 seconds)</button></div>
     </fieldset>
 
     <h2 class="grp">Save and load</h2>
@@ -1196,11 +1196,12 @@ function gunCheck(i,sd,nOver){
   /* with the forward limit on the nose, a threat dead ahead is clear for both guns. The nose wanders a degree or two
      while the aircraft flies at a point, so a small margin keeps a nose shot from dropping in and out. */
   var fwdLim=GUN.fwd<=0?-3:GUN.fwd;
+  /* range comes first: a target that is too far reads as out of range, even when it is also outside the arc */
+  if(d>GUN.range){res.why='T'+n+' is out of range ('+Math.round(d)+' m, max '+GUN.range+' m)';res.tag='RANGE';return res;}
   if(off<fwdLim||off>GUN.aft){
     var ar=Math.abs(rel);
     res.why='no gun target line. T'+n+' is '+pad3(ar)+(rel<0?'L':'R')+', outside the '+sn+' gun arc ('+GUN.fwd+'° to '+GUN.aft+'°)';res.tag='NO GTL';return res;
   }
-  if(d>GUN.range){res.why='T'+n+' is out of range ('+Math.round(d)+' m, max '+GUN.range+' m)';res.tag='RANGE';return res;}
   /* elevation stops. The line to the target is turned into the aircraft's own frame, so bank tilts it:
      banking toward the target lifts the target against the upper stop, banking away pushes it toward the lower stop.
      The stops run from -3 up / -54 down with the gun forward to +3 up / -48 down with the gun aft. Pitch is taken as level. */
