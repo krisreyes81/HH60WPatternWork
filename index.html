@@ -290,7 +290,7 @@ details.help .note{margin-top:2px}
   <aside class="panel">
     <div>
       <h1>HH-60 Formation Sim</h1>
-      <p class="sub"><span class="swatch" style="background:var(--lead)"></span>Lead <span class="swatch" style="background:var(--trail);margin-left:10px"></span>Trail. North is up. <span id="build" style="opacity:.6;white-space:nowrap">Build 19 Nov A</span></p>
+      <p class="sub"><span class="swatch" style="background:var(--lead)"></span>Lead <span class="swatch" style="background:var(--trail);margin-left:10px"></span>Trail. North is up. <span id="build" style="opacity:.6;white-space:nowrap">Build 19 Nov B</span></p>
     </div>
 
     <div class="who">
@@ -1314,7 +1314,7 @@ function advance(dt){
 /* ---------- undo: a snapshot is saved just before each action ---------- */
 var undoStack=[],histId=0,lastKey=null,lastPush=0;
 function snapUndo(){
-  return {st:capture(),simT:simT,hid:histId,markers:JSON.stringify(S.markers),terrain:S.terrain.slice(),
+  return {st:capture(),simT:simT,hid:histId,pop:JSON.stringify(POP.log),th:JSON.stringify(TH.log),markers:JSON.stringify(S.markers),terrain:S.terrain.slice(),
     meas:S.meas?JSON.stringify(S.meas):null,spU:S.spUnit,sp:S.spacing,
     saved:AC.map(function(a){return a.saved?JSON.stringify(a.saved):null;}),
     home:AC.map(function(a){return a.home?{x:a.home.x,y:a.home.y}:null;})};
@@ -1346,7 +1346,8 @@ function restoreSnap(u){
 function goToSnap(u){
   restoreSnap(u);simT=u.simT;
   /* the snapshot brings back the markers of its own moment, so later pickups are simply forgotten */
-  POP.log=POP.log.filter(function(e){return e.t<=simT+1e-6;});TH.log=TH.log.filter(function(e){return e.t<=simT+1e-6;});
+  /* each snapshot carries its own list of pickups and threat changes, so undo and redo both keep them in step with the map */
+  try{POP.log=u.pop?JSON.parse(u.pop):POP.log.filter(function(e){return e.t<=simT+1e-6;});TH.log=u.th?JSON.parse(u.th):TH.log.filter(function(e){return e.t<=simT+1e-6;});}catch(e){POP.log=[];TH.log=[];}
   if(u.hid!==histId){hist=[];snap();}else hist=hist.filter(function(h){return h.t<=simT+1e-6;});
   recTrim();lastKey=null;undoBtnState();
 }
@@ -1784,7 +1785,7 @@ function recUI(){
 /* ---------- saved setups: the whole starting picture, kept in this browser ---------- */
 var SCN_KEY='hh60sim.setups.v1';
 function scenarioNow(){
-  var u=snapUndo();u.simT=0;
+  var u=snapUndo();u.simT=0;delete u.pop;delete u.th;
   u.st.ac.forEach(function(o){o.len=0;o.gen=-1;o.turnRem=0;});
   return {v:1,env:S.env,windFrom:S.windFrom,windKt:S.windKt,rate:S.rate,form:S.form,formAsp:S.formAsp,formSide:S.formSide,scale:S.scale,follow:S.follow,cam:{x:S.cam.x,y:S.cam.y},u:u,map:mapForSave(),em:{line:S.em,pa:S.emPA,oat:S.emOAT},acc:S.acc,dec:S.dec};
 }
@@ -1807,7 +1808,7 @@ function applyScenario(sc){
   if(sc.cam)S.cam={x:+sc.cam.x||0,y:+sc.cam.y||0};
   restoreSnap(sc.u);
   mapFromSave(sc.map);
-  simT=0;hist=[];histId++;snap();setPlaying(false);circUI();
+  simT=0;POP.log=[];TH.log=[];hist=[];histId++;snap();setPlaying(false);circUI();
 }
 function scnRead(){try{var a=JSON.parse(localStorage.getItem(SCN_KEY)||'[]');return Array.isArray(a)?a:[];}catch(e){return [];}}
 function scnWrite(a){try{localStorage.setItem(SCN_KEY,JSON.stringify(a));return true;}catch(e){return false;}}
