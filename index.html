@@ -263,6 +263,9 @@ details.help .note{margin-top:2px}
 .thBar select{flex:1 1 auto;width:auto;min-width:0;padding:5px 4px;font-family:var(--mono);font-size:12px;background:rgba(12,16,22,.88)}
 .thBar button{flex:1 1 0;min-width:0;padding:6px 4px;font-size:12px;background:rgba(12,16,22,.88)}
 .thBar #thPop{flex:0 0 auto;padding:6px 8px}
+.thBar #thAll,.thBar #thLead,.thBar #thTrail{font-size:11.5px;line-height:1.15;padding:5px 3px}
+.thBar #thLead{background:rgba(40,110,235,.55);border-color:rgba(63,140,255,.8)}
+.thBar #thTrail{background:rgba(30,150,80,.55);border-color:rgba(53,196,106,.8)}
 .thBar button[aria-pressed=true]{background:var(--accent);color:#1b1404}
 .thBar #thNeut[aria-pressed=true]{background:#f2b233;border-color:#f2b233;color:#1b1404}
 .thBar #thDest[aria-pressed=true]{background:#c8372d;border-color:#ff8d82;color:#fff}
@@ -284,7 +287,7 @@ details.help .note{margin-top:2px}
   <aside class="panel">
     <div>
       <h1>HH-60 Formation Sim</h1>
-      <p class="sub"><span class="swatch" style="background:var(--lead)"></span>Lead <span class="swatch" style="background:var(--trail);margin-left:10px"></span>Trail. North is up. <span id="build" style="opacity:.6;white-space:nowrap">Build 18 Nov Y</span></p>
+      <p class="sub"><span class="swatch" style="background:var(--lead)"></span>Lead <span class="swatch" style="background:var(--trail);margin-left:10px"></span>Trail. North is up. <span id="build" style="opacity:.6;white-space:nowrap">Build 18 Nov Z</span></p>
     </div>
 
     <div class="who">
@@ -439,7 +442,7 @@ details.help .note{margin-top:2px}
       <details class="help"><summary>Instructions</summary>
         <p class="note">Use the GUNS window at the bottom right of the map. Tap FIRE L or FIRE R to turn a gun on. Each gun has its own target picker next to it. A gun that is on shoots only while it is clear to shoot. It stops by itself when it is not, and starts again when it is.</p>
         <p class="note">Guns also have up and down stops. The sim uses your height above the target and the bank angle to work out how far up or down the gun must point, and holds fire when that is past a stop. That hold reads PLATFORMED. Banking toward the target lifts it against the upper stop. Each gun is checked by itself against its own gun target line. A gun is clear when its target is inside its arc and range, no Jack is within 30° of its line, and the other aircraft is far enough off its line. The other aircraft and a Jack only count when they are inside that gun's own arc, since the gun cannot swing past its stops. The spacing needed is 2 clock positions (60°) when the other aircraft is hot, which means closing on the line with each aircraft forward of the other's wing line, and 1 clock position (30°) when it is cold. When either aircraft is behind the other, it is always 1 clock position (30°).</p>
-        <p class="note">Each gunner position carries a GAU-21 or a GAU-2. Pick it in the GUNS window, where the rounds left show next to it. Gunners fire bursts with a short pause between. Set the shortest and longest burst and the pause below. Each burst is a random length between the two. Reset or Reload all fills the guns. Above the GUNS window, pick a threat and press Threat neutralized or Threat destroyed. Destroyed makes the guns shooting at that threat cease fire. Neutralized leaves the guns alone. Press the same button again to make it active. Press Pop-up threat, then click a threat that is down to bring it back up, or click anywhere else to pop up a new threat there. When a pop-up is the only active threat, every gun is set to it. All guns target sets all four guns to the threat picked in the list. The arc is 90° forward and 81° aft of straight out the side, which is the nose back to 171°. The forward limit starts at 0°, which is the nose, so both guns can shoot a threat straight ahead.</p>
+        <p class="note">Each gunner position carries a GAU-21 or a GAU-2. Pick it in the GUNS window, where the rounds left show next to it. Gunners fire bursts with a short pause between. Set the shortest and longest burst and the pause below. Each burst is a random length between the two. Reset or Reload all fills the guns. Above the GUNS window, pick a threat and press Threat neutralized or Threat destroyed. Destroyed makes the guns shooting at that threat cease fire. Neutralized leaves the guns alone. Press the same button again to make it active. Press Pop-up threat, then click a threat that is down to bring it back up, or click anywhere else to pop up a new threat there. When a pop-up is the only active threat, every gun is set to it. All guns target sets all four guns to the threat picked in the list. Lead target and Trail target do the same for one aircraft's two guns. The arc is 90° forward and 81° aft of straight out the side, which is the nose back to 171°. The forward limit starts at 0°, which is the nose, so both guns can shoot a threat straight ahead.</p>
       </details>
       <div class="row"><label for="gFwd">Forward limit</label><input type="number" id="gFwd" min="0" max="90" step="1" value="0"><span class="unit">° off nose</span></div>
       <div class="row"><label for="gAft">Aft limit</label><input type="number" id="gAft" min="90" max="180" step="1" value="171"><span class="unit">° off nose</span></div>
@@ -668,7 +671,7 @@ details.help .note{margin-top:2px}
       <div class="thBar" id="thBar" aria-label="Threat status">
         <div class="thRow"><b>THREAT</b><select id="thSel" aria-label="Threat to mark" title="Which threat the buttons below act on"></select><button type="button" id="thPop" data-tool="popup" aria-pressed="false" title="Press, then click the map. Click a threat that is down to bring it back up. Click anywhere else to pop up a new threat there.">Pop-up threat</button></div>
         <div class="thRow"><button type="button" id="thNeut" aria-pressed="false" title="Mark this threat neutralized. Guns keep shooting. Press again to make it active.">Threat neutralized</button><button type="button" id="thDest" aria-pressed="false" title="Mark this threat destroyed. Guns shooting at it cease fire. Press again to make it active.">Threat destroyed</button></div>
-        <div class="thRow"><button type="button" id="thAll" title="Sets all four guns to the threat picked above. Guns that are on shift fire to it.">All guns target T1</button></div>
+        <div class="thRow"><button type="button" id="thAll" title="Sets all four guns to the threat picked above. Guns that are on shift fire to it.">All guns target T1</button><button type="button" id="thLead" title="Sets both of lead's guns to the threat picked above.">Lead target T1</button><button type="button" id="thTrail" title="Sets both of trail's guns to the threat picked above.">Trail target T1</button></div>
       </div>
       <button type="button" class="emHead" id="gunCtlHead" aria-expanded="true" title="Show or hide the gun buttons"><span><b>GUNS</b><span id="gunCtlNote">tap FIRE to turn a gun on</span></span><span id="gunCtlArrow">▾</span></button>
       <div class="gunCtlBody" id="gunCtlBody">
@@ -1051,7 +1054,7 @@ function thPopUp(w,p){
   var all=threats(),act=all.filter(function(q){return !q.st;});
   if(act.length===1&&act[0]===m)gunsAll(all.indexOf(m)+1);
 }
-function gunsAll(n){for(var i=0;i<2;i++)for(var sd=0;sd<2;sd++)GUN.tgt[i][sd]=n;}
+function gunsAll(n,only){for(var i=0;i<2;i++)for(var sd=0;sd<2;sd++)if(only==null||only===i)GUN.tgt[i][sd]=n;}
 function thState(){return threats().map(function(m){return (m.st==='dest'?2:m.st==='neut'?1:0)+','+Math.round(m.x)+','+Math.round(m.y);}).join(';');}
 function thUI(){
   var th=threats(),sel=$('thSel'),sig=th.map(function(m){return m.st||'a';}).join(',')+'|'+(PB?1:0);
@@ -1060,11 +1063,11 @@ function thUI(){
     TH.sig=sig;sel.textContent='';
     if(!th.length){var o0=document.createElement('option');o0.value='0';o0.textContent='no threat';sel.appendChild(o0);}
     th.forEach(function(m,k){var o=document.createElement('option');o.value=String(k+1);o.textContent='T'+(k+1)+' '+(m.st==='dest'?'DEST':m.st==='neut'?'NEUT':'ACTIVE');sel.appendChild(o);});
-    sel.disabled=!!PB||!th.length;$('thNeut').disabled=$('thDest').disabled=$('thAll').disabled=!!PB||!th.length;$('thPop').disabled=!!PB;
+    sel.disabled=!!PB||!th.length;$('thNeut').disabled=$('thDest').disabled=$('thAll').disabled=$('thLead').disabled=$('thTrail').disabled=!!PB||!th.length;$('thPop').disabled=!!PB;
   }
   var v=th.length?String(TH.sel):'0';if(sel.value!==v)sel.value=v;
   var st=th.length?(th[TH.sel-1].st||''):'';
-  setText($('thAll'),th.length?'All guns target T'+TH.sel:'All guns target');
+  var tn=th.length?' T'+TH.sel:'';setText($('thAll'),'All guns target'+tn);setText($('thLead'),'Lead target'+tn);setText($('thTrail'),'Trail target'+tn);
   var a=String(st==='neut'),b=String(st==='dest');
   if($('thNeut').getAttribute('aria-pressed')!==a)$('thNeut').setAttribute('aria-pressed',a);
   if($('thDest').getAttribute('aria-pressed')!==b)$('thDest').setAttribute('aria-pressed',b);
@@ -3303,7 +3306,7 @@ $('gCease').addEventListener('click',gunsOff);
 $('thSel').addEventListener('change',function(){TH.sel=parseInt(this.value,10)||1;});
 $('thNeut').addEventListener('click',function(){thMark('neut');});
 $('thDest').addEventListener('click',function(){thMark('dest');});
-$('thAll').addEventListener('click',function(){if(PB||!threats().length)return;pushUndo();gunsAll(clamp(TH.sel,1,threats().length));});
+[['thAll',null],['thLead',0],['thTrail',1]].forEach(function(q){$(q[0]).addEventListener('click',function(){if(PB||!threats().length)return;pushUndo();gunsAll(clamp(TH.sel,1,threats().length),q[1]);});});
 function gunNum(id,key,lo,hi){$(id).addEventListener('change',function(){var v=parseFloat(this.value);if(!isFinite(v))v=GUN[key];v=clamp(v,lo,hi);GUN[key]=v;this.value=v;});}
 gunNum('gFwd','fwd',0,90);gunNum('gAft','aft',90,180);$('gR21').addEventListener('change',function(){var v=clamp(parseFloat(this.value)||1500,100,5000);GTYPE['GAU-21'].range=v;this.value=v;});
 $('gR2').addEventListener('change',function(){var v=clamp(parseFloat(this.value)||750,100,5000);GTYPE['GAU-2'].range=v;this.value=v;});
