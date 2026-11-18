@@ -131,6 +131,8 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-acti
 .spdBar button[aria-pressed=true]{background:var(--accent)}
 .spdBar .unit{background:rgba(12,16,22,.7);border-radius:6px;padding:3px 6px}
 #spdRow button{font-family:var(--mono);padding:6px 4px;flex:1 1 0}
+.perfBox{position:absolute;left:50%;top:96px;transform:translateX(-50%);z-index:5;background:rgba(8,12,18,.92);border:1px solid #f2b233;border-radius:8px;padding:8px 10px;font-family:var(--mono);font-size:12px;line-height:1.5;color:#fff;white-space:pre;max-width:calc(100% - 24px);overflow:hidden;-webkit-user-select:text;user-select:text;pointer-events:none}
+.perfBox[hidden]{display:none}
 .errBar{position:absolute;left:50%;bottom:100px;transform:translateX(-50%);width:min(520px,calc(100% - 24px));background:#3a1410;border:2px solid var(--threat);border-radius:10px;padding:10px 12px;z-index:6;display:flex;gap:10px;align-items:flex-start;font-size:13.5px}
 .errBar[hidden]{display:none}
 .errBar code{font-family:var(--mono);font-size:12px;display:block;margin-top:4px;color:#ffd9d4;word-break:break-word;-webkit-user-select:text;user-select:text}
@@ -215,7 +217,7 @@ input:disabled,select:disabled{opacity:.55}
   <aside class="panel">
     <div>
       <h1>HH-60 Formation Sim</h1>
-      <p class="sub"><span class="swatch" style="background:var(--lead)"></span>Lead <span class="swatch" style="background:var(--trail);margin-left:10px"></span>Trail. North is up. <span id="build" style="opacity:.6;white-space:nowrap">Build 18 Nov B</span></p>
+      <p class="sub"><span class="swatch" style="background:var(--lead)"></span>Lead <span class="swatch" style="background:var(--trail);margin-left:10px"></span>Trail. North is up. <span id="build" style="opacity:.6;white-space:nowrap">Build 18 Nov C</span></p>
     </div>
 
     <div class="who">
@@ -482,14 +484,15 @@ input:disabled,select:disabled{opacity:.55}
         <option value="10">10x</option>
       </select></div></div>
       <div class="row"><label for="gfx">Drawing</label><div class="grow"><select id="gfx">
-        <option value="auto" selected>Auto (speeds up if slow)</option>
-        <option value="0">Sharp</option>
+        <option value="0" selected>Sharp</option>
+        <option value="auto">Auto (gets softer if slow)</option>
         <option value="1">Balanced</option>
         <option value="2">Fast</option>
         <option value="3">Faster</option>
         <option value="4">Fastest (softest picture)</option>
       </select></div></div>
-      <div class="status" id="gfxNow">Auto is using: Sharp</div>
+      <div class="status" id="gfxNow"></div>
+      <label class="check"><input type="checkbox" id="perfOn"> Show performance info on the map</label>
       <label class="check"><input type="checkbox" id="follow"> Keep lead centered</label>
       <label class="check"><input type="checkbox" id="followTrail"> Keep trail centered</label>
       <label class="check"><input type="checkbox" id="followBoth"> Keep both aircraft centered (zooms out when needed)</label>
@@ -611,6 +614,7 @@ input:disabled,select:disabled{opacity:.55}
         </div>
       </div>
     </div>
+    <div class="perfBox" id="perfBox" hidden></div>
     <div class="errBar" id="errBar" hidden role="alert">
       <div><strong>The sim hit a problem and kept going.</strong> If something looks wrong, press Reset aircraft. Please tell Claude this message:<code id="errMsg"></code></div>
       <button type="button" id="errClose" aria-label="Dismiss">✕</button>
@@ -2709,6 +2713,7 @@ $('gfx').addEventListener('change',function(){
   if(v!=='auto')gfxSet(parseInt(v,10));GFX.slow=0;GFX.ema=16;gfxUI();
   gfxSave();
 });
+$('perfOn').addEventListener('change',function(){PERF.on=this.checked;PERF.last=0;$('perfBox').hidden=!PERF.on;if(PERF.on)$('perfBox').textContent='Measuring. Press Play and wait a second.';});
 $('ctrL').addEventListener('click',function(){setCenter(S.follow?'off':'lead');});
 $('ctrT').addEventListener('click',function(){setCenter(S.followTrail?'off':'trail');});
 $('ctrB').addEventListener('click',function(){setCenter(S.followBoth?'off':'both');});
@@ -3173,10 +3178,10 @@ cv.addEventListener('wheel',function(e){
 /* ---------- drawing quality ----------
    Level 0 is sharpest. Higher levels draw fewer pixels, which is what a computer without graphics acceleration needs.
    On Auto the sim watches how long frames take and steps the level up when they are slow. It does not step back down by itself. */
-var GFX={mode:'auto',lvl:0,slow:0,ema:16},lastDrawT=0,gfxDirty=true;
+var GFX={mode:'fixed',lvl:0,slow:0,ema:16},lastDrawT=0,gfxDirty=true;
 function gfxScale(d){var l=GFX.lvl;return l<=0?Math.min(d,2):l===1?Math.min(d,1.25):l===2?Math.min(d,1):l===3?0.7:0.5;}
 function gfxBgScale(d){var l=GFX.lvl;return l<=0?Math.min(d,1.5):l===1?Math.min(d,1):l===2?Math.min(d,0.85):l===3?0.6:0.45;}
-function gfxSave(){try{localStorage.setItem('hh60sim.gfx',GFX.mode+'|'+GFX.lvl);}catch(e){}}
+function gfxSave(){try{localStorage.setItem('hh60sim.gfx2',GFX.mode+'|'+GFX.lvl);}catch(e){}}
 function gfxSet(l){l=clamp(l,0,4);if(l===GFX.lvl)return;GFX.lvl=l;GFX.slow=0;try{resize();}catch(e){}gfxUI();gfxSave();}
 function gfxUI(){try{$('gfxNow').textContent=GFX.mode==='auto'?'Auto is using: '+['Sharp','Balanced','Fast','Faster','Fastest'][GFX.lvl]:'';}catch(e){}}
 function gfxWatch(gap){
@@ -3187,7 +3192,7 @@ function gfxWatch(gap){
   if(GFX.lvl<4&&(GFX.slow>14||(GFX.ema>110&&GFX.slow>4))){gfxSet(GFX.lvl+(GFX.ema>110?2:1));GFX.ema=30;}
 }
 /* this computer's last setting is remembered, so a slow computer starts fast next time */
-try{var gv=(localStorage.getItem('hh60sim.gfx')||'').split('|');if(gv.length===2&&(gv[0]==='auto'||gv[0]==='fixed')){GFX.mode=gv[0];GFX.lvl=clamp(parseInt(gv[1],10)||0,0,4);}}catch(e){}
+try{var gv=(localStorage.getItem('hh60sim.gfx2')||'').split('|');if(gv.length===2&&(gv[0]==='auto'||gv[0]==='fixed')){GFX.mode=gv[0];GFX.lvl=clamp(parseInt(gv[1],10)||0,0,4);}}catch(e){}
 try{$('gfx').value=GFX.mode==='auto'?'auto':String(GFX.lvl);}catch(e){}
 gfxUI();
 function resize(){
@@ -3263,12 +3268,44 @@ function sanitize(level){
   if(!isFinite(simT))simT=0;
   if(level>1){S.formOn=false;S.rejoin=false;$('formOn').checked=false;}
 }
+/* ---------- performance readout ----------
+   Turned on from the View section. It shows how fast frames arrive and where the time goes, plus what this computer
+   and browser are drawing with, so a slow setup can be told apart from a slow program. */
+var PERF={on:false,sim:0,draw:0,read:0,n:0,frames:0,gapSum:0,gapMax:0,last:0,gpu:null};
+function perfGpu(){
+  if(PERF.gpu!=null)return PERF.gpu;
+  var r='unknown';
+  try{
+    var c=document.createElement('canvas'),gl=c.getContext('webgl')||c.getContext('experimental-webgl');
+    if(!gl)r='no WebGL (graphics acceleration looks off)';
+    else{var e=gl.getExtension('WEBGL_debug_renderer_info');r=String(e?gl.getParameter(e.UNMASKED_RENDERER_WEBGL):gl.getParameter(gl.RENDERER));}
+  }catch(err){r='could not read';}
+  PERF.gpu=r;return r;
+}
+function perfTick(gap){
+  if(!PERF.on)return;
+  PERF.frames++;PERF.gapSum+=gap;if(gap>PERF.gapMax)PERF.gapMax=gap;
+  var now=Date.now();
+  if(now-PERF.last<1000)return;
+  var n=Math.max(1,PERF.n),fps=PERF.gapSum>0?PERF.frames/PERF.gapSum:0,d=window.devicePixelRatio||1,ua=navigator.userAgent||'';
+  var br=(ua.match(/Edg\/[0-9]+/)||ua.match(/Chrome\/[0-9]+/)||ua.match(/Version\/[0-9]+.*Safari/)||ua.match(/Firefox\/[0-9]+/)||['?'])[0];
+  var soft=/swiftshader|basic render|llvmpipe|software|no webgl/i.test(perfGpu());
+  var inFrame=false;try{inFrame=window.self!==window.top;}catch(e){inFrame=true;}
+  $('perfBox').textContent=
+    'PERFORMANCE  '+$('build').textContent+'\n'+
+    'Frames: '+fps.toFixed(0)+' per second (slowest gap '+Math.round(PERF.gapMax*1000)+' ms)'+(S.playing?'':'   [paused: redraws are held to about 14 a second]')+'\n'+
+    'Program time per frame: sim '+(PERF.sim/n).toFixed(1)+' ms, drawing '+(PERF.draw/n).toFixed(1)+' ms, readouts '+(PERF.read/n).toFixed(1)+' ms\n'+
+    'Map area: '+Math.round(W)+' x '+Math.round(H)+', screen scale '+d.toFixed(2)+', canvas '+cv.width+' x '+cv.height+', drawing level '+['Sharp','Balanced','Fast','Faster','Fastest'][GFX.lvl]+'\n'+
+    'Graphics: '+perfGpu().slice(0,90)+(soft?'   <-- SOFTWARE, no graphics acceleration':'')+'\n'+
+    'Browser: '+br+', cores '+(navigator.hardwareConcurrency||'?')+', memory '+(navigator.deviceMemory?navigator.deviceMemory+' GB':'?')+(inFrame?', inside a frame':'');
+  PERF.sim=PERF.draw=PERF.read=PERF.n=PERF.frames=PERF.gapSum=PERF.gapMax=0;PERF.last=now;
+}
 function frame(t){
   requestAnimationFrame(frame);
   var gap=(t-lastT)/1000||0;
   /* a slow computer draws fewer frames, but the sim still runs at true speed: each frame covers the real time that passed */
   var real=Math.min(0.5,gap);lastT=t;
-  gfxWatch(gap);
+  gfxWatch(gap);perfTick(gap);
   /* nothing moves while paused, so a few redraws a second are plenty unless a finger or mouse is down */
   if(!S.playing&&!drag&&!(ptrs&&ptrs.size)&&t-lastDrawT<70&&!gfxDirty){return;}
   lastDrawT=t;gfxDirty=false;
@@ -3279,15 +3316,18 @@ function frame(t){
       pbApply();
     }catch(err){reportErr('playback',err);}
   }else if(dt>0){
-    try{advance(dt);badSteps=0;}
+    try{var p0=performance.now();advance(dt);PERF.sim+=performance.now()-p0;badSteps=0;}
     catch(err){
       reportErr('flying',err);badSteps++;
       try{sanitize(badSteps>20?2:1);}catch(e){}
       if(badSteps>60){badSteps=0;try{setPlaying(false);}catch(e){}}
     }
   }
+  var p1=performance.now();
   try{draw(dt);}catch(err){reportErr('drawing',err);try{var gd=gfxScale(window.devicePixelRatio||1);ctx.setTransform(gd,0,0,gd,0,0);ctx.setLineDash([]);ctx.globalAlpha=1;sanitize(1);}catch(e){}}
+  var p2=performance.now();
   try{readouts();}catch(err){reportErr('readouts',err);}
+  PERF.draw+=p2-p1;PERF.read+=performance.now()-p2;PERF.n++;
 }
 $('errClose').addEventListener('click',function(){$('errBar').hidden=true;shownErr='';});
 /* problems inside button and touch handlers show up too */
