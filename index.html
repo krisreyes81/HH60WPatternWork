@@ -284,7 +284,7 @@ details.help .note{margin-top:2px}
   <aside class="panel">
     <div>
       <h1>HH-60 Formation Sim</h1>
-      <p class="sub"><span class="swatch" style="background:var(--lead)"></span>Lead <span class="swatch" style="background:var(--trail);margin-left:10px"></span>Trail. North is up. <span id="build" style="opacity:.6;white-space:nowrap">Build 18 Nov W</span></p>
+      <p class="sub"><span class="swatch" style="background:var(--lead)"></span>Lead <span class="swatch" style="background:var(--trail);margin-left:10px"></span>Trail. North is up. <span id="build" style="opacity:.6;white-space:nowrap">Build 18 Nov X</span></p>
     </div>
 
     <div class="who">
@@ -439,13 +439,15 @@ details.help .note{margin-top:2px}
       <details class="help"><summary>Instructions</summary>
         <p class="note">Use the GUNS window at the bottom right of the map. Tap FIRE L or FIRE R to turn a gun on. Each gun has its own target picker next to it. A gun that is on shoots only while it is clear to shoot. It stops by itself when it is not, and starts again when it is.</p>
         <p class="note">Guns also have up and down stops. The sim uses your height above the target and the bank angle to work out how far up or down the gun must point, and holds fire when that is past a stop. That hold reads PLATFORMED. Banking toward the target lifts it against the upper stop. Each gun is checked by itself against its own gun target line. A gun is clear when its target is inside its arc and range, no Jack is within 30° of its line, and the other aircraft is far enough off its line. The other aircraft and a Jack only count when they are inside that gun's own arc, since the gun cannot swing past its stops. The spacing needed is 2 clock positions (60°) when the other aircraft is hot, which means closing on the line with each aircraft forward of the other's wing line, and 1 clock position (30°) when it is cold. When either aircraft is behind the other, it is always 1 clock position (30°).</p>
-        <p class="note">Each gunner position carries a GAU-21 or a GAU-2. Pick it in the GUNS window, where the rounds left show next to it. Gunners fire 3 to 5 second bursts with a short pause between. Reset or Reload all fills the guns. Above the GUNS window, pick a threat and press Threat neutralized or Threat destroyed. Destroyed makes the guns shooting at that threat cease fire. Neutralized leaves the guns alone. Press the same button again to make it active. Press Pop-up threat, then click a threat that is down to bring it back up, or click anywhere else to pop up a new threat there. The arc is 90° forward and 81° aft of straight out the side, which is the nose back to 171°. The forward limit starts at 0°, which is the nose, so both guns can shoot a threat straight ahead.</p>
+        <p class="note">Each gunner position carries a GAU-21 or a GAU-2. Pick it in the GUNS window, where the rounds left show next to it. Gunners fire bursts with a short pause between. Set the shortest and longest burst and the pause below. Each burst is a random length between the two. Reset or Reload all fills the guns. Above the GUNS window, pick a threat and press Threat neutralized or Threat destroyed. Destroyed makes the guns shooting at that threat cease fire. Neutralized leaves the guns alone. Press the same button again to make it active. Press Pop-up threat, then click a threat that is down to bring it back up, or click anywhere else to pop up a new threat there. The arc is 90° forward and 81° aft of straight out the side, which is the nose back to 171°. The forward limit starts at 0°, which is the nose, so both guns can shoot a threat straight ahead.</p>
       </details>
       <div class="row"><label for="gFwd">Forward limit</label><input type="number" id="gFwd" min="0" max="90" step="1" value="0"><span class="unit">° off nose</span></div>
       <div class="row"><label for="gAft">Aft limit</label><input type="number" id="gAft" min="90" max="180" step="1" value="171"><span class="unit">° off nose</span></div>
       <div class="row"><label for="gR21">GAU-21 range</label><input type="number" id="gR21" min="100" max="5000" step="50" value="1500"><span class="unit">m, 600 rounds, about 1,025 a minute</span></div>
       <div class="row"><label for="gR2">GAU-2 range</label><input type="number" id="gR2" min="100" max="5000" step="50" value="750"><span class="unit">m, 2,700 rounds, 3,000 a minute</span></div>
-      <div class="row"><label for="gPause">Pause between bursts</label><input type="number" id="gPause" min="0" max="20" step="0.1" value="1"><span class="unit">s (bursts run 3 to 5 s)</span></div>
+      <div class="row"><label for="gBmin">Shortest burst</label><input type="number" id="gBmin" min="0.5" max="60" step="0.5" value="3"><span class="unit">s</span></div>
+      <div class="row"><label for="gBmax">Longest burst</label><input type="number" id="gBmax" min="0.5" max="60" step="0.5" value="5"><span class="unit">s. Same as shortest for a fixed burst.</span></div>
+      <div class="row"><label for="gPause">Pause between bursts</label><input type="number" id="gPause" min="0" max="20" step="0.1" value="1"><span class="unit">s</span></div>
       <div class="row"><label for="gAgl">Height above target</label><input type="number" id="gAgl" min="0" max="5000" step="50" value="300"><span class="unit">ft</span></div>
       <div class="seg"><button type="button" id="gCease">Cease fire, all guns off</button></div>
       <div class="status" id="gunStatus" aria-live="polite">All guns off</div>
@@ -3298,6 +3300,16 @@ function gunNum(id,key,lo,hi){$(id).addEventListener('change',function(){var v=p
 gunNum('gFwd','fwd',0,90);gunNum('gAft','aft',90,180);$('gR21').addEventListener('change',function(){var v=clamp(parseFloat(this.value)||1500,100,5000);GTYPE['GAU-21'].range=v;this.value=v;});
 $('gR2').addEventListener('change',function(){var v=clamp(parseFloat(this.value)||750,100,5000);GTYPE['GAU-2'].range=v;this.value=v;});
 gunNum('gPause','pause',0,20);
+/* burst length: each burst is a random time between the shortest and the longest. The two boxes keep each other in order. */
+function burstSet(which){
+  var lo=parseFloat($('gBmin').value),hi=parseFloat($('gBmax').value);
+  if(!isFinite(lo))lo=GUN.burst[0];if(!isFinite(hi))hi=GUN.burst[1];
+  lo=clamp(lo,0.5,60);hi=clamp(hi,0.5,60);
+  if(lo>hi){if(which)lo=hi;else hi=lo;}
+  GUN.burst=[lo,hi];$('gBmin').value=lo;$('gBmax').value=hi;
+}
+$('gBmin').addEventListener('change',function(){burstSet(0);});
+$('gBmax').addEventListener('change',function(){burstSet(1);});
 [0,1].forEach(function(i){[0,1].forEach(function(sd){$('gy'+i+sd).addEventListener('change',function(){if(PB)return;pushUndo();gunLoad(i,sd,this.value);});});});
 $('gReload').addEventListener('click',function(){if(PB)return;pushUndo();gunReload();});gunNum('gAgl','agl',0,5000);
 $('recBtn').addEventListener('click',function(){if(REC)stopRec();else startRec();});
