@@ -72,6 +72,7 @@ button[aria-pressed=true]{background:var(--accent);color:#1b1404;border-color:va
 .stage{position:relative;min-width:0;min-height:0;background:#000;overflow:hidden}
 canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}
 #bg{pointer-events:none;right:auto;bottom:auto;will-change:transform}
+canvas.spr{inset:auto;left:0;top:0;width:auto;height:auto;pointer-events:none;will-change:transform}
 .hud{position:absolute;left:10px;top:10px;right:136px;display:flex;flex-direction:column;align-items:flex-start;gap:4px;pointer-events:none}
 .hud .hudRow{display:flex;gap:4px;flex-wrap:wrap;background:none;border:0;border-radius:0;padding:0;white-space:normal}
 .hud .hudRow.sel .nm{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
@@ -217,7 +218,7 @@ input:disabled,select:disabled{opacity:.55}
   <aside class="panel">
     <div>
       <h1>HH-60 Formation Sim</h1>
-      <p class="sub"><span class="swatch" style="background:var(--lead)"></span>Lead <span class="swatch" style="background:var(--trail);margin-left:10px"></span>Trail. North is up. <span id="build" style="opacity:.6;white-space:nowrap">Build 18 Nov C</span></p>
+      <p class="sub"><span class="swatch" style="background:var(--lead)"></span>Lead <span class="swatch" style="background:var(--trail);margin-left:10px"></span>Trail. North is up. <span id="build" style="opacity:.6;white-space:nowrap">Build 18 Nov E</span></p>
     </div>
 
     <div class="who">
@@ -492,7 +493,9 @@ input:disabled,select:disabled{opacity:.55}
         <option value="4">Fastest (softest picture)</option>
       </select></div></div>
       <div class="status" id="gfxNow"></div>
+      <label class="check"><input type="checkbox" id="liteOn"> Slow-computer mode (turns on by itself when needed)</label>
       <label class="check"><input type="checkbox" id="perfOn"> Show performance info on the map</label>
+      <div class="seg"><button type="button" id="perfTest">Run speed test (15 seconds)</button></div>
       <label class="check"><input type="checkbox" id="follow"> Keep lead centered</label>
       <label class="check"><input type="checkbox" id="followTrail"> Keep trail centered</label>
       <label class="check"><input type="checkbox" id="followBoth"> Keep both aircraft centered (zooms out when needed)</label>
@@ -539,8 +542,9 @@ input:disabled,select:disabled{opacity:.55}
   </aside>
 
   <main class="stage" id="stage">
-    <canvas id="bg" aria-hidden="true"></canvas>
     <canvas id="c" aria-label="Top-down map with two HH-60 helicopters"></canvas>
+    <canvas id="h1" class="spr" aria-hidden="true"></canvas>
+    <canvas id="h0" class="spr" aria-hidden="true"></canvas>
     <div class="hud" id="hud">
       <div class="hudRow" id="hudRow0">
         <div class="nm" style="color:var(--lead)">LEAD</div>
@@ -656,10 +660,10 @@ input:disabled,select:disabled{opacity:.55}
 var CARD=['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW'];
 var KT=0.514444, NM=1852, DISC=16.4, LEN=19.8, RAD=Math.PI/180;
 var $=function(id){return document.getElementById(id);};
-var cv=$('c'), ctx=cv.getContext('2d'), stage=$('stage');
+var cv=$('c'), ctx=(function(){try{return cv.getContext('2d',{alpha:false})||cv.getContext('2d');}catch(e){return cv.getContext('2d');}})(), stage=$('stage');
 /* the picture under everything (water or land, the map image, terrain, grid) lives on its own canvas.
    It is redrawn only when the view or the map changes, so a still view costs almost nothing per frame. */
-var bgCv=$('bg'), bctx=bgCv&&bgCv.getContext?bgCv.getContext('2d'):null, bgLast=null, bgT=0, bgHQ=true, mapGen=0, BGM=0, bgCam={x:0,y:0}, bgStill=0, bgPrev='', bgTf='';
+var bgCv=(function(){try{return document.createElement('canvas');}catch(e){return null;}})(), bctx=bgCv&&bgCv.getContext?bgCv.getContext('2d'):null, bgNew=true, bgLast=null, bgT=0, bgHQ=true, mapGen=0, BGM=0, bgScale=1, bgCam={x:0,y:0}, bgStill=0, bgPrev='', bgTf='';
 var W=800,H=600;
 
 function mk(name,color,light){return {name:name,color:color,light:light,pos:{x:0,y:0},hdg:0,tas:70,turnRem:0,turnDir:1,turnTarget:null,route:null,track:[],trackGen:0,home:null,saved:null,tgt:null};}
@@ -1275,6 +1279,12 @@ function drawFire(i,sd,tg){
   }
   ctx.restore();
 }
+/* the gun's arc, drawn small beside the aircraft */
+function gunArc(a,sd,x,y,L){
+  var h=a.hdg*RAD-Math.PI/2,a0=sd?h+GUN.fwd*RAD:h-GUN.aft*RAD,a1=sd?h+GUN.aft*RAD:h-GUN.fwd*RAD;
+  ctx.save();ctx.beginPath();ctx.moveTo(x,y);ctx.arc(x,y,L*1.5,a0,a1);ctx.closePath();
+  ctx.globalAlpha=.1;ctx.fillStyle=a.light;ctx.fill();ctx.globalAlpha=.4;ctx.strokeStyle=a.light;ctx.lineWidth=1;ctx.stroke();ctx.restore();
+}
 function drawGuns(){
   var i,sd,L=heloLen(),th=threats();
   for(i=0;i<2;i++){
@@ -1282,10 +1292,7 @@ function drawGuns(){
     for(sd=0;sd<2;sd++){
       var g=gunNow(i,sd);
       if(!g)continue;
-      /* the gun's arc, drawn small beside the aircraft */
-      var h=a.hdg*RAD-Math.PI/2,a0=sd?h+GUN.fwd*RAD:h-GUN.aft*RAD,a1=sd?h+GUN.aft*RAD:h-GUN.fwd*RAD;
-      ctx.save();ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.arc(p.x,p.y,L*1.5,a0,a1);ctx.closePath();
-      ctx.globalAlpha=.1;ctx.fillStyle=a.light;ctx.fill();ctx.globalAlpha=.4;ctx.strokeStyle=a.light;ctx.lineWidth=1;ctx.stroke();ctx.restore();
+      if(!SPR)gunArc(a,sd,p.x,p.y,L);
       if(g.ok&&g.tg)drawFire(i,sd,g.tg);
       else if(g.tg){
         var m=muzzle(i,sd),tx=sx(g.tg.x),ty=sy(g.tg.y);
@@ -2131,11 +2138,14 @@ function acRotPos(i){
   var q=screenPos(i),h=AC[i].hdg*RAD,D=heloLen()*.62+(TOUCH?30:22);
   return {x:q.x+Math.sin(h)*D,y:q.y-Math.cos(h)*D};
 }
+function rotHandleAt(qx,qy,hx,hy){
+  ctx.strokeStyle='#f2b233';ctx.lineWidth=2;ctx.setLineDash([3,3]);ctx.beginPath();ctx.moveTo(qx,qy);ctx.lineTo(hx,hy);ctx.stroke();ctx.setLineDash([]);
+  drawRotHandle(hx,hy,TOUCH?13:10);
+}
 function drawAcRot(){
   if(PB)return;
   var i=rotIndex(),q=screenPos(i),h=acRotPos(i);
-  ctx.strokeStyle='#f2b233';ctx.lineWidth=2;ctx.setLineDash([3,3]);ctx.beginPath();ctx.moveTo(q.x,q.y);ctx.lineTo(h.x,h.y);ctx.stroke();ctx.setLineDash([]);
-  drawRotHandle(h.x,h.y,TOUCH?13:10);
+  if(!SPR)rotHandleAt(q.x,q.y,h.x,h.y);
   if(drag&&drag.mode==='acrot'&&drag.moved){
     var txt='HDG '+pad3(AC[i].hdg);
     ctx.font='600 15px "IBM Plex Mono",monospace';ctx.textAlign='center';ctx.textBaseline='middle';
@@ -2228,10 +2238,17 @@ function bgRender(hq){
   /* the same drawing code runs on a canvas that is one margin bigger on every side */
   ctx=bctx;W=W0+2*BGM;H=H0+2*BGM;
   try{drawEnv();drawMapImage();drawTerrain();drawGridLines();}finally{ctx=c0;W=W0;H=H0;}
-  if(bgTf!==''){bgCv.style.transform='';bgTf='';}
+  bgNew=true;
+}
+/* copy the part of the stored background that the view is over onto the map */
+function bgBlit(){
+  var tx=-(S.cam.x-bgCam.x)*S.scale,ty=(S.cam.y-bgCam.y)*S.scale,k=bgScale;
+  ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='low';
+  ctx.drawImage(bgCv,Math.round((BGM-tx)*k),Math.round((BGM-ty)*k),Math.round(W*k),Math.round(H*k),0,0,W,H);
+  bgNew=false;
 }
 function drawBackground(){
-  if(!bctx){drawEnv();drawMapImage();drawTerrain();drawGridLines();drawScaleBar();return;}
+  if(!bctx){drawEnv();drawMapImage();drawTerrain();drawGridLines();return;}
   var key=bgKey(),now=Date.now(),cam=S.cam.x+','+S.cam.y;
   if(cam!==bgPrev){bgPrev=cam;bgStill=now;}
   var tx=Math.round(-(S.cam.x-bgCam.x)*S.scale),ty=Math.round((S.cam.y-bgCam.y)*S.scale);
@@ -2241,16 +2258,11 @@ function drawBackground(){
   }else if((tx||ty||!bgHQ)&&now-bgStill>260&&now-bgT>260){
     /* the view has stopped: draw once more at best quality, centered again */
     bgRender(true);bgT=now;
-  }else{
-    var tf=tx||ty?'translate('+tx+'px,'+ty+'px)':'';
-    if(tf!==bgTf){bgCv.style.transform=tf;bgTf=tf;}
   }
-  ctx.clearRect(0,0,W,H);
-  drawScaleBar();
 }
 function centered(){return S.follow||S.followTrail||S.followBoth;}
 function draw(dt){
-  var cOff=(clamp(dockH,70,H*.5)-110)/2/S.scale;
+  var cOff=(clamp(dockH,70,H*.5)-110)/2/S.scale,cam0={x:S.cam.x,y:S.cam.y},sc0=S.scale;
   if(S.follow&&!S.dragAC){S.cam.x=AC[0].pos.x;S.cam.y=AC[0].pos.y-cOff;}
   if(S.followTrail&&!S.dragAC){S.cam.x=AC[1].pos.x;S.cam.y=AC[1].pos.y-cOff;}
   if(S.followBoth&&!S.dragAC){
@@ -2262,16 +2274,86 @@ function draw(dt){
     if(isFinite(need)&&S.scale>need){var fz=clamp(Math.log10(need),-2.4,0.5);S.scale=Math.pow(10,fz);$('zoom').value=fz;}
     S.cam.x=(fa.x+fb.x)/2;S.cam.y=(fa.y+fb.y)/2-((fbm-ft)/2)/S.scale;
   }
+  if(LITE.on&&SPR&&centered()&&S.playing&&!drag&&sc0===S.scale&&Math.hypot(S.cam.x-cam0.x,S.cam.y-cam0.y)*S.scale<Math.min(W,H)*.12){
+    /* slow-computer mode: the view waits until the aircraft has drifted a bit, then catches up in one step */
+    S.cam.x=cam0.x;S.cam.y=cam0.y;
+  }
   drawBackground();
-  drawTracks();drawWind(dt);drawRoutes();drawMarkers();drawJackThreat();drawStickThreat();drawPatternThreat();drawMeasure();drawMapLine();
-  drawGuns();
-  var L=heloLen(),p1=screenPos(1),p0=screenPos(0);
-  drawHelo(p1.x,p1.y,AC[1],L,S.sel!==0);
-  drawHelo(p0.x,p0.y,AC[0],L,S.sel!==1);
-  drawAcRot();
-  drawDragSpacing();
-  drawRose();
+  var now=performance.now(),mk=[S.scale,W,H,S.cam.x,S.cam.y].join(',');
+  if(!SPR||!bctx||!LITE.on||mk!==midKey||bgNew||midDue(now)){
+    /* the whole map picture: stored background first, then tracks, sticks, markers, labels, tracers */
+    midKey=mk;LITE.last=now;
+    if(bctx)bgBlit();
+    drawScaleBar();
+    drawTracks();drawWind(SPR&&LITE.on?Math.min(0.5,(now-LITE.wind)/1000*(S.playing?S.speed:0)):dt);LITE.wind=now;
+    drawRoutes();drawMarkers();drawJackThreat();drawStickThreat();drawPatternThreat();drawMeasure();drawMapLine();
+    drawGuns();
+    if(!SPR){
+      var L=heloLen(),p1=screenPos(1),p0=screenPos(0);
+      drawHelo(p1.x,p1.y,AC[1],L,S.sel!==0);
+      drawHelo(p0.x,p0.y,AC[0],L,S.sel!==1);
+    }
+    drawAcRot();
+    drawDragSpacing();
+    drawRose();
+  }
+  if(SPR)drawSprites();
 }
+/* ---------- the aircraft live on two small canvases of their own ----------
+   Moving an aircraft then means sliding a small picture, not redrawing the whole map. On a computer with no graphics
+   acceleration that is the difference between a few frames a second and a smooth picture. */
+var SPR=null,midKey='';
+var LITE={on:false,manual:false,last:0,until:0,wind:0,slow:0,read:0};
+try{
+  var sp0=$('h0'),sp1=$('h1');
+  if(sp0&&sp1&&sp0.getContext&&bctx)SPR=[{cv:sp0,ctx:sp0.getContext('2d'),R:0,d:0,sig:'',tf:''},{cv:sp1,ctx:sp1.getContext('2d'),R:0,d:0,sig:'',tf:''}];
+}catch(e){SPR=null;}
+function drawSprites(){
+  var L=heloLen(),d=gfxScale(window.devicePixelRatio||1),D=L*.62+(TOUCH?30:22)+18,R=Math.ceil(Math.max(L*1.6+6,D));
+  for(var i=1;i>=0;i--){
+    var sp=SPR[i],a=AC[i],p=screenPos(i);
+    if(sp.R!==R||sp.d!==d){
+      sp.R=R;sp.d=d;sp.cv.width=Math.round(2*R*d);sp.cv.height=Math.round(2*R*d);
+      sp.cv.style.width=sp.cv.style.height=(2*R)+'px';sp.sig='';
+    }
+    var sel=i===0?S.sel!==1:S.sel!==0,rot=!PB&&rotIndex()===i,g0=gunNow(i,0)?1:0,g1=gunNow(i,1)?1:0;
+    var sig=[a.hdg.toFixed(2),S.rotor.toFixed(3),sel,rot,g0,g1,GUN.fwd,GUN.aft,L.toFixed(1),TOUCH].join('|');
+    if(sig!==sp.sig){
+      sp.sig=sig;
+      var c0=ctx;ctx=sp.ctx;
+      try{
+        ctx.setTransform(d,0,0,d,0,0);ctx.clearRect(0,0,2*R,2*R);
+        if(g0)gunArc(a,0,R,R,L);
+        if(g1)gunArc(a,1,R,R,L);
+        drawHelo(R,R,a,L,sel);
+        if(rot){var hh=a.hdg*RAD,DD=L*.62+(TOUCH?30:22);rotHandleAt(R,R,R+Math.sin(hh)*DD,R-Math.cos(hh)*DD);}
+      }finally{ctx=c0;}
+    }
+    var tf='translate('+(p.x-R).toFixed(1)+'px,'+(p.y-R).toFixed(1)+'px)';
+    if(tf!==sp.tf){sp.cv.style.transform=tf;sp.tf=tf;}
+  }
+}
+/* slow-computer mode: the middle layer is redrawn a couple of times a second while flying, and right away after any touch,
+   click or key. The aircraft still move every frame. */
+function midDue(now){
+  if(drag||(ptrs&&ptrs.size)||S.draft||now<LITE.until)return true;
+  var firing=false;try{firing=gunMask()>0;}catch(e){}
+  return now-LITE.last>=(S.playing?(firing?250:500):1000);
+}
+function liteSet(on,manual){
+  LITE.on=!!on;if(manual)LITE.manual=true;LITE.until=performance.now()+300;
+  try{$('liteOn').checked=LITE.on;}catch(e){}
+  if(manual)try{localStorage.setItem('hh60sim.lite',on?'on':'off');}catch(e){}
+}
+function liteWatch(gap){
+  if(LITE.on||LITE.manual||!(gap>0)||gap>1.5||!S.playing)return;
+  if(gap>0.06)LITE.slow++;else LITE.slow=Math.max(0,LITE.slow-1);
+  if(LITE.slow>12)liteSet(true,false);
+}
+['pointerdown','pointerup','pointercancel','keydown','keyup','click','change','input','wheel','touchend'].forEach(function(ev){
+  try{window.addEventListener(ev,function(){LITE.until=performance.now()+300;},true);}catch(e){}
+});
+try{cv.addEventListener('pointermove',function(){if(S.tool!=='pan')LITE.until=performance.now()+300;});}catch(e){}
 
 /* ---------- readouts ---------- */
 function setText(el,t){if(el.textContent!==t)el.textContent=t;}
@@ -2713,7 +2795,9 @@ $('gfx').addEventListener('change',function(){
   if(v!=='auto')gfxSet(parseInt(v,10));GFX.slow=0;GFX.ema=16;gfxUI();
   gfxSave();
 });
-$('perfOn').addEventListener('change',function(){PERF.on=this.checked;PERF.last=0;$('perfBox').hidden=!PERF.on;if(PERF.on)$('perfBox').textContent='Measuring. Press Play and wait a second.';});
+$('liteOn').addEventListener('change',function(){liteSet(this.checked,true);});
+$('perfTest').addEventListener('click',perfTestStart);
+$('perfOn').addEventListener('change',function(){PERF.on=this.checked;PERF.last=0;PERF.hold=0;$('perfBox').hidden=!PERF.on;if(PERF.on)$('perfBox').textContent='Measuring. Press Play and wait a second.';});
 $('ctrL').addEventListener('click',function(){setCenter(S.follow?'off':'lead');});
 $('ctrT').addEventListener('click',function(){setCenter(S.followTrail?'off':'trail');});
 $('ctrB').addEventListener('click',function(){setCenter(S.followBoth?'off':'both');});
@@ -2910,7 +2994,7 @@ $('clrS').addEventListener('click',function(){pushUndo();S.markers=S.markers.fil
 
 /* map pointer input */
 cv.style.cursor='grab';
-function local(e){var r=cv.getBoundingClientRect();return {x:e.clientX-r.left,y:e.clientY-r.top};}
+function local(e){var r=stage.getBoundingClientRect();return {x:e.clientX-r.left,y:e.clientY-r.top};}
 function segDist(px,py,x0,y0,x1,y1){
   var dx=x1-x0,dy=y1-y0,l=dx*dx+dy*dy,t=l?clamp(((px-x0)*dx+(py-y0)*dy)/l,0,1):0;
   return Math.hypot(px-(x0+t*dx),py-(y0+t*dy));
@@ -3180,7 +3264,7 @@ cv.addEventListener('wheel',function(e){
    On Auto the sim watches how long frames take and steps the level up when they are slow. It does not step back down by itself. */
 var GFX={mode:'fixed',lvl:0,slow:0,ema:16},lastDrawT=0,gfxDirty=true;
 function gfxScale(d){var l=GFX.lvl;return l<=0?Math.min(d,2):l===1?Math.min(d,1.25):l===2?Math.min(d,1):l===3?0.7:0.5;}
-function gfxBgScale(d){var l=GFX.lvl;return l<=0?Math.min(d,1.5):l===1?Math.min(d,1):l===2?Math.min(d,0.85):l===3?0.6:0.45;}
+function gfxBgScale(d){var l=GFX.lvl;return l<=0?Math.min(d,2):l===1?Math.min(d,1):l===2?Math.min(d,0.85):l===3?0.6:0.45;}
 function gfxSave(){try{localStorage.setItem('hh60sim.gfx2',GFX.mode+'|'+GFX.lvl);}catch(e){}}
 function gfxSet(l){l=clamp(l,0,4);if(l===GFX.lvl)return;GFX.lvl=l;GFX.slow=0;try{resize();}catch(e){}gfxUI();gfxSave();}
 function gfxUI(){try{$('gfxNow').textContent=GFX.mode==='auto'?'Auto is using: '+['Sharp','Balanced','Fast','Faster','Fastest'][GFX.lvl]:'';}catch(e){}}
@@ -3207,9 +3291,9 @@ function resize(){
     var bd=gfxBgScale(d);
     BGM=Math.round(Math.min(320,Math.max(W,H)*0.25));
     bgCv.width=Math.round((W+2*BGM)*bd);bgCv.height=Math.round((H+2*BGM)*bd);bctx.setTransform(bd,0,0,bd,0,0);
-    bgCv.style.left=bgCv.style.top=(-BGM)+'px';bgCv.style.width=(W+2*BGM)+'px';bgCv.style.height=(H+2*BGM)+'px';bgCv.style.transform='';
+    bgScale=bd;
   }
-  bgLast=null;gfxDirty=true;
+  bgLast=null;gfxDirty=true;midKey='';if(SPR){SPR[0].R=0;SPR[1].R=0;}
   dockMeasure();
 }
 if(window.ResizeObserver)new ResizeObserver(resize).observe(stage);else window.addEventListener('resize',resize);
@@ -3282,8 +3366,41 @@ function perfGpu(){
   }catch(err){r='could not read';}
   PERF.gpu=r;return r;
 }
+/* ---------- speed test ----------
+   Runs six short stages, each changing one kind of thing on the screen, and counts frames in each.
+   The result shows which part of putting the picture on screen is slow on this computer. */
+var PT_NAMES=['Nothing changes','A small box moves (no canvas)','Only the two aircraft redraw','The map canvas redraws (tracks, markers, labels)','The stored background is rebuilt too','Only the readout text changes'];
+function perfTestStart(){
+  setPlaying(false);
+  var d=document.createElement('div');d.style.cssText='position:absolute;left:0;top:0;width:36px;height:36px;border-radius:6px;background:#f2b233;z-index:4;pointer-events:none;display:none';
+  stage.appendChild(d);
+  PERF.test={i:0,t0:0,n:0,res:[],dot:d,k:0};PERF.on=true;$('perfOn').checked=true;$('perfBox').hidden=false;
+  $('perfBox').textContent='SPEED TEST running. Please do not touch anything for 15 seconds.';
+}
+function perfTestFrame(t){
+  var T=PERF.test;
+  if(!T.t0){T.t0=t;T.n=0;}
+  T.n++;T.k++;
+  var i=T.i,sav;
+  if(i===1){T.dot.style.display='block';T.dot.style.transform='translate('+(W/2+Math.sin(T.k/12)*160).toFixed(1)+'px,'+(H/2).toFixed(1)+'px)';}
+  else if(i===2){if(SPR){S.rotor+=0.2;drawSprites();}}
+  else if(i===3){sav=LITE.on;LITE.on=false;S.rotor+=0.2;try{draw(0);}finally{LITE.on=sav;}}
+  else if(i===4){sav=LITE.on;LITE.on=false;bgLast=null;S.rotor+=0.2;try{draw(0);}finally{LITE.on=sav;}}
+  else if(i===5){$('clock').textContent='T+ '+(T.k%60)+':'+('0'+(T.k%60)).slice(-2);}
+  if(t-T.t0>=2400){
+    T.res.push(T.n/((t-T.t0)/1000));
+    T.dot.style.display='none';T.i++;T.t0=0;
+    if(T.i>=PT_NAMES.length){
+      var out='SPEED TEST  '+$('build').textContent+'   frames per second in each stage\n';
+      for(var k=0;k<PT_NAMES.length;k++)out+=('    '+T.res[k].toFixed(0)).slice(-4)+'  '+PT_NAMES[k]+'\n';
+      out+='Map area '+Math.round(W)+' x '+Math.round(H)+', screen scale '+(window.devicePixelRatio||1).toFixed(2)+', graphics: '+perfGpu().slice(0,60);
+      try{T.dot.parentNode.removeChild(T.dot);}catch(e){}
+      PERF.test=null;PERF.hold=Date.now()+600000;$('perfBox').textContent=out;gfxDirty=true;LITE.until=performance.now()+500;
+    }
+  }
+}
 function perfTick(gap){
-  if(!PERF.on)return;
+  if(!PERF.on||(PERF.hold&&Date.now()<PERF.hold))return;
   PERF.frames++;PERF.gapSum+=gap;if(gap>PERF.gapMax)PERF.gapMax=gap;
   var now=Date.now();
   if(now-PERF.last<1000)return;
@@ -3295,17 +3412,18 @@ function perfTick(gap){
     'PERFORMANCE  '+$('build').textContent+'\n'+
     'Frames: '+fps.toFixed(0)+' per second (slowest gap '+Math.round(PERF.gapMax*1000)+' ms)'+(S.playing?'':'   [paused: redraws are held to about 14 a second]')+'\n'+
     'Program time per frame: sim '+(PERF.sim/n).toFixed(1)+' ms, drawing '+(PERF.draw/n).toFixed(1)+' ms, readouts '+(PERF.read/n).toFixed(1)+' ms\n'+
-    'Map area: '+Math.round(W)+' x '+Math.round(H)+', screen scale '+d.toFixed(2)+', canvas '+cv.width+' x '+cv.height+', drawing level '+['Sharp','Balanced','Fast','Faster','Fastest'][GFX.lvl]+'\n'+
+    'Map area: '+Math.round(W)+' x '+Math.round(H)+', screen scale '+d.toFixed(2)+', canvas '+cv.width+' x '+cv.height+', drawing level '+['Sharp','Balanced','Fast','Faster','Fastest'][GFX.lvl]+', slow-computer mode '+(LITE.on?'ON':'off')+'\n'+
     'Graphics: '+perfGpu().slice(0,90)+(soft?'   <-- SOFTWARE, no graphics acceleration':'')+'\n'+
     'Browser: '+br+', cores '+(navigator.hardwareConcurrency||'?')+', memory '+(navigator.deviceMemory?navigator.deviceMemory+' GB':'?')+(inFrame?', inside a frame':'');
   PERF.sim=PERF.draw=PERF.read=PERF.n=PERF.frames=PERF.gapSum=PERF.gapMax=0;PERF.last=now;
 }
 function frame(t){
   requestAnimationFrame(frame);
+  if(PERF.test){try{perfTestFrame(t);}catch(err){PERF.test=null;reportErr('speed test',err);}lastT=t;return;}
   var gap=(t-lastT)/1000||0;
   /* a slow computer draws fewer frames, but the sim still runs at true speed: each frame covers the real time that passed */
   var real=Math.min(0.5,gap);lastT=t;
-  gfxWatch(gap);perfTick(gap);
+  gfxWatch(gap);liteWatch(gap);perfTick(gap);
   /* nothing moves while paused, so a few redraws a second are plenty unless a finger or mouse is down */
   if(!S.playing&&!drag&&!(ptrs&&ptrs.size)&&t-lastDrawT<70&&!gfxDirty){return;}
   lastDrawT=t;gfxDirty=false;
@@ -3326,12 +3444,20 @@ function frame(t){
   var p1=performance.now();
   try{draw(dt);}catch(err){reportErr('drawing',err);try{var gd=gfxScale(window.devicePixelRatio||1);ctx.setTransform(gd,0,0,gd,0,0);ctx.setLineDash([]);ctx.globalAlpha=1;sanitize(1);}catch(e){}}
   var p2=performance.now();
-  try{readouts();}catch(err){reportErr('readouts',err);}
+  /* slow-computer mode: the readouts and bars refresh five times a second, and right away after any touch or key */
+  if(!LITE.on||p2-LITE.read>=200||p2<LITE.until||drag){LITE.read=p2;try{readouts();}catch(err){reportErr('readouts',err);}}
   PERF.draw+=p2-p1;PERF.read+=performance.now()-p2;PERF.n++;
 }
 $('errClose').addEventListener('click',function(){$('errBar').hidden=true;shownErr='';});
 /* problems inside button and touch handlers show up too */
 try{window.addEventListener('error',function(e){reportErr('action',e.error||e.message);});}catch(e){}
+/* a computer drawing in software starts in slow-computer mode, unless the user chose otherwise before */
+try{
+  var lv=localStorage.getItem('hh60sim.lite');
+  if(lv==='on'||lv==='off'){LITE.manual=true;LITE.on=lv==='on';}
+  else if(/swiftshader|basic render|llvmpipe|software|no webgl/i.test(perfGpu()))LITE.on=true;
+  $('liteOn').checked=LITE.on;
+}catch(e){}
 requestAnimationFrame(frame);
 })();
 </script>
