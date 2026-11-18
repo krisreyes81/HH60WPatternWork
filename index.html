@@ -82,12 +82,14 @@ canvas.spr{inset:auto;left:0;top:0;width:auto;height:auto;pointer-events:none;wi
 .pop{position:absolute;left:50%;top:112px;transform:translateX(-50%);width:min(340px,calc(100% - 24px));background:var(--panel);border:2px solid var(--trail);border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:10px;z-index:7;box-shadow:0 8px 24px rgba(0,0,0,.5)}
 .pop[hidden]{display:none}
 .pop strong{font-family:var(--display);font-size:18px;letter-spacing:.06em;text-transform:uppercase}
-.commit{position:absolute;left:50%;top:112px;transform:translateX(-50%);display:flex;flex-direction:column;gap:8px;pointer-events:none;z-index:2;width:min(360px,calc(100% - 24px))}
+.sideNotes{position:absolute;left:12px;top:98px;display:flex;flex-direction:column;gap:8px;align-items:flex-start;pointer-events:none;z-index:5;width:min(270px,calc(100% - 24px))}
+.app.nopanel .sideNotes{left:188px}
+.commit{display:flex;flex-direction:column;gap:6px;pointer-events:none;width:100%}
 .commit[hidden]{display:none}
-.commit .card{background:rgba(12,16,22,.92);border:2px solid #2bff6a;border-radius:10px;padding:8px 14px 10px;display:grid;grid-template-columns:1fr auto;align-items:center;column-gap:12px}
+.commit .card{background:rgba(12,16,22,.92);border:2px solid #2bff6a;border-radius:10px;padding:6px 10px 7px;display:grid;grid-template-columns:1fr auto;align-items:center;column-gap:10px}
 .commit .who2{font-family:var(--display);font-weight:700;font-size:17px;letter-spacing:.1em;text-transform:uppercase}
 .commit .lbl{font-family:var(--display);font-size:13px;letter-spacing:.12em;color:var(--muted);text-transform:uppercase}
-.commit .time{font-family:var(--mono);font-size:40px;line-height:1;font-variant-numeric:tabular-nums;color:#2bff6a;grid-row:1 / span 2;grid-column:2}
+.commit .time{font-family:var(--mono);font-size:30px;line-height:1;font-variant-numeric:tabular-nums;color:#2bff6a;grid-row:1 / span 2;grid-column:2}
 .commit .bar{grid-column:1 / span 2;height:6px;border-radius:3px;background:rgba(255,255,255,.14);margin-top:8px;overflow:hidden}
 .commit .bar i{display:block;height:100%;background:#2bff6a}
 .commit .popB{grid-column:1 / span 2;margin-top:8px;pointer-events:auto;font-family:var(--display);font-weight:700;letter-spacing:.08em;font-size:14px;padding:7px 10px;background:rgba(12,16,22,.9)}
@@ -118,8 +120,8 @@ canvas.spr{inset:auto;left:0;top:0;width:auto;height:auto;pointer-events:none;wi
 .gunCtl .gam.yel{background:#f2c230;color:#1b1404}
 .gunCtl .gam.red{background:#d23a2f;color:#fff}
 .gunCtl .gam.blk{background:#000;color:#fff;border-color:rgba(255,255,255,.55)}
-.toasts{position:absolute;left:50%;top:34%;transform:translateX(-50%);display:flex;flex-direction:column;gap:6px;align-items:center;z-index:5;pointer-events:none;max-width:calc(100% - 24px)}
-.toasts .toast{background:#000;border:2px solid #ff5a4d;color:#fff;border-radius:10px;padding:8px 16px;font-family:var(--display);font-weight:700;font-size:20px;letter-spacing:.12em;text-transform:uppercase;white-space:nowrap}
+.toasts{display:flex;flex-direction:column;gap:6px;align-items:flex-start;pointer-events:none;max-width:100%}
+.toasts .toast{background:#000;border:2px solid #ff5a4d;color:#fff;border-radius:8px;padding:5px 10px;font-family:var(--display);font-weight:700;font-size:13px;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
 .gunCtl #gReload{width:100%;padding:4px 6px;font-size:12px;min-width:0}
 .gunCtl .gunBar button{min-width:46px;padding:6px 6px}
 .gunCard #gunCount{color:var(--ink);font-family:var(--mono)}
@@ -255,7 +257,7 @@ input:disabled,select:disabled{opacity:.55}
   <aside class="panel">
     <div>
       <h1>HH-60 Formation Sim</h1>
-      <p class="sub"><span class="swatch" style="background:var(--lead)"></span>Lead <span class="swatch" style="background:var(--trail);margin-left:10px"></span>Trail. North is up. <span id="build" style="opacity:.6;white-space:nowrap">Build 18 Nov Q</span></p>
+      <p class="sub"><span class="swatch" style="background:var(--lead)"></span>Lead <span class="swatch" style="background:var(--trail);margin-left:10px"></span>Trail. North is up. <span id="build" style="opacity:.6;white-space:nowrap">Build 18 Nov T</span></p>
     </div>
 
     <div class="who">
@@ -399,12 +401,12 @@ input:disabled,select:disabled{opacity:.55}
     <fieldset id="gunSet">
       <legend>Flex fire guns</legend>
       <p class="note">Use the GUNS window at the bottom right of the map. Tap L or R to turn a gun on. Each gun has its own target picker next to it. A gun that is on shoots only while it is clear to shoot. It stops by itself when it is not, and starts again when it is.</p>
-      <p class="note">Guns also have up and down stops. The sim uses your height above the target and the bank angle to work out how far up or down the gun must point, and holds fire when that is past a stop. Banking toward the target lifts it against the upper stop. Each gun is checked by itself against its own gun target line. A gun is clear when its target is inside its arc and range, no Jack is within 30° of its line, and the other aircraft is far enough off its line. The other aircraft and a Jack only count when they are inside that gun's own arc, since the gun cannot swing past its stops. The spacing needed is 2 clock positions (60°) when the other aircraft is hot, which means closing on the line with each aircraft forward of the other's wing line, and 1 clock position (30°) when it is cold. When either aircraft is behind the other, it is always 1 clock position (30°).</p>
+      <p class="note">Guns also have up and down stops. The sim uses your height above the target and the bank angle to work out how far up or down the gun must point, and holds fire when that is past a stop. That hold reads PLATFORMED. Banking toward the target lifts it against the upper stop. Each gun is checked by itself against its own gun target line. A gun is clear when its target is inside its arc and range, no Jack is within 30° of its line, and the other aircraft is far enough off its line. The other aircraft and a Jack only count when they are inside that gun's own arc, since the gun cannot swing past its stops. The spacing needed is 2 clock positions (60°) when the other aircraft is hot, which means closing on the line with each aircraft forward of the other's wing line, and 1 clock position (30°) when it is cold. When either aircraft is behind the other, it is always 1 clock position (30°).</p>
       <div class="row"><label for="gFwd">Forward limit</label><input type="number" id="gFwd" min="0" max="90" step="1" value="1"><span class="unit">° off nose</span></div>
       <div class="row"><label for="gAft">Aft limit</label><input type="number" id="gAft" min="90" max="180" step="1" value="171"><span class="unit">° off nose</span></div>
       <div class="row"><label for="gR21">GAU-21 range</label><input type="number" id="gR21" min="100" max="5000" step="50" value="1500"><span class="unit">m, 600 rounds, about 1,025 a minute</span></div>
       <div class="row"><label for="gR2">GAU-2 range</label><input type="number" id="gR2" min="100" max="5000" step="50" value="750"><span class="unit">m, 2,700 rounds, 3,000 a minute</span></div>
-      <div class="row"><label for="gPause">Pause between bursts</label><input type="number" id="gPause" min="0" max="20" step="0.1" value="0.5"><span class="unit">s (bursts run 3 to 5 s)</span></div>
+      <div class="row"><label for="gPause">Pause between bursts</label><input type="number" id="gPause" min="0" max="20" step="0.1" value="1"><span class="unit">s (bursts run 3 to 5 s)</span></div>
       <div class="row"><label for="gAgl">Height above target</label><input type="number" id="gAgl" min="0" max="5000" step="50" value="300"><span class="unit">ft</span></div>
       <div class="seg"><button type="button" id="gCease">Cease fire, all guns off</button></div>
       <div class="status" id="gunStatus" aria-live="polite">All guns off</div>
@@ -632,7 +634,7 @@ input:disabled,select:disabled{opacity:.55}
         <div class="gunBody" id="gunBody"><div id="gunMsg" aria-live="polite"></div></div>
       </div>
     </div>
-    <div class="commit" id="commit" hidden aria-live="off"></div>
+    <div class="sideNotes" id="sideNotes"><div class="commit" id="commit" hidden aria-live="off"></div><div class="toasts" id="toasts" aria-live="assertive"></div></div>
     <div class="pop" id="pop" hidden>
       <strong id="popTitle">Commit to J1?</strong>
       <div class="row"><label for="popSec">Time committed</label><input type="number" id="popSec" min="0" max="3600" step="5" value="60"><span class="unit">sec (0 = stay)</span></div>
@@ -669,7 +671,6 @@ input:disabled,select:disabled{opacity:.55}
         </div>
       </div>
     </div>
-    <div class="toasts" id="toasts" aria-live="assertive"></div>
     <div class="perfBox" id="perfBox" hidden></div>
     <div class="errBar" id="errBar" hidden role="alert">
       <div><strong>The sim hit a problem and kept going.</strong> If something looks wrong, press Reset aircraft. Please tell Claude this message:<code id="errMsg"></code></div>
@@ -1245,7 +1246,7 @@ function redo(){
 /* ---------- flex fire guns ----------
    Each aircraft has a left and a right gun. A gun that is turned on fires only while it is clear:
    the target is inside the gun's arc and range, and the other aircraft is clear of the gun target line. */
-var GUN={on:[[false,false],[false,false]],tgt:[[1,1],[1,1]],fwd:1,aft:171,range:1500,hot:60,cold:30,jack:30,agl:300,burst:[3,5],pause:0.5,elFwd:[-3,-54],elAft:[3,-48]};
+var GUN={on:[[false,false],[false,false]],tgt:[[1,1],[1,1]],fwd:1,aft:171,range:1500,hot:60,cold:30,jack:30,agl:300,burst:[3,5],pause:1,elFwd:[-3,-54],elAft:[3,-48]};
 /* ---------- gun load-outs ----------
    Each of the four gunner positions carries a GAU-21 or a GAU-2. rpm is rounds per minute (the GAU-21 varies burst to burst),
    ammo is the full load, range is the effective range in meters. GS holds each gun's type, rounds left and burst state. */
@@ -1302,8 +1303,8 @@ function gunCheck(i,sd,nOver){
   if(el>up||el<lo){
     var bkT=Math.abs(a.bank||0)>=1?', with '+Math.round(Math.abs(a.bank))+'° of '+(a.bank>0?'right':'left')+' bank':'';
     function sg(v){var r=Math.round(v);return (r>0?'+':'')+r+'°';}
-    res.why=(el>up?'T'+n+' is above the gun\'s upper stop: it needs '+sg(el)+' and the stop is '+sg(up):'T'+n+' is below the gun\'s lower stop: it needs '+sg(el)+' and the stop is '+sg(lo))+bkT;
-    res.tag='ELEV';return res;
+    res.why='platformed. '+(el>up?'T'+n+' is above the gun\'s upper stop: it needs '+sg(el)+' and the stop is '+sg(up):'T'+n+' is below the gun\'s lower stop: it needs '+sg(el)+' and the stop is '+sg(lo))+bkT;
+    res.tag='PLATFORMED';return res;
   }
   /* no fire with a Jack near this gun's line: a Jack inside this gun's arc and within 30 degrees of the gun target line holds the gun */
   var jn=0,jHit=0,jSep=999;
