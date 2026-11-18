@@ -122,7 +122,9 @@ canvas.spr{inset:auto;left:0;top:0;width:auto;height:auto;pointer-events:none;wi
 .gunCtl .gam.blk{background:#000;color:#fff;border-color:rgba(255,255,255,.55)}
 .toasts{display:flex;flex-direction:column;gap:6px;align-items:flex-start;pointer-events:none;max-width:100%}
 .toasts .toast{background:#000;border:2px solid #ff5a4d;color:#fff;border-radius:8px;padding:5px 10px;font-family:var(--display);font-weight:700;font-size:13px;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
-.gunCtl #gReload{width:100%;padding:4px 6px;font-size:12px;min-width:0}
+.gunCtl .gunCtlTop{display:flex;align-items:center;gap:4px;padding-right:7px}
+.gunCtl .gunCtlTop .emHead{flex:1 1 auto;width:auto;min-width:0;overflow:hidden}
+.gunCtl #gReload{flex:0 0 auto;padding:3px 9px;font-size:12px;min-width:0;min-height:28px}
 .gunCtl .gunBar button{min-width:46px;padding:6px 4px;white-space:nowrap;font-size:12px}
 .gunCtl .gunBar .gset:not(.gload) select{min-width:46px;padding:5px 2px}
 .gunCard #gunCount{color:var(--ink);font-family:var(--mono)}
@@ -238,6 +240,9 @@ input:disabled,select:disabled{opacity:.55}
   select,input[type=number],input[type=text],textarea{font-size:16px;min-height:40px}
   input[type=checkbox]{width:20px;height:20px}
   input[type=range]{height:32px}
+  .thBar button,.thBar select{min-height:36px}
+  .gunCtl .glo select{min-height:30px;font-size:13px}
+  .gunCtl #gReload{min-height:30px}
 }
 @media (max-width:900px){
   html,body{height:auto}
@@ -290,7 +295,7 @@ details.help .note{margin-top:2px}
   <aside class="panel">
     <div>
       <h1>HH-60 Formation Sim</h1>
-      <p class="sub"><span class="swatch" style="background:var(--lead)"></span>Lead <span class="swatch" style="background:var(--trail);margin-left:10px"></span>Trail. North is up. <span id="build" style="opacity:.6;white-space:nowrap">Build 19 Nov B</span></p>
+      <p class="sub"><span class="swatch" style="background:var(--lead)"></span>Lead <span class="swatch" style="background:var(--trail);margin-left:10px"></span>Trail. North is up. <span id="build" style="opacity:.6;white-space:nowrap">Build 19 Nov C</span></p>
     </div>
 
     <div class="who">
@@ -676,14 +681,13 @@ details.help .note{margin-top:2px}
         <div class="thRow"><button type="button" id="thNeut" aria-pressed="false" title="Mark this threat neutralized. Guns keep shooting. Press again to make it active.">Threat neutralized</button><button type="button" id="thDest" aria-pressed="false" title="Mark this threat destroyed. Guns shooting at it cease fire. Press again to make it active.">Threat destroyed</button></div>
         <div class="thRow"><button type="button" id="thAll" title="Sets all four guns to the threat picked above. Guns that are on shift fire to it.">All guns target T1</button><button type="button" id="thLead" title="Sets both of lead's guns to the threat picked above.">Lead target T1</button><button type="button" id="thTrail" title="Sets both of trail's guns to the threat picked above.">Trail target T1</button></div>
       </div>
-      <button type="button" class="emHead" id="gunCtlHead" aria-expanded="true" title="Show or hide the gun buttons"><span><b>GUNS</b><span id="gunCtlNote">tap FIRE to turn a gun on</span></span><span id="gunCtlArrow">▾</span></button>
+      <div class="gunCtlTop"><button type="button" class="emHead" id="gunCtlHead" aria-expanded="true" title="Show or hide the gun buttons"><span><b>GUNS</b><span id="gunCtlNote">tap FIRE to turn a gun on</span></span><span id="gunCtlArrow">▾</span></button><button type="button" id="gReload" title="Fill every gun back to a full load">Reload</button></div>
       <div class="gunCtlBody" id="gunCtlBody">
         <div class="gunBar" id="gunBar" aria-label="Flex fire guns">
           <span class="gset gL gTop"><select id="gt00" aria-label="Lead left gun target" title="Lead left gun target"></select><button type="button" id="g00" aria-pressed="false" title="Lead left gun">FIRE L</button><b style="color:#6fa8ff">LEAD</b><button type="button" id="g01" aria-pressed="false" title="Lead right gun">FIRE R</button><select id="gt01" aria-label="Lead right gun target" title="Lead right gun target"></select></span>
           <span class="gset gload gL gBot"><span class="glo"><select id="gy00" aria-label="Lead left gun type" title="Lead left gun"><option value="GAU-21">GAU-21</option><option value="GAU-2">GAU-2</option></select><span class="gam" id="ga00" title="Rounds left">600</span></span><span class="glo"><select id="gy01" aria-label="Lead right gun type" title="Lead right gun"><option value="GAU-21">GAU-21</option><option value="GAU-2">GAU-2</option></select><span class="gam" id="ga01" title="Rounds left">600</span></span></span>
           <span class="gset gT gTop"><select id="gt10" aria-label="Trail left gun target" title="Trail left gun target"></select><button type="button" id="g10" aria-pressed="false" title="Trail left gun">FIRE L</button><b style="color:#5fdc8c">TRAIL</b><button type="button" id="g11" aria-pressed="false" title="Trail right gun">FIRE R</button><select id="gt11" aria-label="Trail right gun target" title="Trail right gun target"></select></span>
           <span class="gset gload gT gBot"><span class="glo"><select id="gy10" aria-label="Trail left gun type" title="Trail left gun"><option value="GAU-21">GAU-21</option><option value="GAU-2">GAU-2</option></select><span class="gam" id="ga10" title="Rounds left">600</span></span><span class="glo"><select id="gy11" aria-label="Trail right gun type" title="Trail right gun"><option value="GAU-21">GAU-21</option><option value="GAU-2">GAU-2</option></select><span class="gam" id="ga11" title="Rounds left">600</span></span></span>
-          <span class="gset gload"><button type="button" id="gReload" title="Fill every gun back to a full load">Reload all</button></span>
         </div>
       </div>
     </div>
@@ -1641,7 +1645,6 @@ function stopRec(){
 function pbApply(){
   var f=PB.tape.frames,t=clamp(PB.t,0,PB.tape.dur),lo=0,hi=f.length-1;
   /* a Jack that was picked up shows until the moment it left */
-  if(PB.mk)S.markers=PB.mk.filter(function(m){return m.gone==null||t<m.gone;});
   while(hi-lo>1){var mid=(lo+hi)>>1;if(f[mid][0]<=t)lo=mid;else hi=mid;}
   var a=f[lo],b=f[hi],k=b[0]>a[0]?clamp((t-a[0])/(b[0]-a[0]),0,1):0;
   PB.i=lo;
@@ -1651,13 +1654,19 @@ function pbApply(){
     if(q!=null&&q!==PB.ths){
       var parts=q?q.split(';'):[],nn=0,first=PB.ths==null;PB.ths=q;
       PB.mk.forEach(function(m){
-        if(m.type!=='threat')return;var z=parts[nn++];if(!z)return;z=z.split(',');
+        if(m.type!=='threat')return;var z=parts[nn++];
+        /* a threat with no entry at this moment had not popped up yet */
+        if(!z){m.hid=true;return;}
+        if(m.hid){m.hid=false;if(!first)thFx(m,'up');}
+        z=z.split(',');
         var ns=z[0]==='2'?'dest':z[0]==='1'?'neut':'';
         if((m.st||'')!==ns){if(ns)m.st=ns;else delete m.st;if(!first)thFx(m,ns||'up');}
         m.x=+z[1];m.y=+z[2];
       });
     }
   }
+  /* a Jack that was picked up shows until the moment it left */
+  if(PB.mk)S.markers=PB.mk.filter(function(m){return (m.gone==null||t<m.gone)&&!m.hid;});
   [0,1].forEach(function(n){
     var o=1+n*4,c=AC[n];
     c.pos={x:a[o]+(b[o]-a[o])*k,y:a[o+1]+(b[o+1]-a[o+1])*k};
@@ -2555,6 +2564,8 @@ function dockMeasure(){
   try{
     var d=$('dock'),ft=$('floatTools'),rc=$('rightCol'),gc=$('gunCtl'),full=$('app').classList.contains('nopanel'),sr=stage.getBoundingClientRect();
     d.classList.remove('narrow','side');d.style.bottom='';
+    var tb=document.querySelector('.transport').getBoundingClientRect(),base=tb.height?Math.max(54,Math.round(sr.bottom-tb.top)+6):54;
+    gc.style.bottom=(base+6)+'px';if(base>54)d.style.bottom=base+'px';
     var gr=gc.getBoundingClientRect(),lift=0;
     function under(){return !d.classList.contains('min')&&d.getBoundingClientRect().right>gr.left-10;}
     function tall(){return !!(full&&ft&&ft.offsetHeight&&98+ft.offsetHeight+8+d.offsetHeight+54+lift>H);}
@@ -2563,7 +2574,7 @@ function dockMeasure(){
          the TURN buttons drop to their own line. If that is still not enough, the quick bar moves up above the guns window. */
       if(!under())return;
       d.classList.add('narrow');
-      if(under()||d.offsetHeight>250){d.classList.remove('narrow');lift=Math.round(sr.bottom-gr.top);d.style.bottom=(lift+8)+'px';}
+      if(under()){d.classList.remove('narrow');lift=Math.round(sr.bottom-gr.top);d.style.bottom=(lift+8)+'px';}
     }
     /* with the controls hidden the quick bar sits at the far left, right under the shortcut list.
        If the map is too short for both, it goes beside the list. */
@@ -2574,7 +2585,8 @@ function dockMeasure(){
     /* the windows on the right stop above the guns window, or above the quick bar if it reaches under them */
     var dr=d.getBoundingClientRect(),rr=rc.getBoundingClientRect(),top=gr.top;
     if(dr.height>0&&dr.right>rr.left-8&&dr.top<top)top=dr.top;
-    rc.style.maxHeight=Math.max(96,top-sr.top-160-8)+'px';
+    /* with no room left above the guns window, the windows on the right step aside instead of sitting on top of it */
+    var room=top-sr.top-160-8;rc.style.maxHeight=Math.max(0,room)+'px';rc.style.visibility=room<40?'hidden':'';
   }catch(e){dockH=0;}
 }
 function bgKey(){
@@ -3233,8 +3245,14 @@ try{document.addEventListener('dblclick',function(e){e.preventDefault();},{passi
 /* iPad Safari zooms on the second of two quick taps unless that tap's default action is cancelled.
    Cancelling it also cancels the click, so the click is sent by hand to keep fast double presses working. */
 (function(){
-  var lastEnd=0,lastX=0,lastY=0;
+  var lastEnd=0,lastX=0,lastY=0,sent=null;
   try{
+    document.addEventListener('click',function(e){
+      if(!sent||!e.isTrusted)return;
+      var b=e.target&&e.target.closest?e.target.closest('button'):null;
+      if(b===sent.b&&Date.now()-sent.t<450){e.stopImmediatePropagation();e.preventDefault();}
+      sent=null;
+    },true);
     document.addEventListener('touchend',function(e){
       var t=e.changedTouches&&e.changedTouches[0];if(!t||e.touches.length)return;
       var now=Date.now(),quick=now-lastEnd<400&&Math.abs(t.clientX-lastX)<40&&Math.abs(t.clientY-lastY)<40;
@@ -3245,7 +3263,7 @@ try{document.addEventListener('dblclick',function(e){e.preventDefault();},{passi
       if(el.closest('input,select,textarea,label'))return;
       if(e.cancelable)e.preventDefault();
       var btn=el.closest('button');
-      if(btn&&!btn.disabled)btn.click();
+      if(btn&&!btn.disabled){sent={b:btn,t:Date.now()};btn.click();}
     },{passive:false});
   }catch(err){}
 })();
