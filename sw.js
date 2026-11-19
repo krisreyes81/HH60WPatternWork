@@ -1,5 +1,5 @@
 /* Offline copy for the HH-60 Formation Sim. Bump CACHE when you upload a new index.html. */
-var CACHE='hh60-sim-v1';
+var CACHE='hh60-sim-v68';
 var FILES=['./','index.html','manifest.webmanifest','icon-192.png','icon-512.png','apple-touch-icon.png'];
 self.addEventListener('install',function(e){
   e.waitUntil(caches.open(CACHE).then(function(c){return c.addAll(FILES);}).then(function(){return self.skipWaiting();}));

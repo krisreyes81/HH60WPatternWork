@@ -336,7 +336,7 @@ details.cat>fieldset{margin-bottom:12px}
   <aside class="panel">
     <div>
       <h1>HH-60 Formation Sim</h1>
-      <p class="sub"><span class="swatch" style="background:var(--lead)"></span>Lead <span class="swatch" style="background:var(--trail);margin-left:10px"></span>Trail. North is up. <span id="build" style="opacity:.6;white-space:nowrap">Build 19 Nov L</span></p>
+      <p class="sub"><span class="swatch" style="background:var(--lead)"></span>Lead <span class="swatch" style="background:var(--trail);margin-left:10px"></span>Trail. North is up. <span id="build" style="opacity:.6;white-space:nowrap">Build 19 Nov M</span></p>
     </div>
 
     <div class="who">
@@ -1488,6 +1488,14 @@ function drawEvents(){
     ctx.font='500 12px "IBM Plex Mono",monospace';ctx.textAlign='left';ctx.textBaseline='middle';
     haloText('T+ '+fmtMS(e.t),x+17,y);
   }
+}
+/* a stick point being dragged while the sim runs: find where it is in the list now.
+   If the aircraft already flew past it, or the route was replaced, the drag is dropped. */
+function dragFix(d){
+  if(!d||(d.mode!=='node'&&d.mode!=='bend'))return;
+  var a=primary(),live=a&&a.route&&a.route===d.r&&d.r.nodes,k=live&&d.nd?d.r.nodes.indexOf(d.nd):-1;
+  if(k<0||(d.mode==='bend'&&k<1)||(d.mode==='node'&&k<1)){d.mode='gone';d.moved=false;return;}
+  d.k=k;
 }
 /* ---------- undo: a snapshot is saved just before each action ---------- */
 var undoStack=[],histId=0,lastKey=null,lastPush=0;
@@ -3891,6 +3899,7 @@ function abortDrag(){
   if(drag.mode==='measure'&&!drag.moved)S.meas=null;
   if(drag.mode==='ac')S.dragAC=false;
   if(drag.mode==='place')S.hover=null;
+  dragFix(drag);
   if(drag.moved&&(drag.mode==='node'||drag.mode==='bend'))saveSticks(primary());
   var d0=drag;drag=null;cv.style.cursor=S.tool==='pan'?'grab':'crosshair';
   if(editSig()!==d0.sig)pushSnap(d0.undo);
@@ -3935,6 +3944,8 @@ cv.addEventListener('pointerdown',function(e){
   /* with a finger, hold to preview the stick and lift to place it */
   if(S.tool==='sticks'&&mode==='pan'&&e.pointerType==='touch'){mode='place';S.hover=toWorld(p.x,p.y);}
   drag={x:p.x,y:p.y,sx:p.x,sy:p.y,moved:false,mode:mode,k:k,r:r,pa:pa,m:mk2,links:links,undo:u0,sig:sig0};
+  /* remember the point itself. Its place in the list shifts as the aircraft flies past earlier points. */
+  if((mode==='node'||mode==='bend')&&r&&r.nodes)drag.nd=r.nodes[k]||null;
   if(mode==='rot'){var w1=toWorld(p.x,p.y);drag.pv=patPivot(pa);drag.ang=Math.atan2(w1.y-drag.pv.y,w1.x-drag.pv.x);}
 });
 cv.addEventListener('pointermove',function(e){
@@ -3961,6 +3972,7 @@ cv.addEventListener('pointermove',function(e){
     if(drag.mode==='rot'||drag.mode==='acrot')cv.style.cursor='grabbing';
   }
   if(drag.moved){
+    dragFix(drag);
     var w=toWorld(p.x,p.y),r=drag.r;
     if(drag.mode==='pan'){S.cam.x-=(p.x-drag.x)/S.scale;S.cam.y+=(p.y-drag.y)/S.scale;}
     else if(drag.mode==='ac'){moveAircraft(drag.k,w);}
@@ -4006,6 +4018,8 @@ function finishPointer(e){
   ptrs.delete(e.pointerId);
   if(gest){if(ptrs.size<2)gest=null;return;}
   if(!drag)return;var p=local(e),d=drag;drag=null;
+  dragFix(d);
+  if(d.mode==='gone'){cv.style.cursor=S.tool==='pan'?'grab':'crosshair';if(editSig()!==d.sig)pushSnap(d.undo);return;}
   if(d.mode==='place'){d.moved=false;S.hover=null;}
   if(d.mode==='terrain'){if(S.draft&&S.draft.pts.length>=3)S.terrain.push(S.draft);S.draft=null;return;}
   if(d.mode==='ac'){S.dragAC=false;cv.style.cursor=S.tool==='pan'?'grab':'crosshair';}
